@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "336747401294",
+    "project_id": "covenantpodcast-4c1ec",
+    "storage_bucket": "covenantpodcast-4c1ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336747401294:android:c8f15fbf6c994df974731f",
+        "android_client_info": {
+          "package_name": "com.example.covenantsermons"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336747401294-bfesmul5re19vh3eulfc7g5c557vh4ir.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDBsHuHEebWd4BKaSAii_KwFplDfnnQBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336747401294-bfesmul5re19vh3eulfc7g5c557vh4ir.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

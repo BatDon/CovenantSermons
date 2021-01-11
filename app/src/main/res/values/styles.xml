@@ -1,0 +1,15 @@
+<resources>
+
+  <style name="CustomExoMediaButtonRewind">
+    <item name="android:src">@drawable/rewind_custom_exo_ic</item>
+  </style>
+
+  <style name="CustomExoMediaButtonPlay">
+    <item name="android:src">@drawable/play_custom_exo_ic</item>
+  </style>
+
+  <style name="CustomExoMediaButtonPause">
+    <item name="android:src">@drawable/pause_custom_exo_ic</item>
+  </style>
+
+</resources>

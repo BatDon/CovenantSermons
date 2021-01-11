@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--  <dimen name="exoplayer_icons_width">match_parent</dimen>-->
+  <dimen name="exoplayer_icons_width">0dp</dimen>
+  <dimen name="exoplayer_icons_height">0dp</dimen>
+</resources>

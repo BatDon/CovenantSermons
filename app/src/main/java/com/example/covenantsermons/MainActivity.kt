@@ -2,7 +2,8 @@ package com.example.covenantsermons
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.covenantsermons.database.getPodcastsFromDatabase
+import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
+import com.example.covenantsermons.modelDatabase.unSubscribe
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -13,5 +14,11 @@ class MainActivity : AppCompatActivity() {
         Timber.plant(Timber.DebugTree())
 
         getPodcastsFromDatabase()
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unSubscribe?.remove()
     }
 }

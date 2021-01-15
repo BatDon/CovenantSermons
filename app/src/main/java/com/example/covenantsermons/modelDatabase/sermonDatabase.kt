@@ -1,25 +1,62 @@
 package com.example.covenantsermons.modelDatabase
 
+import android.os.Parcelable
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import kotlinx.android.parcel.Parcelize
 import timber.log.Timber
 import java.util.*
-import kotlin.collections.ArrayList
+
+
 
 
 data class SermonList(
     val sermonList: ArrayList<Sermon> = arrayListOf()
 )
 
+
+//data class Sermon(
+//    val audioFile: String = "",
+//    val duration: Int = 0,
+//    val image: String = "",
+//    val timeStamp: Date = Date(),
+//    val title: String = "",
+//    val pastorName: String=""
+//)
+
+//@Parcelize
+//data class Sermon(
+//    val audioFile: String = "",
+//    val duration: Int = 0,
+//    val image: String = "",
+//    val timeStamp: Date = Date(),
+//    val title: String = "",
+//    val pastorName: String=""
+//): Parcelable
+
+@Parcelize
 data class Sermon(
-    val audioFile: String = "",
-    val duration: Int = 0,
-    val image: String = "",
-    val timeStamp: Date = Date(),
-    val title: String = "",
-    val pastorName: String=""
-)
+    var audioFile: String? = "",
+    var duration: Int? = 0,
+    var image: String? = "",
+    var pastorName: String? = "",
+    var timeStamp: Date? = Date(),
+    var title: String? = ""
+
+): Parcelable{
+    init {
+        audioFile = audioFile ?: ""
+        duration = duration?:0
+        image = image ?: ""
+        pastorName = pastorName ?: ""
+        timeStamp = timeStamp ?: Date()
+        title = title ?: ""
+
+
+    }
+}
+
 
 //enum class DocumentFields{
 //    audioFile, duration, image, timeStamp, title

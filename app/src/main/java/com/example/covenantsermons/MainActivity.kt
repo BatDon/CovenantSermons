@@ -1,10 +1,13 @@
 package com.example.covenantsermons
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
-import com.example.covenantsermons.modelDatabase.unSubscribe
+import androidx.appcompat.app.AppCompatActivity
+import com.example.covenantsermons.PlayerActivity.Companion.BUNDLE_KEY
+import com.example.covenantsermons.PlayerActivity.Companion.SERMON_KEY
+import com.example.covenantsermons.modelDatabase.Sermon
 import timber.log.Timber
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,12 +16,40 @@ class MainActivity : AppCompatActivity() {
 
         Timber.plant(Timber.DebugTree())
 
-        getPodcastsFromDatabase()
+        //TODO uncomment after done testing used to fill recyclerview
+        //getPodcastsFromDatabase()
+
+        val sermon=Sermon("file:///home/david/PodcastAppResources/AudioFiles/krewella-come-get-it.mp3",
+        63,"file:///home/david/Downloads/cross.png","pastorName",
+                Date(),"sermonTitle1")
+
+        val bundle=Bundle().apply {
+            putParcelable(SERMON_KEY, sermon)
+        }
+
+        val intent = Intent(this@MainActivity, PlayerActivity::class.java).apply {
+            putExtra(BUNDLE_KEY,bundle)
+        }
+        startActivity(intent)
+    }
+
+    //
+    override fun onStart() {
+        super.onStart()
+        //TODO start service here
+        //startForegroundService()
+        //TODO bind to service here
+    }
+
+    //TODO unbind from service
+    override fun onStop() {
+        super.onStop()
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unSubscribe?.remove()
-    }
+    //TODO uncomment after done testing
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        unSubscribe?.remove()
+//    }
 }

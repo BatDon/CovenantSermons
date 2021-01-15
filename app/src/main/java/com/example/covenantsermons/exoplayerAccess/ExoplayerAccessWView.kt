@@ -1,10 +1,8 @@
 package com.example.covenantsermons.exoplayerAccess
 
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.covenantsermons.R
 import com.example.covenantsermons.exoplayer.ExoplayerImpl
 import com.example.covenantsermons.exoplayer.ExoplayerInterface
 import com.google.android.exoplayer2.ui.PlayerView
@@ -61,7 +59,7 @@ class PodcastViewActivity : AppCompatActivity(), PodcastViewContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_podcast_view)
+        //setContentView(R.layout.activity_podcast_view)
         init()
     }
 
@@ -90,7 +88,7 @@ class PodcastViewActivity : AppCompatActivity(), PodcastViewContract.View {
 
         val podcastUrl: String? = intent.getStringExtra(VIDEO_URL_EXTRA)
 
-        exoPlayerPodcastView = findViewById(R.id.exoplayer_podcast_view)
+        //exoPlayerPodcastView = findViewById(R.id.exoplayer_podcast_view)
 
         exoPlayerPodcastView.player = exoplayerAccesserInterface.getExoplayer().getExoplayerImpl(this)
 

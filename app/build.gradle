@@ -2,6 +2,11 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'com.google.gms.google-services'
+    // parcelable
+    id 'kotlin-android-extensions'
+    //viewbinding
+//    id 'kotlin-android-extensions'
+
 }
 
 android {
@@ -32,6 +37,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    //parcelable latest versions
+    androidExtensions {
+        experimental = true
     }
 }
 

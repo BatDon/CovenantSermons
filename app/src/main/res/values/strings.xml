@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">CovenantSermons</string>
+<!--    <string name="CHANNEL_ID">EXOPLAYER_CHANNEL_ID</string>-->
+<!--    <string name="CHANNEL_DESCRIPTION">Plays Sermon Podcasts</string>-->
+    <string name="date_hint">01/03/2021</string>
+    <string name="sermon_title_hint">Sermon Title</string>
+    <string name="sermon_length_hint">22 min</string>
+<!--    podcast notification service-->
+<!--    <string name="CHANNEL_ID">EXOPLAYER_CHANNEL_ID</string>-->
+    <string name="CHANNEL_DESCRIPTION">Plays Sermon Podcasts</string>
+<!--    <string name="CHANNEL_ID">Podcast Player Service</string>-->
+    <string name="channel_name">Podcast Player Service</string>
+    <string name="NOTIFICATION_ID">"100"</string>
 </resources>

@@ -88,6 +88,7 @@ fun getPodcastsFromDatabase(){
                     Timber.e( "listen:error $exception")
                     return@addSnapshotListener
                 }
+                val sermonList=ArrayList<Sermon>()
 
                 //TODO create arrayList and update RecyclerView
                 for (sermondChanges in snapshots!!.documentChanges) {
@@ -95,9 +96,35 @@ fun getPodcastsFromDatabase(){
                         DocumentChange.Type.ADDED -> Timber.i("New sermon: ${sermondChanges.document.data}")
                         DocumentChange.Type.MODIFIED -> Timber.i( "Modified sermon: ${sermondChanges.document.data}")
                         DocumentChange.Type.REMOVED -> Timber.i( "Removed sermon ${sermondChanges.document.data}")
+                        //sermondChanges.document.data.get("audioFile")
+
                     }
+                    Timber.i("sermon Media= ${sermondChanges.document.data["audioFile"]}")
+                    val audioFile: String?= sermondChanges.document.data["audioFile"] as String?
+                    val durationLong: Long?= sermondChanges.document.data["duration"] as Long?
+                    val duration: Int? =durationLong?.toInt()
+//                    val duration: Int? =sermondChanges.document.data["duration"].toInt()
+                    val image: String?= sermondChanges.document.data["image"] as String?
+                    val pastorName: String?= sermondChanges.document.data["pastor"] as String?
+                    val timeStampString: String=sermondChanges.document.data["timeStamp"].toString()
+//                    val timeStamp: Timestamp=sermondChanges.document.data["timeStamp"] as Timestamp
+//                    val longTimeStamp: Long=timeStamp.seconds.toLong()
+                    Timber.i("timeStampString = $timeStampString")
+                    val firstTimeStampSubstring=timeStampString.substringAfter("=",timeStampString)
+                    val lastTimeStampSubstring=firstTimeStampSubstring.substringBefore(",",firstTimeStampSubstring)
+//                    Timber.i("substring= $lastTimeStampSubstring")
+                    val date= Date(lastTimeStampSubstring.toLong()*1000)
+//                    val date=Date()
+//                    val timeStamp: Date?= timeStampString?.toLongOrNull()?.let { Date(it) }
+//                    Timber.i("date= ${longTimeStamp}")
+//                    Timber.i("timeStamp=$timeStamp")
+                    val title: String?= sermondChanges.document.data["title"] as String?
+
+                    sermonList.add(Sermon(audioFile,duration, image, pastorName, date, title))
+                    Timber.i("sermonList= ${sermonList[0]}")
                 }
             }
+    
 
 //    rootRef?.let {
 //        it.collection("Podcasts").get()
@@ -134,4 +161,5 @@ fun getPodcastsFromDatabase(){
 
 
 }
+
 

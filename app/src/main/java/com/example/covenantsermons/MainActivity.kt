@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.covenantsermons.PlayerActivity.Companion.BUNDLE_KEY
 import com.example.covenantsermons.PlayerActivity.Companion.SERMON_KEY
 import com.example.covenantsermons.modelDatabase.Sermon
+import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import timber.log.Timber
 import java.util.*
 
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         Timber.plant(Timber.DebugTree())
 
         //TODO uncomment after done testing used to fill recyclerview
-        //getPodcastsFromDatabase()
+        getPodcastsFromDatabase()
 
         val sermon=Sermon("file:///home/david/PodcastAppResources/AudioFiles/krewella-come-get-it.mp3",
         63,"file:///home/david/Downloads/cross.png","pastorName",

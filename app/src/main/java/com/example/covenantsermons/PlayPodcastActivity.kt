@@ -13,6 +13,7 @@ import com.example.covenantsermons.modelDatabase.Sermon
 import com.example.covenantsermons.modelService.ExoplayerNotificationService
 import com.google.android.exoplayer2.SimpleExoPlayer
 import kotlinx.android.synthetic.main.activity_play_podcast.*
+import timber.log.Timber
 import java.util.*
 
 
@@ -69,6 +70,7 @@ class PlayerActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.i("onCreate called")
         setContentView(R.layout.activity_play_podcast)
         //sermonTitleTV.text = "cat"
         val bundle: Bundle? = intent.getBundleExtra(BUNDLE_KEY)

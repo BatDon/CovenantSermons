@@ -1,6 +1,8 @@
 package com.example.covenantsermons.modelDatabase
 
+import android.content.Context
 import android.os.Parcelable
+import com.example.covenantsermons.DatabaseListenerClass
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -74,13 +76,15 @@ object documentFields{
 var unSubscribe: ListenerRegistration?=null
 //constant val
 
-fun getPodcastsFromDatabase(){
+fun getPodcastsFromDatabase(mainContext: Context): ArrayList<Sermon>{
+
+    val mainContext=mainContext
 
     var rootRef:FirebaseFirestore? = FirebaseFirestore.getInstance()
 
 //    var unSubscribe: ListenerRegistration?=null
 
-
+    var sermonList=ArrayList<Sermon>()
 
     unSubscribe=rootRef?.collection("Podcasts")
             ?.addSnapshotListener { snapshots, exception ->
@@ -88,7 +92,12 @@ fun getPodcastsFromDatabase(){
                     Timber.e( "listen:error $exception")
                     return@addSnapshotListener
                 }
-                val sermonList=ArrayList<Sermon>()
+
+//                new arraylist created everytime document changes
+//                if(snapshots!!.documentChanges.size>0){
+//                    sermonList=ArrayList<Sermon>()
+//                }
+
 
                 //TODO create arrayList and update RecyclerView
                 for (sermondChanges in snapshots!!.documentChanges) {
@@ -123,8 +132,11 @@ fun getPodcastsFromDatabase(){
                     sermonList.add(Sermon(audioFile,duration, image, pastorName, date, title))
                     Timber.i("sermonList= ${sermonList[0]}")
                 }
+                DatabaseListenerClass(mainContext).playPodcastActivitywithNewData(sermonList)
             }
-    
+
+    return sermonList
+
 
 //    rootRef?.let {
 //        it.collection("Podcasts").get()

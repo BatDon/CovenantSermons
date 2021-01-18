@@ -23,7 +23,6 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager.BitmapCallback
 import com.google.android.exoplayer2.ui.PlayerNotificationManager.MediaDescriptionAdapter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import java.net.URL
 
 
 //TODO only swiping left or right should stop podcast audio service
@@ -137,14 +136,21 @@ class ExoplayerNotificationService : Service() {
     fun prepareMediaSource():ExtractorMediaSource {
 
 
-
+        val audioFile=sermon?.audioFile
 //        var sermon:Sermon = getSermon()
-        var sermonAudio:String = sermon?.audioFile!!
+//        val parsedAudioFile=sermon?.audioFile!!.substringAfter("//")
+//        val audioArrayString=parsedAudioFile.split("/")
+        //val sermonAudioUri:Uri=parsedAudioFile.toUri()
+        //var sermonAudioUri:Uri = sermon?.audioFile!!.toUri()
+//        val segments=sermonAudioUri.pathSegments
+//        val audioUriSegment=segments[segments.size - 1]
+//        val audioFile=audioArrayString[audioArrayString.size-1]
+
         val userAgent = Util.getUserAgent(mContext, mContext.getString(R.string.app_name))
 
         return ExtractorMediaSource.Factory(DefaultDataSourceFactory(mContext, userAgent))
             .setExtractorsFactory(DefaultExtractorsFactory())
-            .createMediaSource(Uri.parse(sermonAudio))
+            .createMediaSource(Uri.parse(audioFile))
 
     }
 
@@ -200,7 +206,7 @@ class ExoplayerNotificationService : Service() {
 //}
 
 
-class DescriptionAdapter(val mContext: Context,val sermon: Sermon?) : MediaDescriptionAdapter {
+class DescriptionAdapter(val mContext: Context, val sermon: Sermon?) : MediaDescriptionAdapter {
     override fun getCurrentContentTitle(player: Player): String {
         //int for current playing index
 //        val window = player.currentWindowIndex
@@ -245,8 +251,13 @@ class DescriptionAdapter(val mContext: Context,val sermon: Sermon?) : MediaDescr
 //    file:///home/david/Downloads/cross.png
 
 fun convertUrlToBitmap(imageUrl: String)= run {
-    val url: URL =URL(imageUrl)
-    val bitmap=BitmapFactory.decodeStream(url.openConnection().getInputStream())
+//    val parsedImageUrl=imageUrl.substringAfter("//")
+//    val url: URL =URL(parsedImageUrl)
+//    val segments=url.path.split("/")
+//    val segments=parsedImageUrl.split("/")
+//    val imageUrlSegment=segments[segments.size - 1]
+    val bitmap = BitmapFactory.decodeFile(imageUrl)
+    //val bitmap=BitmapFactory.decodeStream(url.openConnection().getInputStream())
     bitmap
 }
 

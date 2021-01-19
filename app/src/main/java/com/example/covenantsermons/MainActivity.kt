@@ -1,21 +1,28 @@
 package com.example.covenantsermons
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.MainThread
-import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import com.example.covenantsermons.modelDatabase.Sermon
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
+import com.example.covenantsermons.viewmodel.MainViewModel
 import timber.log.Timber
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),NewDataInterface{
+//class MainActivity : AppCompatActivity(),ViewInterface, ViewInterface.NewDataInterface{
+    private lateinit var mainViewModel: MainViewModel
+
+    private var sermonArrayList:ArrayList<Sermon> =ArrayList<Sermon>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         Timber.plant(Timber.DebugTree())
+
+//        MainActivityAccesser(this)
+
+        //setUpViewModel()
 
         //TODO uncomment after done testing used to fill recyclerview
 //        var sermonArrayList=ArrayList<Sermon>()
@@ -40,8 +47,25 @@ class MainActivity : AppCompatActivity() {
 //            putExtra(BUNDLE_KEY,bundle)
 //        }
 //        startActivity(intent)
+
     }
 
+//    fun setUpViewModel(){
+//        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+//        var firstTime:Boolean=true
+//
+//        mainViewModel.getLiveSermons().observe(this, Observer{ sermonArrayListLiveData ->
+//            sermonArrayList.addAll(sermonArrayListLiveData)
+////            if(!firstTime) {
+////                //playPodcastActivityNewData((sermonArrayList))
+////            }
+////            firstTime=false
+//
+//            //createRecyclerView()
+//        })
+//
+//        mainViewModel.getPodcasts()
+//    }
 //    override fun playPodcastActivitywithNewData(sermonArrayList: ArrayList<Sermon>) {
 //        val bundle=Bundle().apply {
 //            putParcelable(SERMON_KEY, sermonArrayList[0])
@@ -87,9 +111,68 @@ class MainActivity : AppCompatActivity() {
 //        }
 //
 //    }
+
+    fun createIntent(bundle:Bundle){
+        val intent = Intent(this@MainActivity, PlayerActivity::class.java).apply {
+            putExtra(PlayerActivity.BUNDLE_KEY,bundle)
+        }
+        startActivity(intent)
+    }
+
+//    fun playPodcastActivityNewData(sermonArrayList: ArrayList<Sermon>) {
+//        Timber.i("playPodcastActivityNewData function called")
+//        val bundle= Bundle().apply {
+//            putParcelable(PlayerActivity.SERMON_KEY, sermonArrayList[0])
+////            putParcelable(SERMON_KEY, sermon)
+//        }
+//
+////        Timber.i("mainContext= $mainContext")
+//        val intent = Intent(this@MainActivity, PlayerActivity::class.java).apply {
+//            putExtra(PlayerActivity.BUNDLE_KEY,bundle)
+//        }
+//
+////        @MainThread
+//        startActivity(intent)
+//    }
+//    override fun playPodcastActivitywithNewData(sermonArrayList: ArrayList<Sermon>) {
+//        Timber.i("playPodcastActivityNewData function called")
+//        val bundle= Bundle().apply {
+//            putParcelable(PlayerActivity.SERMON_KEY, sermonArrayList[0])
+//    //            putParcelable(SERMON_KEY, sermon)
+//        }
+//
+//    //        Timber.i("mainContext= $mainContext")
+//        val intent = Intent(this@MainActivity, PlayerActivity::class.java).apply {
+//            putExtra(PlayerActivity.BUNDLE_KEY,bundle)
+//        }
+//
+//    //        @MainThread
+//        startActivity(intent)
+//    }
+
+    override fun playPodcastActivitywithNewData(sermonArrayList: ArrayList<Sermon>) {
+        Timber.i("playPodcastActivityNewData function called")
+
+    }
+
+//    override fun playPodcastActivitywithNewData(sermonArrayList: ArrayList<Sermon>) {
+//        Timber.i("playPodcastActivityNewData function called")
+//        val bundle= Bundle().apply {
+//            putParcelable(PlayerActivity.SERMON_KEY, sermonArrayList[0])
+////            putParcelable(SERMON_KEY, sermon)
+//        }
+//
+////        Timber.i("mainContext= $mainContext")
+//        val intent = Intent(this@MainActivity, PlayerActivity::class.java).apply {
+//            putExtra(PlayerActivity.BUNDLE_KEY,bundle)
+//        }
+//
+////        @MainThread
+//        startActivity(intent)
+//    }
 }
 
-class DatabaseListenerClass(val mainContext: Context): AppCompatActivity(), NewDataInterface{
+//class DatabaseListenerClass(val mainContext: Context): AppCompatActivity(), NewDataInterface{
 
 //    private lateinit var mainContext: Context
 //    var mainContext: Context?=null
@@ -111,20 +194,26 @@ class DatabaseListenerClass(val mainContext: Context): AppCompatActivity(), NewD
 //
 //        }
 //    }
-    override fun playPodcastActivitywithNewData(sermonArrayList: ArrayList<Sermon>) {
-        val bundle= Bundle().apply {
-            putParcelable(PlayerActivity.SERMON_KEY, sermonArrayList[0])
-//            putParcelable(SERMON_KEY, sermon)
-        }
+//    override fun playPodcastActivitywithNewData(sermonArrayList: ArrayList<Sermon>) {
+//        val bundle= Bundle().apply {
+//            putParcelable(PlayerActivity.SERMON_KEY, sermonArrayList[0])
+////            putParcelable(SERMON_KEY, sermon)
+//        }
+//
+//        Timber.i("mainContext= $mainContext")
+//        val intent = Intent(mainContext, PlayerActivity::class.java).apply {
+//            putExtra(PlayerActivity.BUNDLE_KEY,bundle)
+//        }
+//
+//        @MainThread
+//        startActivity(intent)
+//    }
 
-        Timber.i("mainContext= $mainContext")
-        val intent = Intent(mainContext, PlayerActivity::class.java).apply {
-            putExtra(PlayerActivity.BUNDLE_KEY,bundle)
-        }
+//    fun createIntent(){
+//        val intent = Intent(mainContext, PlayerActivity::class.java).apply {
+//            putExtra(PlayerActivity.BUNDLE_KEY,bundle)
+//        }
+//    }
 
-        @MainThread
-        startActivity(intent)
-    }
-
-}
+//}
 

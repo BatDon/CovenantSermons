@@ -2,7 +2,7 @@ package com.example.covenantsermons.modelDatabase
 
 import android.content.Context
 import android.os.Parcelable
-import com.example.covenantsermons.DatabaseListenerClass
+import com.example.covenantsermons.*
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -76,9 +76,9 @@ object documentFields{
 var unSubscribe: ListenerRegistration?=null
 //constant val
 
-fun getPodcastsFromDatabase(mainContext: Context): ArrayList<Sermon>{
+fun getPodcastsFromDatabase(mContext: Context): ArrayList<Sermon>{
 
-    val mainContext=mainContext
+//    val mainContext=mainContext
 
     var rootRef:FirebaseFirestore? = FirebaseFirestore.getInstance()
 
@@ -132,7 +132,13 @@ fun getPodcastsFromDatabase(mainContext: Context): ArrayList<Sermon>{
                     sermonList.add(Sermon(audioFile,duration, image, pastorName, date, title))
                     Timber.i("sermonList= ${sermonList[0]}")
                 }
-                DatabaseListenerClass(mainContext).playPodcastActivitywithNewData(sermonList)
+                //DatabaseListenerClass().playPodcastActivitywithNewData(sermonList)
+
+                val mainActivityContext=mContext as MainActivity
+                mainActivityContext.playPodcastActivitywithNewData(sermonList)
+//                AccessViewInterface.playPodcastActivityNewData(sermonList)
+//                MainActivityAccesser(null).getViewReference()
+
             }
 
     return sermonList
@@ -173,5 +179,17 @@ fun getPodcastsFromDatabase(mainContext: Context): ArrayList<Sermon>{
 
 
 }
+//
+//class DatabaseSermonAccess(val sermonList: ArrayList<Sermon>):NewDataInterface{
+//    init {
+//        MainActivityAccesser(this)
+//        InterfaceClass()
+//        playPodcastActivitywithNewData(sermonList)
+//    }
+////    override fun playPodcastActivitywithNewData(sermonArrayList: ArrayList<Sermon>) {
+////        TODO("Not yet implemented")
+////    }
+//
+//}
 
 

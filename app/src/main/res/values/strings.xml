@@ -11,4 +11,6 @@
 <!--    <string name="CHANNEL_ID">Podcast Player Service</string>-->
     <string name="channel_name">Podcast Player Service</string>
     <string name="NOTIFICATION_ID">"100"</string>
+    <string name="media_tester">Media Tester</string>
+    <string name="donations">Donate</string>
 </resources>

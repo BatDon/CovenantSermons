@@ -37,6 +37,7 @@ class PlayerActivity: AppCompatActivity() {
     companion object{
         val BUNDLE_KEY="BUNDLE_KEY"
         val SERMON_KEY="SERMON_KEY"
+        val KEY_START_POSITION="KEY_START_POSITION"
     }
 
     private var player: SimpleExoPlayer?=null
@@ -50,6 +51,8 @@ class PlayerActivity: AppCompatActivity() {
     //service variables
     private var serviceIsBound=false
     private var exoplayerNotificationService: ExoplayerNotificationService?=null
+
+    private var startPosition:Long?=0
 
 
 
@@ -72,9 +75,12 @@ class PlayerActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate called")
         setContentView(R.layout.activity_play_podcast)
+        savedInstanceState?.let {
+            startPosition= it?.getLong(KEY_START_POSITION)!!
+        }
         //sermonTitleTV.text = "cat"
         val bundle: Bundle? = intent.getBundleExtra(BUNDLE_KEY)
-        bundle.let{bundle ->
+        bundle.let{ bundle ->
 //            bundle!!.getParcelable<Parcelable>(SERMON_KEY)
 
             val sermon: Sermon?= bundle!!.getParcelable<Sermon>(SERMON_KEY);
@@ -102,7 +108,8 @@ class PlayerActivity: AppCompatActivity() {
     private fun initializePlayer() {
         if (player == null && audioFile?.isEmpty() == false && serviceIsBound) {
             player = exoplayerNotificationService?.getPlayerInstance()
-            podcast_player_view.setPlayer(player)
+            player_view.player = player
+//            player_view.showController()
 //            player.apply{
 //                this.setControllerHideOnTouch(false)
 //                this.
@@ -120,6 +127,7 @@ class PlayerActivity: AppCompatActivity() {
     fun setUIValues() {
         sermonTitleTV.setText(title)
         pastorNameTV.setText(pastorName)
+//        podcast_player_view.defaultArtwork.set()
         //TODO set image into player
         //player.setImage()
 //        GlideApp.with(this)
@@ -146,6 +154,17 @@ class PlayerActivity: AppCompatActivity() {
 //            player!!.release();
 //            player = null;
 //        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        startPosition=player?.contentPosition
+//        updateTrackSelectorParameters()
+//        updateStartPosition()
+//        outState.putParcelable(PlayerActivity.KEY_TRACK_SELECTOR_PARAMETERS, trackSelectorParameters)
+//        outState.putBoolean(PlayerActivity.KEY_AUTO_PLAY, startAutoPlay)
+//        outState.putInt(PlayerActivity.KEY_WINDOW, startWindow)
+//        outState.putLong(PlayerActivity.KEY_POSITION, startPosition)
     }
 
 

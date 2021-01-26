@@ -1,7 +1,8 @@
-package com.example.covenantsermons
+package com.example.covenantsermons.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.covenantsermons.player.PlaybackPreparer
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer

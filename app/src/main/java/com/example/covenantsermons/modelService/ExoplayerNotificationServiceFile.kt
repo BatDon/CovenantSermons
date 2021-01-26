@@ -1,29 +1,5 @@
 package com.example.covenantsermons.modelService
 
-import android.app.Notification
-import android.app.PendingIntent
-import android.app.Service
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Binder
-import android.os.Bundle
-import android.os.IBinder
-import com.example.covenantsermons.MainActivity
-import com.example.covenantsermons.R
-import com.example.covenantsermons.modelDatabase.Sermon
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.PlayerNotificationManager
-import com.google.android.exoplayer2.ui.PlayerNotificationManager.BitmapCallback
-import com.google.android.exoplayer2.ui.PlayerNotificationManager.MediaDescriptionAdapter
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.util.Util
-
 
 //TODO only swiping left or right should stop podcast audio service
 //TODO include previous, rewind, play, pause, fast forward and next
@@ -33,233 +9,236 @@ import com.google.android.exoplayer2.util.Util
 
 //Service sends notification and notification has controls media controls user can use to change
 //podcast
-class ExoplayerNotificationService : Service() {
-
-    private val mContext=this@ExoplayerNotificationService
-    private val localBinder: IBinder = LocalBinder();
-//    private lateinit var mExoPlayer: SimpleExoPlayer
-    private var mExoplayer:SimpleExoPlayer?=null
-    private var sermon: Sermon? =Sermon()
-    var playerNotificationManager:PlayerNotificationManager?=null
-
-    var calledOnce:Boolean=false
-
-//    val mExoplayer: SimpleExoPlayer by lazy {
-//        createPlayer()
-//    }
-
-    companion object{
-        //get intent and parse intent
-        val BUNDLE_KEY="BUNDLE_KEY"
-        val SERMON_KEY="SERMON_KEY"
-
-        //notification constants
-        val CHANNEL_ID="EXOPLAYER_CHANNEL_ID_100"
-    }
-
-    override fun onCreate() {
-        super.onCreate();
-        //mExoPlayer=createPlayer()
-
-    }
-
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        //releasePlayer();
-        var bundle:Bundle? = intent.getBundleExtra(BUNDLE_KEY);
-        bundle.let {
-            sermon=bundle?.getParcelable<Sermon>(SERMON_KEY)
-        }
-        createPlayer()
-//        mExoplayer
-//        if (mExoPlayer == null) {
-//            createPlayer()
-//        }
-        //TODO test if want START_STICKY after killed will restart or START_NOT_STICKY means after killed won't restart
-        return START_NOT_STICKY
-    }
+//class ExoplayerNotificationService : Service() {
+class ExoplayerNotificationService {
+}
 
 
-
-    override fun onDestroy() {
-        releasePlayer()
-        super.onDestroy();
-    }
-
-    private fun releasePlayer() {
-        mExoplayer.let {
-            playerNotificationManager?.setPlayer(null)
-            mExoplayer?.release()
-            mExoplayer = null
-        }
-    }
-
-//    override fun onBind(intent: Intent?): IBinder? {
-//        mBinder
-//    }
-
-
-    override fun onBind(intent: Intent?): IBinder {
-        return localBinder;
-    }
-
-
-    fun getPlayerInstance():SimpleExoPlayer?=createPlayer()
-//    {
+//    private val mContext=this@ExoplayerNotificationService
+//    private val localBinder: IBinder = LocalBinder();
+////    private lateinit var mExoPlayer: SimpleExoPlayer
+//    private var mExoplayer:SimpleExoPlayer?=null
+//    private var sermon: Sermon? =Sermon()
+//    var playerNotificationManager:PlayerNotificationManager?=null
 //
-////        if(mExoPlayer==null){
-////            mExoPlayer=createPlayer()
-////        }
-////        return mExoPlayer
-//        return mExoPlayer
+//    var calledOnce:Boolean=false
+//
+////    val mExoplayer: SimpleExoPlayer by lazy {
+////        createPlayer()
+////    }
+//
+//    companion object{
+//        //get intent and parse intent
+//        val BUNDLE_KEY="BUNDLE_KEY"
+//        val SERMON_KEY="SERMON_KEY"
+//
+//        //notification constants
+//        val CHANNEL_ID="EXOPLAYER_CHANNEL_ID_100"
 //    }
-
-    private fun createPlayer():SimpleExoPlayer? {
-        if(!calledOnce) {
-            val trackSelector = DefaultTrackSelector()
-            val loadControl = DefaultLoadControl()
-            val renderersFactory = DefaultRenderersFactory(mContext)
-
-            mExoplayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl).also {
-                it.prepare(prepareMediaSource())
-                it.playWhenReady = true
-            }
-            createNotification()
-            calledOnce=true
-            return mExoplayer
-        }
-        return mExoplayer
-
-    }
-
-
-
-    fun prepareMediaSource():ExtractorMediaSource {
-
-
-        val audioFile=sermon?.audioFile
-//        var sermon:Sermon = getSermon()
-//        val parsedAudioFile=sermon?.audioFile!!.substringAfter("//")
-//        val audioArrayString=parsedAudioFile.split("/")
-        //val sermonAudioUri:Uri=parsedAudioFile.toUri()
-        //var sermonAudioUri:Uri = sermon?.audioFile!!.toUri()
-//        val segments=sermonAudioUri.pathSegments
-//        val audioUriSegment=segments[segments.size - 1]
-//        val audioFile=audioArrayString[audioArrayString.size-1]
-
-        val userAgent = Util.getUserAgent(mContext, mContext.getString(R.string.app_name))
-
-        return ExtractorMediaSource.Factory(DefaultDataSourceFactory(mContext, userAgent))
-            .setExtractorsFactory(DefaultExtractorsFactory())
-            .createMediaSource(Uri.parse(audioFile))
-
-    }
-
-    fun createNotification() {
-
-        playerNotificationManager = PlayerNotificationManager.createWithNotificationChannel(mContext,
-                CHANNEL_ID,
-                //this is the title of the notification
-                R.string.channel_name,
-                R.string.NOTIFICATION_ID,
-                DescriptionAdapter(mContext, sermon)).apply {
-                    setNotificationListener(createNotificationListener())
-                    setPlayer(mExoplayer)
-                }
-
-    }
-    private fun createNotificationListener():PlayerNotificationManager.NotificationListener {
-
-        return object : PlayerNotificationManager.NotificationListener {
-
-            override fun onNotificationStarted(notificationId: Int, notification: Notification) {
-                startForeground(notificationId, notification);
-            }
-
-            override fun onNotificationCancelled(notificationId: Int) {
-                mContext.stopSelf();
-            }
-        }
-    }
-
-
-
-    inner class LocalBinder : Binder() {
-        val service: ExoplayerNotificationService
-            get() = this@ExoplayerNotificationService
-    }
-
-}
-
-
-
-
-
-    //TODO getSermons needs to return correct sermon in arraylist
-//    fun getSermons()= arrayListOf<Sermon>(Sermon())
-//returns new sermon each time called doesn't matter only for testing
-//    fun getSermon()= Sermon()
-
-
-//creates sermon only first time
-//val lazyValue: Sermon by lazy {
-//    Sermon()
-//}
-
-
-class DescriptionAdapter(val mContext: Context, val sermon: Sermon?) : MediaDescriptionAdapter {
-    override fun getCurrentContentTitle(player: Player): String {
-        //int for current playing index
-//        val window = player.currentWindowIndex
-//        return getTitle(window)
-        return sermon?.title!!
-    }
-
-
-    override fun getCurrentContentText(player: Player): String {
-//        val window = player.currentWindowIndex
-//        return BundleJUnitUtils.getDescription(window)
-        return sermon?.pastorName!!
-    }
-
-    override fun getCurrentLargeIcon(player: Player,
-                                     callback: BitmapCallback): Bitmap? {
-//        val window = player.currentWindowIndex
-//        val largeIcon: Bitmap = getLargeIcon(window)
-//        if (largeIcon == null && getLargeIconUri(window) != null) {
-//            // load bitmap async
-//            loadBitmap(getLargeIconUri(window), callback)
-//            return getPlaceholderBitmap()
+//
+//    override fun onCreate() {
+//        super.onCreate();
+//        //mExoPlayer=createPlayer()
+//
+//    }
+//
+//    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+//        //releasePlayer();
+//        var bundle:Bundle? = intent.getBundleExtra(BUNDLE_KEY);
+//        bundle.let {
+//            sermon=bundle?.getParcelable<Sermon>(SERMON_KEY)
 //        }
-        return convertUrlToBitmap(sermon?.image!!)
-    }
-
-
-    override fun createCurrentContentIntent(player: Player): PendingIntent? {
-//        val window = player.currentWindowIndex
-
-        val notificationIntent = Intent(mContext, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(mContext,
-                0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        //return createPendingIntent(window)
-        return pendingIntent
-    }
-}
-
-
-//image url convert to bitmap
-//    file:///home/david/Downloads/cross.png
-
-fun convertUrlToBitmap(imageUrl: String)= run {
-//    val parsedImageUrl=imageUrl.substringAfter("//")
-//    val url: URL =URL(parsedImageUrl)
-//    val segments=url.path.split("/")
-//    val segments=parsedImageUrl.split("/")
-//    val imageUrlSegment=segments[segments.size - 1]
-    val bitmap = BitmapFactory.decodeFile(imageUrl)
-    //val bitmap=BitmapFactory.decodeStream(url.openConnection().getInputStream())
-    bitmap
-}
+//        createPlayer()
+////        mExoplayer
+////        if (mExoPlayer == null) {
+////            createPlayer()
+////        }
+//        //TODO test if want START_STICKY after killed will restart or START_NOT_STICKY means after killed won't restart
+//        return START_NOT_STICKY
+//    }
+//
+//
+//
+//    override fun onDestroy() {
+//        releasePlayer()
+//        super.onDestroy();
+//    }
+//
+//    private fun releasePlayer() {
+//        mExoplayer.let {
+//            playerNotificationManager?.setPlayer(null)
+//            mExoplayer?.release()
+//            mExoplayer = null
+//        }
+//    }
+//
+////    override fun onBind(intent: Intent?): IBinder? {
+////        mBinder
+////    }
+//
+//
+//    override fun onBind(intent: Intent?): IBinder {
+//        return localBinder;
+//    }
+//
+//
+//    fun getPlayerInstance():SimpleExoPlayer?=createPlayer()
+////    {
+////
+//////        if(mExoPlayer==null){
+//////            mExoPlayer=createPlayer()
+//////        }
+//////        return mExoPlayer
+////        return mExoPlayer
+////    }
+//
+//    private fun createPlayer():SimpleExoPlayer? {
+//        if(!calledOnce) {
+//            val trackSelector = DefaultTrackSelector()
+//            val loadControl = DefaultLoadControl()
+//            val renderersFactory = DefaultRenderersFactory(mContext)
+//
+//            mExoplayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl).also {
+//                it.prepare(prepareMediaSource())
+//                it.playWhenReady = true
+//            }
+//            createNotification()
+//            calledOnce=true
+//            return mExoplayer
+//        }
+//        return mExoplayer
+//
+//    }
+//
+//
+//
+//    fun prepareMediaSource():ExtractorMediaSource {
+//
+//
+//        val audioFile=sermon?.audioFile
+////        var sermon:Sermon = getSermon()
+////        val parsedAudioFile=sermon?.audioFile!!.substringAfter("//")
+////        val audioArrayString=parsedAudioFile.split("/")
+//        //val sermonAudioUri:Uri=parsedAudioFile.toUri()
+//        //var sermonAudioUri:Uri = sermon?.audioFile!!.toUri()
+////        val segments=sermonAudioUri.pathSegments
+////        val audioUriSegment=segments[segments.size - 1]
+////        val audioFile=audioArrayString[audioArrayString.size-1]
+//
+//        val userAgent = Util.getUserAgent(mContext, mContext.getString(R.string.app_name))
+//
+//        return ExtractorMediaSource.Factory(DefaultDataSourceFactory(mContext, userAgent))
+//            .setExtractorsFactory(DefaultExtractorsFactory())
+//            .createMediaSource(Uri.parse(audioFile))
+//
+//    }
+//
+//    fun createNotification() {
+//
+//        playerNotificationManager = PlayerNotificationManager.createWithNotificationChannel(mContext,
+//                CHANNEL_ID,
+//                //this is the title of the notification
+//                R.string.channel_name,
+//                R.string.NOTIFICATION_ID,
+//                DescriptionAdapter(mContext, sermon)).apply {
+//                    setNotificationListener(createNotificationListener())
+//                    setPlayer(mExoplayer)
+//                }
+//
+//    }
+//    private fun createNotificationListener():PlayerNotificationManager.NotificationListener {
+//
+//        return object : PlayerNotificationManager.NotificationListener {
+//
+//            override fun onNotificationStarted(notificationId: Int, notification: Notification) {
+//                startForeground(notificationId, notification);
+//            }
+//
+//            override fun onNotificationCancelled(notificationId: Int) {
+//                mContext.stopSelf();
+//            }
+//        }
+//    }
+//
+//
+//
+//    inner class LocalBinder : Binder() {
+//        val service: ExoplayerNotificationService
+//            get() = this@ExoplayerNotificationService
+//    }
+//
+//}
+//
+//
+//
+//
+//
+//    //TODO getSermons needs to return correct sermon in arraylist
+////    fun getSermons()= arrayListOf<Sermon>(Sermon())
+////returns new sermon each time called doesn't matter only for testing
+////    fun getSermon()= Sermon()
+//
+//
+////creates sermon only first time
+////val lazyValue: Sermon by lazy {
+////    Sermon()
+////}
+//
+//
+//class DescriptionAdapter(val mContext: Context, val sermon: Sermon?) : MediaDescriptionAdapter {
+//    override fun getCurrentContentTitle(player: Player): String {
+//        //int for current playing index
+////        val window = player.currentWindowIndex
+////        return getTitle(window)
+//        return sermon?.title!!
+//    }
+//
+//
+//    override fun getCurrentContentText(player: Player): String {
+////        val window = player.currentWindowIndex
+////        return BundleJUnitUtils.getDescription(window)
+//        return sermon?.pastorName!!
+//    }
+//
+//    override fun getCurrentLargeIcon(player: Player,
+//                                     callback: BitmapCallback): Bitmap? {
+////        val window = player.currentWindowIndex
+////        val largeIcon: Bitmap = getLargeIcon(window)
+////        if (largeIcon == null && getLargeIconUri(window) != null) {
+////            // load bitmap async
+////            loadBitmap(getLargeIconUri(window), callback)
+////            return getPlaceholderBitmap()
+////        }
+//        return convertUrlToBitmap(sermon?.image!!)
+//    }
+//
+//
+//    override fun createCurrentContentIntent(player: Player): PendingIntent? {
+////        val window = player.currentWindowIndex
+//
+//        val notificationIntent = Intent(mContext, MainActivity::class.java)
+//        val pendingIntent = PendingIntent.getActivity(mContext,
+//                0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+//
+//        //return createPendingIntent(window)
+//        return pendingIntent
+//    }
+//}
+//
+//
+////image url convert to bitmap
+////    file:///home/david/Downloads/cross.png
+//
+//fun convertUrlToBitmap(imageUrl: String)= run {
+////    val parsedImageUrl=imageUrl.substringAfter("//")
+////    val url: URL =URL(parsedImageUrl)
+////    val segments=url.path.split("/")
+////    val segments=parsedImageUrl.split("/")
+////    val imageUrlSegment=segments[segments.size - 1]
+//    val bitmap = BitmapFactory.decodeFile(imageUrl)
+//    //val bitmap=BitmapFactory.decodeStream(url.openConnection().getInputStream())
+//    bitmap
+//}
 
 //val source = ImageDecoder.createSource(activity!!.contentResolver, Uri.parse(event.localPhotoUri))
 //                    val bitmap = ImageDecoder.decodeBitmap(source)

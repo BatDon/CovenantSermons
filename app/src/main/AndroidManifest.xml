@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
+        android:name="com.example.covenantsermons.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -28,9 +29,10 @@
                         <category android:name="android.intent.category.LAUNCHER" />
                     </intent-filter>
         </activity>
-        <activity android:name=".PlayerActivity" />
-        <service android:name="com.example.covenantsermons.modelService.ExoplayerNotificationService"
-            android:exported="false"/>
+<!--        <activity android:name="com.example.covenantsermons.modelDatabase.SermonDatabase"></activity>-->
+<!--        <activity android:name=".PlayerActivity" />-->
+<!--        <service android:name="com.example.covenantsermons.modelService.ExoplayerNotificationService"-->
+<!--            android:exported="false"/>-->
 
     </application>
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/mainFragment"
+    android:id="@+id/navigation_graph.xml">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.covenantsermons.podcast.PodcastListFragment"
+        android:label="Top podcasts"
+        tools:layout="@layout/podcast_list_fragment">
+        <action
+            android:id="@+id/action_mainFragment_to_podcastDetailsFragment"
+            app:destination="@id/podcastDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/podcastDetailsFragment"
+        android:label="{podcast_title}"
+        android:name="com.example.covenantsermons.podcast.PodcastDetailsFragment" >
+        <argument
+            android:name="podcast_title"
+            app:argType="string"
+            android:defaultValue="Details" />
+    </fragment>
+</navigation>
+

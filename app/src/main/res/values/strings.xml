@@ -13,4 +13,5 @@
     <string name="NOTIFICATION_ID">"100"</string>
     <string name="media_tester">Media Tester</string>
     <string name="donations">Donate</string>
+    <string name="sermon_title">Sermon Title</string>
 </resources>

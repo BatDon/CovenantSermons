@@ -3,4 +3,5 @@
 <!--  <dimen name="exoplayer_icons_width">match_parent</dimen>-->
   <dimen name="exoplayer_icons_width">0dp</dimen>
   <dimen name="exoplayer_icons_height">0dp</dimen>
+    <dimen name="player_view_margins">8dp</dimen>
 </resources>

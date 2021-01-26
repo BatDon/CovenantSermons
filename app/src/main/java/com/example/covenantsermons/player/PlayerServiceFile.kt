@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.example.covenantsermons.MainActivity
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.PlaybackPreparer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
@@ -84,13 +83,15 @@ class PlayerService : MediaBrowserServiceCompat() {
                         override fun getCurrentContentText(mPlayer: Player): String? {
                             val sermon = mPlayer.currentTag
                             //TODO set player currentTag
-                            return sermon?.date
+//                            return sermon?.date
+                            return null
                         }
 
                         override fun getCurrentContentTitle(mPlayer: Player): String {
                             val sermon = mPlayer.currentTag
                             //TODO set player currentTag
-                            return sermon?.title ?: "Sermon Title"
+                           // return sermon?.title ?: "Sermon Title"
+                            return ""
                         }
 
                         override fun getCurrentLargeIcon(

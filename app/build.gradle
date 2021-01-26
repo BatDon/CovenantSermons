@@ -43,6 +43,11 @@ android {
     androidExtensions {
         experimental = true
     }
+
+    //viewbinding
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -71,6 +76,9 @@ dependencies {
 
     //Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // date time
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.3'
 
     //Multidex support
     implementation 'com.android.support:multidex:1.0.3'

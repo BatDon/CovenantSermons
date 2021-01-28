@@ -17,7 +17,20 @@ class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = PodcastItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ItemViewHolder(binding)
+
+//        val inflater = LayoutInflater.from(parent!!.getContext())
+//        val view = inflater.inflate(R.layout.podcast_list_fragment, parent, false)
+//
+        //listen is extension function
+//        RecyclerView.ViewHolder(view).listen { pos, type ->
+//            val item = items.get(pos)
+        return ItemViewHolder(viewBinding = binding).listen{pos,type ->
+            val sermon = sermonList[pos]
+        }
+
+
+
+//        return ItemViewHolder(binding)
     }
 
 
@@ -34,6 +47,8 @@ class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.
         sermonList.addAll(newList)
         notifyDataSetChanged()
     }
+
+
 }
 
 //class Items_RVAdapter(private var itemsCells: ArrayList<String?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

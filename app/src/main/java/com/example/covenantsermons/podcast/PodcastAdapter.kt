@@ -8,11 +8,21 @@ import com.example.covenantsermons.modelDatabase.Sermon
 
 class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var onItemClick: ((Sermon) -> Unit)? = null
+    //val sermonList=sermonArrayList
+//    var contacts: List<Contact> = emptyList()
+
     override fun getItemCount(): Int {
         return sermonList.size
     }
 
-    class ItemViewHolder(var viewBinding: PodcastItemBinding) : RecyclerView.ViewHolder(viewBinding.root)
+    inner class ItemViewHolder(var viewBinding: PodcastItemBinding) : RecyclerView.ViewHolder(viewBinding.root) {
+        init {
+            viewBinding.root.setOnClickListener {
+                sermonList[adapterPosition]?.let { sermon -> onItemClick?.invoke(sermon) }
+            }
+        }
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -24,19 +34,21 @@ class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.
         //listen is extension function
 //        RecyclerView.ViewHolder(view).listen { pos, type ->
 //            val item = items.get(pos)
-        return ItemViewHolder(viewBinding = binding).listen{pos,type ->
-            val sermon = sermonList[pos]
-        }
+//        return ItemViewHolder(viewBinding = binding).listen{pos,type ->
+//            val sermon = sermonList[pos]
+
+
+       // }
 
 
 
-//        return ItemViewHolder(binding)
+        return ItemViewHolder(binding)
     }
 
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val itemViewHolder = holder as ItemViewHolder
+        val itemViewHolder = holder as PodcastAdapter.ItemViewHolder
         itemViewHolder.viewBinding.sermonItemDateTV.text = sermonList[position]?.timeStamp.toString()
         itemViewHolder.viewBinding.sermonItemTitleTV.text = sermonList[position]?.title
         itemViewHolder.viewBinding.sermonItemDateTV.text = sermonList[position]?.duration.toString()

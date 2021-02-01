@@ -2,6 +2,7 @@ package com.example.covenantsermons.player
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.covenantsermons.modelDatabase.Sermon
 
@@ -43,6 +44,34 @@ class PodcastListViewModel(
 //    }
 
     fun setPodcasts(arrayListSermon: ArrayList<Sermon>){
+        _podcasts.value?.clear()
         _podcasts.value=arrayListSermon
+
     }
+
+    fun transformLiveData():ArrayList<Sermon>{
+//        val sermonArrayList=ArrayList<Sermon>()
+//        val sermon:Sermon = podcasts.map{sermon ->
+//            sermonArrayList.add(sermon)
+//        }
+//        return sermonArrayList
+        val sermonArrayList=ArrayList<Sermon>()
+
+        val liveSermonList = Transformations.map(podcasts) { list ->
+
+            list?.forEach {
+                val tempSermon = Sermon()
+                tempSermon.audioFile = it.audioFile
+                tempSermon.title = it.title
+                tempSermon.pastorName = it.pastorName
+                tempSermon.timeStamp = it.timeStamp
+                tempSermon.duration = it.duration
+                tempSermon.image = it.image
+                sermonArrayList.add(tempSermon)
+            }
+
+        }
+        return sermonArrayList
+    }
+
 }

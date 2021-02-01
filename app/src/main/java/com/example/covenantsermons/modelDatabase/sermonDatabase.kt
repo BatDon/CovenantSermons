@@ -161,7 +161,7 @@ var unSubscribe: ListenerRegistration?=null
                         Timber.i("timeStampString = $timeStampString")
                         val firstTimeStampSubstring = timeStampString.substringAfter("=", timeStampString)
                         val lastTimeStampSubstring = firstTimeStampSubstring.substringBefore(",", firstTimeStampSubstring)
-    //                    Timber.i("substring= $lastTimeStampSubstring")
+                        Timber.i("substring= $lastTimeStampSubstring")
                         val date = Date(lastTimeStampSubstring.toLong() * 1000)
     //                    val date=Date()
     //                    val timeStamp: Date?= timeStampString?.toLongOrNull()?.let { Date(it) }
@@ -183,16 +183,22 @@ var unSubscribe: ListenerRegistration?=null
 
 //                    val podcastListViewModel: PodcastListViewModel by viewModel()
 
-                    Timber.i("podcastListViewModel $podcastListViewModel")
+                    //Timber.i("podcastListViewModel $podcastListViewModel")
 
 //                    if(podcastListViewModel==null){
 //                        podcastListViewModel= ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
 //                    }
 
-                    Timber.i("podcastListViewModel after second initialization $podcastListViewModel")
+                    //Timber.i("podcastListViewModel after second initialization $podcastListViewModel")
 
 
                     podcastListViewModel.setPodcasts(sermonList)
+
+//                    if(sermonList.size>1) {
+//                        playerViewModel.playlist.clear()
+//                        playerViewModel.playlist.addAll(sermonList)
+//                    }
+
 
 
 

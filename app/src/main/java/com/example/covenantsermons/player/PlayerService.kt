@@ -16,11 +16,13 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.example.covenantsermons.MainActivity
+import com.example.covenantsermons.modelDatabase.Sermon
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class PlayerService : MediaBrowserServiceCompat() {
     //only one Exoplayer created
@@ -52,6 +54,8 @@ class PlayerService : MediaBrowserServiceCompat() {
     override fun onCreate() {
         super.onCreate()
 
+        Timber.i("onCreate called in PlayerService")
+
         val sessionActivityPendingIntent =
                 packageManager?.getLaunchIntentForPackage(packageName)?.let { mediaSessionIntent ->
                     PendingIntent.getActivity(this, 1, mediaSessionIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -81,17 +85,13 @@ class PlayerService : MediaBrowserServiceCompat() {
                         val controller = MediaControllerCompat(this@PlayerService, mediaSessionToken)
 
                         override fun getCurrentContentText(mPlayer: Player): String? {
-                            val sermon = mPlayer.currentTag
-                            //TODO set player currentTag
-//                            return sermon?.date
-                            return null
+                            val sermon = mPlayer.currentTag as? Sermon
+                            return sermon?.pastorName
                         }
 
                         override fun getCurrentContentTitle(mPlayer: Player): String {
-                            val sermon = mPlayer.currentTag
-                            //TODO set player currentTag
-                           // return sermon?.title ?: "Sermon Title"
-                            return ""
+                            val sermon = mPlayer.currentTag as? Sermon
+                            return sermon?.title!!
                         }
 
                         override fun getCurrentLargeIcon(

@@ -5,50 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<!--    <ImageView-->
-<!--        android:id="@+id/sermonImageTV"-->
-<!--        android:layout_width="277dp"-->
-<!--        android:layout_height="179dp"-->
-<!--        android:layout_marginTop="116dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.496"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:srcCompat="@drawable/cross" />-->
-
-    <com.google.android.exoplayer2.ui.PlayerControlView
-        android:id="@+id/player_view"
-        android:layout_width="277dp"
-        android:layout_height="179dp"
-        android:layout_marginTop="116dp"
-        app:auto_show="true"
-        app:show_timeout="0"
-        app:hide_on_touch="false"
-        app:use_controller="true"
-        app:fastforward_increment="30000"
-        app:rewind_increment="30000"
-        app:controller_layout_id="@layout/exo_playback_control_view"
+    <ImageView
+        android:id="@+id/sermon_image_iv"
+        android:layout_width="335dp"
+        android:layout_height="340dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/cross" />
 
 
     <TextView
-        android:id="@+id/sermonTitleTV"
+        android:id="@+id/sermon_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Sermon Title"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/pastorNameTV"
+        app:layout_constraintBottom_toTopOf="@+id/sermon_pastor_name_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player_view" />
+        app:layout_constraintTop_toBottomOf="@+id/sermon_image_iv" />
 
     <TextView
-        android:id="@+id/pastorNameTV"
+        android:id="@+id/sermon_pastor_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Pastor Name"
@@ -57,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sermonTitleTV" />
+        app:layout_constraintTop_toBottomOf="@+id/sermon_title_tv" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/exoplayer_guideline"
@@ -67,7 +52,7 @@
         app:layout_constraintGuide_percent="0.75"/>
     <!--        app:layout_constraintGuide_percent="0.75" />-->
 
-<include layout="@layout/exo_playback_control_view"/>
+<!--<include layout="@layout/exo_playback_control_view"/>-->
 
 <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
 <!--        android:layout_width="match_parent"-->

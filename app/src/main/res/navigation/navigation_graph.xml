@@ -21,7 +21,8 @@
     <fragment
         android:id="@+id/podcastDetailsFragment"
         android:label="{podcast_title}"
-        android:name="com.example.covenantsermons.podcast.PodcastDetailsFragment" >
+        android:name="com.example.covenantsermons.podcast.PodcastDetailsFragment"
+        tools:layout="@layout/podcast_detail_fragment">
         <argument
             android:name="podcast_title"
             app:argType="string"

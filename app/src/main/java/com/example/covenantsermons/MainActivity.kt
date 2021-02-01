@@ -5,9 +5,12 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import com.example.covenantsermons.databinding.ActivityMainBinding
 import com.example.covenantsermons.modelDatabase.Sermon
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
+import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.podcast.PodcastAdapter
 import com.google.android.exoplayer2.ExoPlayer
@@ -16,7 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity(){
-    //private val playerViewModel: PlayerViewModel by viewModel()
+    private val playerViewModel: PlayerViewModel by viewModel()
     private val exoPlayer: ExoPlayer by inject()
 //class MainActivity : AppCompatActivity(),ViewInterface, ViewInterface.NewDataInterface{
 //    private lateinit var mainViewModel: MainViewModel
@@ -38,17 +41,21 @@ class MainActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+
+        val activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(activityMainBinding.root)
 
         Timber.plant(Timber.DebugTree())
         //SermonDatabase().getPodcastsFromDatabase()
         getPodcastsFromDatabase(podcastListViewModel)
 
-//        navController = findNavController(R.id.nav_host_fragment)
-//        appBarConfiguration = AppBarConfiguration(navController.graph)
-//
-//        toolbar.setupWithNavController(navController, appBarConfiguration)
-//        player_view.player = exoPlayer
+        navController = findNavController(R.id.nav_host_fragment)
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+
+        //activityMainBinding.toolbar.setupWithNavController(navController, appBarConfiguration)
+        activityMainBinding.playerView.player=exoPlayer
+//        activityMainBinding.main_activity_player_group.player_view.player = exoPlayer
 
 
 

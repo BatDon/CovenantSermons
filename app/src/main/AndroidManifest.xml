@@ -29,6 +29,7 @@
                         <category android:name="android.intent.category.LAUNCHER" />
                     </intent-filter>
         </activity>
+        <service android:name=".player.PlayerService" />
 <!--        <activity android:name="com.example.covenantsermons.modelDatabase.SermonDatabase"></activity>-->
 <!--        <activity android:name=".PlayerActivity" />-->
 <!--        <service android:name="com.example.covenantsermons.modelService.ExoplayerNotificationService"-->

@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covenantsermons.R
 import com.example.covenantsermons.modelDatabase.Sermon
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
+import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import kotlinx.android.synthetic.main.podcast_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -24,6 +28,8 @@ class PodcastListFragment : Fragment() {
 //    R.layout.podcast_list_fragment
 
     private val podcastListViewModel: PodcastListViewModel by viewModel()
+    private val playerViewModel: PlayerViewModel by viewModel()
+
 
     //    private val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
 //    private lateinit var podcastListViewModel: PodcastListViewModel
@@ -97,12 +103,28 @@ class PodcastListFragment : Fragment() {
     private fun setAdapter() {
         Timber.i("setAdapter called")
 
-        podcastAdapter = PodcastAdapter(sermonArrayList, listen)//.also{
-        //it.notifyDataSetChanged()
-        //podcastAdapter.updateSermonList(sermonArrayList)
-        //podcastAdapter.notifyDataSetChanged()
-        //}
-        podcast_list_rv.adapter = podcastAdapter
+        podcastAdapter = PodcastAdapter(sermonArrayList).also {
+            it.onItemClick={sermon ->
+                Toast.makeText(activity,"title ${sermon.title} audio file${sermon.audioFile}",Toast.LENGTH_LONG).show()
+                Timber.i("on Click called title ${sermon.title}")
+                //podcast_list_rv.adapter=it
+                playerViewModel.play(sermon, podcastListViewModel.transformLiveData())
+
+                findNavController().navigate(
+                        R.id.action_mainFragment_to_podcastDetailsFragment,
+                        bundleOf(
+                                PodcastDetailsFragment.podcastSermonArgument to sermon,
+                        ), null, null
+//                        Bundle().apply{
+//                            putSerializable(PodcastDetailsFragment.podcastSermonArgument, sermon)
+//                        }, null, null
+                )
+            }
+            podcast_list_rv.adapter=it
+        }
+            //podcast_list_rv.adapter=it
+
+//        podcast_list_rv.adapter = podcastAdapter
     }
 
     private fun setRVLayoutManager() {
@@ -153,7 +175,6 @@ class PodcastListFragment : Fragment() {
         }
         return this
     }
-
 }
 
     fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {

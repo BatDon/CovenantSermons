@@ -1,12 +1,18 @@
 package com.example.covenantsermons.di
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.covenantsermons.player.MediaSessionConnection
 import com.example.covenantsermons.player.PlaybackPreparer
+import com.example.covenantsermons.player.PlayerService
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -35,9 +41,26 @@ val koinModule = module {
         userAgent
     }
 
+    single<DataSource.Factory> {
+        DefaultHttpDataSourceFactory(
+                get<String>(named("userAgent")),
+                DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
+                DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
+                true
+        )
+    }
+
     single {
-        //TODO create PlaybackPreparer class
         PlaybackPreparer(get())
     }
 
+    single {
+        MediaSessionConnection(
+                androidContext(),
+                ComponentName(androidContext(), PlayerService::class.java),
+
+        )
+    }
+
 }
+

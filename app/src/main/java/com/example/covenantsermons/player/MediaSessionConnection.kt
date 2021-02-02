@@ -4,8 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class MediaSessionConnection(context: Context, serviceComponent: ComponentName) {
@@ -15,14 +13,15 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName) 
 
     init{
         Timber.i("MediaSessionConnection created")
-        runBlocking{ // this: CoroutineScope
-            launch { // launch a new coroutine in the scope of runBlocking
-                //delay(1000L)
-                Timber.i("in launch of coroutine")
-            }
-            Timber.i("outside launch scope of coroutines")
-        }
-        Timber.i("after coroutine")
+        Timber.i("MediaSessionConnection currentThread ${Thread.currentThread()}")
+//        runBlocking{ // this: CoroutineScope
+//            launch{ // launch a new coroutine in the scope of runBlocking
+//                //delay(1000L)
+//                Timber.i("in launch of coroutine")
+//            }
+//            Timber.i("outside launch scope of coroutines")
+//        }
+//        Timber.i("after coroutine")
 
 
     }
@@ -35,6 +34,7 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName) 
                     null
             ).apply {
                 Timber.i("MediaSessionConnection before connect called")
+                Timber.i("mediaBrowser currentThread${Thread.currentThread()}")
                 connect()
                 Timber.i("MediaSessionConnection after connect called")
             }
@@ -59,7 +59,27 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName) 
             super.onConnectionSuspended()
             Timber.i("connection suspended")
         }
+
+
     }
+
+    fun mediaControllerConnection(){
+        Timber.i("mediaControllerConnection called")
+        Timber.i("mediaControllerConnection before while loop currentThread ${Thread.currentThread()}")
+        val notInitialized:Boolean=true
+        //Timber.i("mediaController= $mediaController")
+        //if(mediaController.is)
+        while(!this::mediaController.isInitialized) {
+//            if(this@MediaSessionConnection::mediaController.isInitialized){
+//            if(this::mediaController.isInitialized){
+//                Timber.i("mediaController.isInitialized")
+//                //notInitialized = false
+//                break
+//            }
+ //           Timber.i("mediaControllerConnection while loop")
+        }
+    }
+
 }
 
 

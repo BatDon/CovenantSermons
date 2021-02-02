@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.example.covenantsermons.R
 import com.example.covenantsermons.databinding.PodcastDetailFragmentBinding
 import com.example.covenantsermons.modelDatabase.Sermon
 import com.example.covenantsermons.player.PlayerViewModel
@@ -72,7 +73,7 @@ class PodcastDetailsFragment : Fragment() {
 
 //        val base64= sermon.image?.let { stringToBase64(it) }
 //        val bitmap: Bitmap?=stringToBitmap(base64)
-        activity?.applicationContext?.let { podcastDetailFragmentBinding?.let { it1 -> Glide.with(it).load(sermon.image).into(it1.sermonImageIv) } }
+        activity?.applicationContext?.let { podcastDetailFragmentBinding?.let { it1 -> Glide.with(it).load(sermon.image).error(R.drawable.cross).into(it1.sermonImageIv) } }
 //        podcastDetailFragmentBinding?.sermonImageIv!!.setImageBitmap(bitmap)
         podcastDetailFragmentBinding?.sermonTitleTv!!.text=sermon.title
         podcastDetailFragmentBinding?.sermonPastorNameTv!!.text=sermon.pastorName

@@ -91,7 +91,7 @@ class PlayerService : MediaBrowserServiceCompat() {
 
                         override fun getCurrentContentTitle(mPlayer: Player): String {
                             val sermon = mPlayer.currentTag as? Sermon
-                            return sermon?.title!!
+                            return sermon?.title ?: "sermon title not found"
                         }
 
                         override fun getCurrentLargeIcon(

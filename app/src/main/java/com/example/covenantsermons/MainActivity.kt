@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -57,7 +58,14 @@ class MainActivity : AppCompatActivity(){
         activityMainBinding.playerView.player=exoPlayer
 //        activityMainBinding.main_activity_player_group.player_view.player = exoPlayer
 
+        //TODO remove only for testing
+//        Thread.sleep(2000)
+//        playerViewModel.play(podcastListViewModel.transformLiveData()[0],podcastListViewModel.transformLiveData())
 
+
+        playerViewModel.currentlyPlaying.observe(this, Observer { sermon ->
+           Timber.i("sermon playing= $sermon")
+        })
 
 //        if(!this::sermonArrayList.isInitialized){
 //            podcastListViewModel.getPodcastsFromDatabase()

@@ -17,6 +17,7 @@ import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import kotlinx.android.synthetic.main.podcast_list_fragment.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -28,7 +29,7 @@ class PodcastListFragment : Fragment() {
 //    R.layout.podcast_list_fragment
 
     private val podcastListViewModel: PodcastListViewModel by viewModel()
-    private val playerViewModel: PlayerViewModel by viewModel()
+    private val playerViewModel: PlayerViewModel by sharedViewModel()
 
 
     //    private val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)

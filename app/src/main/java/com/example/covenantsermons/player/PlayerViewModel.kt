@@ -10,6 +10,9 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class PlayerViewModel(
@@ -67,8 +70,9 @@ class PlayerViewModel(
         next: Sermon,
         newPlaylist: List<Sermon>
     ) {
-        //start browser connection
-        mediaSessionConnection
+        //runBlocking { getMediaSessionConnection() }
+//        Timber.i("runBlocking coroutine finished")
+//        mediaSessionConnection
 
         _playlist.clear()
         _playlist.add(next)
@@ -81,6 +85,10 @@ class PlayerViewModel(
         }.toTypedArray()
         playbackPreparer.mediaSource = ConcatenatingMediaSource(*mediaSources)
         Timber.i("before mediaSessionConnection.transportControls")
+        runBlocking { getMediaSessionConnection() }
+        Timber.i("runBlocking coroutine finished")
+        mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)
+
 //        mediaSessionConnection.mediaBrowser
 //        if(mediaSessionConnection.mediaBrowser.isConnected){
 //            Timber.i("mediaBrowser connected")
@@ -97,5 +105,14 @@ class PlayerViewModel(
         Timber.i("after mediaSessionConnection.transportControls")
 //        currentIndex = 0
 //        _currentlyPlaying.value = next
+    }
+
+//    suspend fun getMediaSessionConnection()=withContext(Dispatchers.IO){
+    suspend fun getMediaSessionConnection(){
+        Timber.i("getMediaSessionConnection called")
+        coroutineScope {
+//            launch {  mediaSessionConnection }
+            launch{mediaSessionConnection.mediaControllerConnection()}
+        }
     }
 }

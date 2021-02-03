@@ -64,7 +64,7 @@ class PodcastListViewModel(
                 tempSermon.audioFile = it.audioFile
                 tempSermon.title = it.title
                 tempSermon.pastorName = it.pastorName
-                tempSermon.timeStamp = it.timeStamp
+                tempSermon.date = it.date
                 tempSermon.duration = it.duration
                 tempSermon.image = it.image
                 sermonArrayList.add(tempSermon)

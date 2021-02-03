@@ -29,6 +29,7 @@ class PlaybackPreparer(val mExoPlayer: ExoPlayer) : MediaSessionConnector.Playba
     override fun getSupportedPrepareActions(): Long {
         return PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or
                 PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+                //TODO difference ACTION_PLAY vs ACTION_PLAY_FROM_MEDIA_ID
                 PlaybackStateCompat.ACTION_PAUSE or
                 PlaybackStateCompat.ACTION_REWIND or
                 PlaybackStateCompat.ACTION_FAST_FORWARD or

@@ -8,6 +8,7 @@ import com.example.covenantsermons.player.PlaybackPreparer
 import com.example.covenantsermons.player.PlayerService
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.upstream.DataSource
@@ -28,12 +29,18 @@ val koinModule = module {
     single<ExoPlayer> {
         SimpleExoPlayer.Builder(androidContext()).build().apply {
             this.setAudioAttributes(
-                AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MUSIC)
-                    .setUsage(C.USAGE_MEDIA).build(), true
+                    AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MUSIC)
+                            .setUsage(C.USAGE_MEDIA).build(), true
             )
             this.setHandleAudioBecomingNoisy(true)
+
+            this.addListener(object : Player.EventListener {
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                }
+            })
         }
     }
+
 
     single(named("userAgent")) {
         //application name and library version

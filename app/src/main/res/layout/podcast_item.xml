@@ -53,7 +53,7 @@
             app:srcCompat="@drawable/play_list_image" />
 
         <TextView
-            android:id="@+id/sermonItemLengthTV"
+            android:id="@+id/sermonItemDurationTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

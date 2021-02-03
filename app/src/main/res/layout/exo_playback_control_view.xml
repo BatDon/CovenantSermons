@@ -3,41 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="110dp"
     android:layout_gravity="bottom"
     android:background="#241c5c"
     android:layoutDirection="ltr"
     android:orientation="vertical">
 
-    <!--    <androidx.constraintlayout.widget.Guideline-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="1dp"-->
-    <!--        android:id="@+id/exoplayer_guideline"-->
-    <!--        app:layout_constraintGuide_percent="0.8"-->
-    <!--        android:orientation="horizontal"/>-->
-
-    <!--    <LinearLayout-->
-    <!--        app:layout_constraintTop_toBottomOf="parent"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintRight_toRightOf="parent"-->
-    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:gravity="center"-->
-    <!--        android:orientation="horizontal"-->
-    <!--        android:paddingTop="4dp">-->
-
-    <!--        viewport width height default is 24  width height 32dp-->
     <ImageButton
         android:id="@id/exo_prev"
         android:layout_width="@dimen/exoplayer_icons_width"
-        android:layout_height="@dimen/exoplayer_icons_height"
+        android:layout_height="wrap_content"
         android:src="@drawable/exo_icon_previous"
         app:layout_constraintBottom_toTopOf="@id/exoplayer_guideline"
         app:layout_constraintEnd_toStartOf="@+id/exo_rew"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#241c5c"/>
     <!--            style="@style/ExoMediaButton.Previous" />-->
 
     <!--            style="@style/CustomExoMediaButtonRewind" />-->
@@ -50,47 +32,56 @@
     <ImageButton
         android:id="@id/exo_rew"
         android:layout_width="@dimen/exoplayer_icons_width"
-        android:layout_height="@dimen/exoplayer_icons_height"
+        android:layout_height="wrap_content"
         android:src="@drawable/rewind_custom_exo_ic"
         app:layout_constraintBottom_toTopOf="@+id/exoplayer_guideline"
-        app:layout_constraintEnd_toStartOf="@+id/exo_play"
+        app:layout_constraintEnd_toStartOf="@+id/play_pause_frame"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/exo_prev"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#241c5c"/>
 
-    <ImageButton
-        android:id="@id/exo_play"
+    <FrameLayout
+        android:id="@+id/play_pause_frame"
         android:layout_width="@dimen/exoplayer_icons_width"
-        android:layout_height="@dimen/exoplayer_icons_height"
-        android:src="@drawable/play_custom_exo_ic"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/exoplayer_guideline"
         app:layout_constraintEnd_toStartOf="@+id/exo_ffwd"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/exo_rew"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#241c5c">
 
-    <ImageButton
-        android:id="@id/exo_pause"
-        android:layout_width="@dimen/exoplayer_icons_width"
-        android:layout_height="@dimen/exoplayer_icons_height"
-        android:src="@drawable/pause_custom_exo_ic"
-        app:layout_constraintBottom_toTopOf="@id/exoplayer_guideline"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toRightOf="@id/exo_rew"
-        app:layout_constraintRight_toLeftOf="@id/exo_ffwd"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageButton
+            android:id="@id/exo_play"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/play_custom_exo_ic"
+            android:background="#241c5c"/>
+
+        <ImageButton
+            android:id="@id/exo_pause"
+            android:layout_width="@dimen/exoplayer_icons_width"
+            android:layout_height="@dimen/exoplayer_icons_height"
+            android:src="@drawable/pause_custom_exo_ic"
+            android:background="#241c5c"/>
+    </FrameLayout>
+
+
+
     <!--            style="ExoMediaButton.Pause" />-->
 
     <ImageButton
         android:id="@id/exo_ffwd"
         android:layout_width="@dimen/exoplayer_icons_width"
-        android:layout_height="@dimen/exoplayer_icons_height"
+        android:layout_height="wrap_content"
         android:src="@drawable/exo_controls_fastforward"
         app:layout_constraintBottom_toTopOf="@id/exoplayer_guideline"
         app:layout_constraintEnd_toStartOf="@+id/exo_next"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/exo_play"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/play_pause_frame"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#241c5c"/>
     <!--            style="@style/ExoMediaButton.FastForward" />-->
 
     <!--            style="@style/ExoMediaButton.Next" />-->
@@ -98,14 +89,14 @@
     <ImageButton
         android:id="@id/exo_next"
         android:layout_width="@dimen/exoplayer_icons_width"
-        android:layout_height="@dimen/exoplayer_icons_height"
+        android:layout_height="wrap_content"
         android:src="@drawable/exo_controls_next"
         app:layout_constraintBottom_toTopOf="@id/exoplayer_guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/exo_ffwd"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:background="#241c5c"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/exoplayer_guideline"
@@ -120,23 +111,23 @@
         android:id="@+id/exo_progress"
         android:layout_width="@dimen/exoplayer_icons_width"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintBottom_toTopOf="@id/exo_slash"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/exo_next" />
+        app:layout_constraintTop_toBottomOf="@id/exoplayer_guideline" />
 
     <TextView
         android:id="@+id/exo_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
-        android:paddingTop="4dp"
         android:textColor="#FFBEBEBE"
         android:textSize="14sp"
         android:textStyle="bold"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/exo_slash"
         app:layout_constraintHorizontal_bias="0.5"
@@ -147,7 +138,7 @@
         android:id="@+id/exo_slash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/exo_duration"
         app:layout_constraintHorizontal_bias="0.5"
@@ -160,10 +151,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
-        android:paddingTop="4dp"
         android:textColor="#FFBEBEBE"
         android:textSize="14sp"
         android:textStyle="bold"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

@@ -2,6 +2,7 @@ package com.example.covenantsermons.modelDatabase
 
 import android.os.Parcelable
 import com.example.covenantsermons.*
+import com.example.covenantsermons.extensions.timeStampToDate
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
@@ -41,7 +42,7 @@ data class Sermon(
     var duration: Int? = 0,
     var image: String? = "",
     var pastorName: String? = "",
-    var timeStamp: Date? = Date(),
+    var date: String? = "",
     var title: String? = ""
 
 ): Parcelable{
@@ -50,7 +51,7 @@ data class Sermon(
         duration = duration?:0
         image = image ?: ""
         pastorName = pastorName ?: ""
-        timeStamp = timeStamp ?: Date()
+        date = date ?: ""
         title = title ?: ""
 
     }
@@ -156,13 +157,15 @@ var unSubscribe: ListenerRegistration?=null
                         val image: String? = sermondChanges.document.data["image"] as String?
                         val pastorName: String? = sermondChanges.document.data["pastor"] as String?
                         val timeStampString: String = sermondChanges.document.data["timeStamp"].toString()
+                        val date=timeStampString.timeStampToDate()
+
     //                    val timeStamp: Timestamp=sermondChanges.document.data["timeStamp"] as Timestamp
     //                    val longTimeStamp: Long=timeStamp.seconds.toLong()
                         Timber.i("timeStampString = $timeStampString")
-                        val firstTimeStampSubstring = timeStampString.substringAfter("=", timeStampString)
-                        val lastTimeStampSubstring = firstTimeStampSubstring.substringBefore(",", firstTimeStampSubstring)
-                        Timber.i("substring= $lastTimeStampSubstring")
-                        val date = Date(lastTimeStampSubstring.toLong() * 1000)
+//                        val firstTimeStampSubstring = timeStampString.substringAfter("=", timeStampString)
+//                        val lastTimeStampSubstring = firstTimeStampSubstring.substringBefore(",", firstTimeStampSubstring)
+//                        Timber.i("substring= $lastTimeStampSubstring")
+                        //val date = Date(lastTimeStampSubstring.toLong() * 1000)
     //                    val date=Date()
     //                    val timeStamp: Date?= timeStampString?.toLongOrNull()?.let { Date(it) }
     //                    Timber.i("date= ${longTimeStamp}")

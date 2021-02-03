@@ -45,13 +45,12 @@ class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.
         return ItemViewHolder(binding)
     }
 
-
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemViewHolder = holder as PodcastAdapter.ItemViewHolder
-        itemViewHolder.viewBinding.sermonItemDateTV.text = sermonList[position]?.timeStamp.toString()
+        itemViewHolder.viewBinding.sermonItemDateTV.text = sermonList[position]?.date
         itemViewHolder.viewBinding.sermonItemTitleTV.text = sermonList[position]?.title
-        itemViewHolder.viewBinding.sermonItemDateTV.text = sermonList[position]?.duration.toString()
+        val formattedDuration="${sermonList[position]?.duration.toString()} min"
+        itemViewHolder.viewBinding.sermonItemDurationTV.text = formattedDuration
     }
 
     fun updateSermonList(newList: ArrayList<Sermon?>) {
@@ -59,7 +58,6 @@ class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.
         sermonList.addAll(newList)
         notifyDataSetChanged()
     }
-
 
 }
 

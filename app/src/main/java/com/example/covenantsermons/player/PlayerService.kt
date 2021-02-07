@@ -94,6 +94,7 @@ class PlayerService : MediaBrowserServiceCompat() {
                             return sermon?.title ?: "sermon title not found"
                         }
 
+                        //TODO no bitmap is shown
                         override fun getCurrentLargeIcon(
                                 player: Player,
                                 callback: PlayerNotificationManager.BitmapCallback

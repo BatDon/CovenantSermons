@@ -29,7 +29,6 @@ class PlaybackPreparer(val mExoPlayer: ExoPlayer) : MediaSessionConnector.Playba
     override fun getSupportedPrepareActions(): Long {
         return PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or
                 PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
-                //TODO difference ACTION_PLAY vs ACTION_PLAY_FROM_MEDIA_ID
                 PlaybackStateCompat.ACTION_PAUSE or
                 PlaybackStateCompat.ACTION_REWIND or
                 PlaybackStateCompat.ACTION_FAST_FORWARD or
@@ -42,6 +41,27 @@ class PlaybackPreparer(val mExoPlayer: ExoPlayer) : MediaSessionConnector.Playba
         mediaSource?.let { mediaSource ->
             mExoPlayer.prepare(mediaSource)
             mExoPlayer.playWhenReady = true
+            }
+        val controlDispatcher=object : ControlDispatcher{
+            override fun dispatchSetPlayWhenReady(player: Player, playWhenReady: Boolean): Boolean {
+                return true
+            }
+
+            override fun dispatchSeekTo(player: Player, windowIndex: Int, positionMs: Long): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun dispatchSetRepeatMode(player: Player, repeatMode: Int): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun dispatchSetShuffleModeEnabled(player: Player, shuffleModeEnabled: Boolean): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun dispatchStop(player: Player, reset: Boolean): Boolean {
+                TODO("Not yet implemented")
+            }
         }
     }
 

@@ -12,7 +12,6 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class PlayerViewModel(
@@ -35,6 +34,13 @@ class PlayerViewModel(
                 _currentlyPlaying.value = _playlist[currentIndex]
             }
         }
+        //TODO create observable here MainActivity observes and changes visibility of play and pause
+//        override fun onIsPlayingChanged(isPlaying: Boolean) {
+//            if(isPlaying){
+//
+//            }
+//        }
+
     }
 
     init {
@@ -85,9 +91,12 @@ class PlayerViewModel(
         }.toTypedArray()
         playbackPreparer.mediaSource = ConcatenatingMediaSource(*mediaSources)
         Timber.i("before mediaSessionConnection.transportControls")
-        runBlocking { getMediaSessionConnection() }
-        Timber.i("runBlocking coroutine finished")
+        //runBlocking { getMediaSessionConnection() }
+        //Timber.i("runBlocking coroutine finished")
         mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)
+
+        currentIndex=0
+        _currentlyPlaying.value = next
 
 //        mediaSessionConnection.mediaBrowser
 //        if(mediaSessionConnection.mediaBrowser.isConnected){

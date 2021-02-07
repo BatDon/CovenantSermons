@@ -3,6 +3,9 @@ package com.example.covenantsermons
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -15,6 +18,7 @@ import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.podcast.PodcastAdapter
 import com.google.android.exoplayer2.ExoPlayer
+import kotlinx.android.synthetic.main.exo_playback_control_view.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -33,6 +37,8 @@ class MainActivity : AppCompatActivity(){
 //    private lateinit var itemsCells: ArrayList<String?>
     private lateinit var podcastAdapter: PodcastAdapter
 
+    private lateinit var activityMainBinding: ActivityMainBinding
+
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -44,7 +50,7 @@ class MainActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
 
 
-        val activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
 
         Timber.plant(Timber.DebugTree())
@@ -56,6 +62,7 @@ class MainActivity : AppCompatActivity(){
 
         //activityMainBinding.toolbar.setupWithNavController(navController, appBarConfiguration)
         activityMainBinding.playerView.player=exoPlayer
+        activityMainBinding.playerView.requestFocus()
 //        activityMainBinding.main_activity_player_group.player_view.player = exoPlayer
 
         //TODO remove only for testing
@@ -66,6 +73,9 @@ class MainActivity : AppCompatActivity(){
         playerViewModel.currentlyPlaying.observe(this, Observer { sermon ->
            Timber.i("sermon playing= $sermon")
         })
+
+//        if(activityMainBinding.playerView.exo_play)
+
 
 //        if(!this::sermonArrayList.isInitialized){
 //            podcastListViewModel.getPodcastsFromDatabase()
@@ -110,6 +120,27 @@ class MainActivity : AppCompatActivity(){
         }
 
     }
+
+    //TODO remove only for testing
+    fun mediaButtonClicked(view: View){
+        Timber.i("mediaButtonClicked")
+        Timber.i("view.id= ${view.id}")
+        Timber.i("activityMainBinding.playerView.exo_play.id= ${activityMainBinding.playerView.exo_play.id}")
+        when (view.id) {
+            activityMainBinding.playerView.exo_play.id -> {
+                activityMainBinding.playerView.exo_play.visibility = INVISIBLE
+                activityMainBinding.playerView.exo_pause.visibility = VISIBLE
+                Timber.i("play clicked play invisible")
+            }
+            activityMainBinding.playerView.exo_pause.id -> {
+                activityMainBinding.playerView.exo_pause.visibility = INVISIBLE
+                activityMainBinding.playerView.exo_play.visibility = VISIBLE
+                Timber.i("pause clicked pause invisible")
+            }
+        }
+    }
+
+
 
     //
     override fun onStart() {

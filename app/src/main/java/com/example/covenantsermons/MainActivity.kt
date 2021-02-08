@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -70,8 +71,9 @@ class MainActivity : AppCompatActivity(){
 //        playerViewModel.play(podcastListViewModel.transformLiveData()[0],podcastListViewModel.transformLiveData())
 
 
-        playerViewModel.currentlyPlaying.observe(this, Observer { sermon ->
+        playerViewModel._currentlyPlaying.observe(this, Observer { sermon ->
            Timber.i("sermon playing= $sermon")
+            Toast.makeText(applicationContext,"$sermon",Toast.LENGTH_SHORT).show()
         })
 
 //        if(activityMainBinding.playerView.exo_play)

@@ -15,13 +15,13 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class PlayerViewModel(
-    private val exoPlayer: ExoPlayer,
-    private val dataSourceFactory: DataSource.Factory,
-    private val mediaSessionConnection: MediaSessionConnection,
-    private val playbackPreparer: PlaybackPreparer
+        private val exoPlayer: ExoPlayer,
+        private val dataSourceFactory: DataSource.Factory,
+        private val mediaSessionConnection: MediaSessionConnection,
+        private val playbackPreparer: PlaybackPreparer
 ) : ViewModel() {
     private val _isConnected=MutableLiveData<Boolean>()
-    private val _currentlyPlaying = MutableLiveData<Sermon>()
+    val _currentlyPlaying = MutableLiveData<Sermon>()
     private val _playlist = mutableListOf<Sermon>()
     val playlist
         get() = _playlist.subList(1, _playlist.size)
@@ -34,6 +34,7 @@ class PlayerViewModel(
                 Timber.i("playBackState= STATE_ENDED")
                 currentIndex += 1
                 _currentlyPlaying.value = _playlist[currentIndex]
+
             }
         }
         //TODO create observable here MainActivity observes and changes visibility of play and pause
@@ -90,8 +91,12 @@ class PlayerViewModel(
         _playlist.add(next)
         _playlist.addAll(newPlaylist)
         Timber.i("newPlaylist size= ${newPlaylist.size}")
+        Timber.i("next= $next")
+        Timber.i("1 _playlist size= ${_playlist.size}")
 
-        val mediaSources = (listOf(next) + _playlist).map {
+        //TODO review this is correct mediaSources list has next, next and then two more items. next and next are the same
+//        val mediaSources = (listOf(next) + _playlist).map {
+        val mediaSources = (listOf(next) + playlist).map {
             ProgressiveMediaSource.Factory(dataSourceFactory)
                 .setTag(it)
                 .createMediaSource(Uri.parse(it.audioFile))

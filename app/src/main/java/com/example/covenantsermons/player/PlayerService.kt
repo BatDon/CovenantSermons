@@ -59,6 +59,7 @@ class PlayerService : MediaBrowserServiceCompat() {
 
         Timber.i("onCreate called in PlayerService")
 
+        // pendingIntent launches mainActivity from notification when clicked
         val sessionActivityPendingIntent =
                 packageManager?.getLaunchIntentForPackage(packageName)?.let { mediaSessionIntent ->
                     PendingIntent.getActivity(this, 1, mediaSessionIntent, PendingIntent.FLAG_UPDATE_CURRENT)

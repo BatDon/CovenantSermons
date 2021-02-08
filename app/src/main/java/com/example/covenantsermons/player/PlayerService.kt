@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -24,6 +25,7 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
+
 class PlayerService : MediaBrowserServiceCompat() {
     //only one Exoplayer created
     private val exoPlayer: ExoPlayer by inject()
@@ -33,6 +35,7 @@ class PlayerService : MediaBrowserServiceCompat() {
     private val nowPlayingNotificationId: Int = 1
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var notificationManager: NotificationManagerCompat
+    private lateinit var mStateBuilder: PlaybackStateCompat.Builder
 
     //supports devices such as Google Assistant, Bluetooth headsets and media buttons
     override fun onLoadChildren(
@@ -65,6 +68,16 @@ class PlayerService : MediaBrowserServiceCompat() {
                 .apply {
                     setSessionActivity(sessionActivityPendingIntent)
                     isActive = true
+                    //added below 2/6/2021
+                    setFlags(
+                            MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
+                                    MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+                    )
+                    mStateBuilder = PlaybackStateCompat.Builder()
+                            .setActions(PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                                    or PlaybackStateCompat.ACTION_PAUSE)
+                    setPlaybackState(mStateBuilder.build())
+                    //added above 2/6/2021
                 }
 
         //used to get same player
@@ -76,7 +89,7 @@ class PlayerService : MediaBrowserServiceCompat() {
             createPlayChannel(notificationManager)
         }
 
-        sessionToken?.let {mediaSessionToken ->
+        sessionToken?.let { mediaSessionToken ->
             val playerNotificationManager = PlayerNotificationManager(this, nowPlayingChannelId,
                     nowPlayingNotificationId,
                     //interface instantiation
@@ -106,37 +119,38 @@ class PlayerService : MediaBrowserServiceCompat() {
                             return PendingIntent.getActivity(
                                     this@PlayerService,
                                     0,
-                                //TODO make sure fragment is correct fragment when directed to MainActivity
+                                    //TODO make sure fragment is correct fragment when directed to MainActivity
                                     Intent(this@PlayerService, MainActivity::class.java),
                                     PendingIntent.FLAG_UPDATE_CURRENT
                             )
                         }
 
                     },
-                //interface instantiation
-                object : PlayerNotificationManager.NotificationListener {
-                override fun onNotificationPosted(
-                        notificationId: Int,
-                        notification: Notification,
-                        ongoingNotification: Boolean
-                ) {
-                    if (ongoingNotification) {
-                        ContextCompat.startForegroundService(
-                                applicationContext,
-                                Intent(applicationContext, this@PlayerService.javaClass)
-                        )
-                        startForeground(nowPlayingNotificationId, notification)
-                    } else {
-                        stopForeground(false)
-                    }
-                }
-            })
+                    //interface instantiation
+                    object : PlayerNotificationManager.NotificationListener {
+                        override fun onNotificationPosted(
+                                notificationId: Int,
+                                notification: Notification,
+                                ongoingNotification: Boolean
+                        ) {
+                            if (ongoingNotification) {
+                                ContextCompat.startForegroundService(
+                                        applicationContext,
+                                        Intent(applicationContext, this@PlayerService.javaClass)
+                                )
+                                startForeground(nowPlayingNotificationId, notification)
+                            } else {
+                                stopForeground(false)
+                            }
+                        }
+                    })
 
             //playerNotificationManager needs access to exoPlayer single instance and sessionToken
             //to keep it in sync
             playerNotificationManager.setPlayer(exoPlayer)
             playerNotificationManager.setMediaSessionToken(mediaSessionToken)
         }
+
 
         MediaSessionConnector(mediaSession).also {
             it.setPlayer(exoPlayer)

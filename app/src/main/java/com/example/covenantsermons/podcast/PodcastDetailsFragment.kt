@@ -19,9 +19,6 @@ import timber.log.Timber
 import java.io.File
 
 
-/**
- * Created by Abdurahman Adilovic on 3/22/20.
- */
 class PodcastDetailsFragment : Fragment() {
 //class PodcastDetailsFragment : Fragment(R.layout.podcast_detail_fragment) {
 //    private val podcastDetailsViewModel:PodcastDetailsViewModel by viewModel()

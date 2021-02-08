@@ -9,6 +9,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.source.MediaSource
+import timber.log.Timber
 
 class PlaybackPreparer(val mExoPlayer: ExoPlayer) : MediaSessionConnector.PlaybackPreparer {
     var mediaSource: MediaSource? = null
@@ -38,31 +39,32 @@ class PlaybackPreparer(val mExoPlayer: ExoPlayer) : MediaSessionConnector.Playba
 
     override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
         // mExoPlayer set and ready to play
+        Timber.i("onPrepareFromMediaId called")
         mediaSource?.let { mediaSource ->
             mExoPlayer.prepare(mediaSource)
             mExoPlayer.playWhenReady = true
             }
-        val controlDispatcher=object : ControlDispatcher{
-            override fun dispatchSetPlayWhenReady(player: Player, playWhenReady: Boolean): Boolean {
-                return true
-            }
-
-            override fun dispatchSeekTo(player: Player, windowIndex: Int, positionMs: Long): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun dispatchSetRepeatMode(player: Player, repeatMode: Int): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun dispatchSetShuffleModeEnabled(player: Player, shuffleModeEnabled: Boolean): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun dispatchStop(player: Player, reset: Boolean): Boolean {
-                TODO("Not yet implemented")
-            }
-        }
+//        val controlDispatcher=object : ControlDispatcher{
+//            override fun dispatchSetPlayWhenReady(player: Player, playWhenReady: Boolean): Boolean {
+//                return true
+//            }
+//
+//            override fun dispatchSeekTo(player: Player, windowIndex: Int, positionMs: Long): Boolean {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun dispatchSetRepeatMode(player: Player, repeatMode: Int): Boolean {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun dispatchSetShuffleModeEnabled(player: Player, shuffleModeEnabled: Boolean): Boolean {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun dispatchStop(player: Player, reset: Boolean): Boolean {
+//                TODO("Not yet implemented")
+//            }
+//        }
     }
 
     override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {

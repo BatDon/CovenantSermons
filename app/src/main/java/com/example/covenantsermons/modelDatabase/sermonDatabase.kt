@@ -174,6 +174,7 @@ var unSubscribe: ListenerRegistration?=null
 
                         sermonList.add(Sermon(audioFile, duration, image, pastorName, date, title))
                         Timber.i("sermonList= ${sermonList[0]}")
+
 //                        if(podcastListViewModel==null){
 //                            podcastListViewModel= ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
 //                        }
@@ -193,7 +194,10 @@ var unSubscribe: ListenerRegistration?=null
 //                    }
 
                     //Timber.i("podcastListViewModel after second initialization $podcastListViewModel")
-
+                    Timber.i("sermonList size= ${sermonList.size}")
+                    for (sermon in sermonList){
+                        Timber.i("sermonDatabase sermon= $sermon")
+                    }
 
                     podcastListViewModel.setPodcasts(sermonList)
 

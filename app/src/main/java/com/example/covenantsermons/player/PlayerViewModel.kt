@@ -27,19 +27,25 @@ class PlayerViewModel(
         get() = _playlist.subList(1, _playlist.size)
     val currentlyPlaying: LiveData<Sermon> = _currentlyPlaying
     private var currentIndex = 0
+
     private val listener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             if (playbackState == Player.STATE_ENDED) {
+                Timber.i("playBackState= STATE_ENDED")
                 currentIndex += 1
                 _currentlyPlaying.value = _playlist[currentIndex]
             }
         }
         //TODO create observable here MainActivity observes and changes visibility of play and pause
-//        override fun onIsPlayingChanged(isPlaying: Boolean) {
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            Timber.i("onIsPlayingChanged called value= $isPlaying")
 //            if(isPlaying){
-//
+//                exoPlayer.playWhenReady=true
+////                exoPlayer.playbackState
+//            }else{
+//                exoPlayer.playWhenReady=false
 //            }
-//        }
+        }
 
     }
 
@@ -83,20 +89,26 @@ class PlayerViewModel(
         _playlist.clear()
         _playlist.add(next)
         _playlist.addAll(newPlaylist)
+        Timber.i("newPlaylist size= ${newPlaylist.size}")
 
         val mediaSources = (listOf(next) + _playlist).map {
             ProgressiveMediaSource.Factory(dataSourceFactory)
                 .setTag(it)
                 .createMediaSource(Uri.parse(it.audioFile))
         }.toTypedArray()
+        Timber.i("mediaSources size= ${mediaSources.size}")
+        Timber.i("_playlist size= ${_playlist.size}")
         playbackPreparer.mediaSource = ConcatenatingMediaSource(*mediaSources)
         Timber.i("before mediaSessionConnection.transportControls")
         //runBlocking { getMediaSessionConnection() }
         //Timber.i("runBlocking coroutine finished")
         mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)
-
         currentIndex=0
         _currentlyPlaying.value = next
+
+
+
+
 
 //        mediaSessionConnection.mediaBrowser
 //        if(mediaSessionConnection.mediaBrowser.isConnected){
@@ -125,3 +137,4 @@ class PlayerViewModel(
         }
     }
 }
+//playWhenReady && playbackState == Player.STATE_READY means Exoplayer is playing

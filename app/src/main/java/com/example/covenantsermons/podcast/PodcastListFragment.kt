@@ -52,6 +52,11 @@ class PodcastListFragment : Fragment() {
         return inflater.inflate(R.layout.podcast_list_fragment, container, false)
     }
 
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//        val playerView=requireActivity().findViewById<View>(R.id.player_view)
+//    }
+
     override fun onStart() {
         super.onStart()
         //    podcastListViewModel= ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
@@ -105,11 +110,13 @@ class PodcastListFragment : Fragment() {
         Timber.i("setAdapter called")
 
         podcastAdapter = PodcastAdapter(sermonArrayList).also {
-            it.onItemClick={sermon ->
-                Toast.makeText(activity,"title ${sermon.title} audio file${sermon.audioFile}",Toast.LENGTH_LONG).show()
+            it.onItemClick={ sermon ->
+                Toast.makeText(activity, "title ${sermon.title} audio file${sermon.audioFile}", Toast.LENGTH_LONG).show()
                 Timber.i("on Click called title ${sermon.title}")
                 //podcast_list_rv.adapter=it
-                playerViewModel.play(sermon, podcastListViewModel.transformLiveData())
+                Timber.i("podcastListViewModel.transformLiveData() ${podcastListViewModel.transformLiveData().size}")
+//                playerViewModel.play(sermon, podcastListViewModel.transformLiveData())
+                podcastListViewModel.podcasts.value?.let { it1 -> playerViewModel.play(sermon, it1) }
 
                 findNavController().navigate(
                         R.id.action_mainFragment_to_podcastDetailsFragment,

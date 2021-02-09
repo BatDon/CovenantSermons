@@ -8,6 +8,9 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -61,6 +64,11 @@ class MainActivity : AppCompatActivity(){
         navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
+        //up button for toolbar
+        val toolbar: Toolbar = activityMainBinding.toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
         //activityMainBinding.toolbar.setupWithNavController(navController, appBarConfiguration)
         activityMainBinding.playerView.player=exoPlayer
         activityMainBinding.playerView.requestFocus()
@@ -72,8 +80,8 @@ class MainActivity : AppCompatActivity(){
 
 
         playerViewModel._currentlyPlaying.observe(this, Observer { sermon ->
-           Timber.i("sermon playing= $sermon")
-            Toast.makeText(applicationContext,"$sermon",Toast.LENGTH_SHORT).show()
+            Timber.i("sermon playing= $sermon")
+            Toast.makeText(applicationContext, "$sermon", Toast.LENGTH_SHORT).show()
         })
 
 //        if(activityMainBinding.playerView.exo_play)
@@ -110,7 +118,16 @@ class MainActivity : AppCompatActivity(){
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
+            Timber.i("some item selected")
         when (item.itemId) {
+            android.R.id.home -> {
+                val fragManager: FragmentManager = this.supportFragmentManager
+                val fragTransacion: FragmentTransaction = fragManager.beginTransaction()
+                if(fragManager.backStackEntryCount>0){
+                    fragManager.popBackStack()
+                }
+                return true
+            }
             R.id.menu_media -> {
                 //playPodcastData()
                 return true

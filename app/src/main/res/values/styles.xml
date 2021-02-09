@@ -1,5 +1,29 @@
 <resources>
 
+  <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">
+
+    <!-- your app branding color for the app bar -->
+    <item name="colorPrimary">#241c5c</item>
+
+    <!-- darker variant for the status bar and contextual app bars -->
+    <item name="colorPrimaryDark">#241c5c</item>
+
+    <!-- theme UI controls like checkboxes and text fields -->
+    <item name="colorAccent">#64dd17</item>
+  </style>
+
+<!--  <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">-->
+
+<!--    &lt;!&ndash; your app branding color for the app bar &ndash;&gt;-->
+<!--    <item name="colorPrimary">#1faa00</item>-->
+
+<!--    &lt;!&ndash; darker variant for the status bar and contextual app bars &ndash;&gt;-->
+<!--    <item name="colorPrimaryDark">#1faa00</item>-->
+
+<!--    &lt;!&ndash; theme UI controls like checkboxes and text fields &ndash;&gt;-->
+<!--    <item name="colorAccent">#64dd17</item>-->
+<!--  </style>-->
+
   <style name="CustomExoMediaButtonRewind">
     <item name="android:src">@drawable/rewind_custom_exo_ic</item>
   </style>

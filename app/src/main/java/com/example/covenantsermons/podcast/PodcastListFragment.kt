@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covenantsermons.R
@@ -128,6 +129,8 @@ class PodcastListFragment : Fragment() {
 //                        }, null, null
                 )
             }
+
+
             podcast_list_rv.adapter=it
         }
             //podcast_list_rv.adapter=it
@@ -139,6 +142,11 @@ class PodcastListFragment : Fragment() {
         Timber.i("setRVLayoutManager called")
         val mLayoutManager = LinearLayoutManager(podcast_list_rv.context)
         podcast_list_rv.layoutManager = mLayoutManager
+
+        val mDividerItemDecoration = DividerItemDecoration(podcast_list_rv.context,
+                mLayoutManager.orientation)
+        podcast_list_rv.addItemDecoration(mDividerItemDecoration)
+
         podcast_list_rv.setHasFixedSize(true)
         if (sermonArrayList.size > 0) {
             podcast_list_rv.visibility = View.VISIBLE

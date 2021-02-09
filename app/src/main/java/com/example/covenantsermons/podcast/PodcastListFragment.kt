@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.R
 import com.example.covenantsermons.modelDatabase.Sermon
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
@@ -65,6 +66,12 @@ class PodcastListFragment : Fragment() {
 //        setRVLayoutManager()
 ////        val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
 //        podcastListViewModel.getPodcastsFromDatabase()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val mainActivity=activity as MainActivity
+        mainActivity.hideUpButton()
     }
 
 

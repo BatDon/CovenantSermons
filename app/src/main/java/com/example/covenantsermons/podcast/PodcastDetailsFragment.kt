@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.R
 import com.example.covenantsermons.databinding.PodcastDetailFragmentBinding
 import com.example.covenantsermons.modelDatabase.Sermon
@@ -43,6 +44,12 @@ class PodcastDetailsFragment : Fragment() {
         podcastDetailFragmentBinding= PodcastDetailFragmentBinding.inflate(layoutInflater)
         return podcastDetailFragmentBinding!!.root
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val mainActivity=activity as MainActivity
+        mainActivity.showUpButton()
     }
 
 //    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

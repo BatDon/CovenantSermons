@@ -9,8 +9,6 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -46,6 +44,8 @@ class MainActivity : AppCompatActivity(){
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+    private lateinit var toolbar: Toolbar
+
 //    override fun onSupportNavigateUp(): Boolean {
 //        return NavigationUI.navigateUp(navController, appBarConfiguration)
 //    }
@@ -65,9 +65,9 @@ class MainActivity : AppCompatActivity(){
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
         //up button for toolbar
-        val toolbar: Toolbar = activityMainBinding.toolbar
+        toolbar = activityMainBinding.toolbar
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
 
         //activityMainBinding.toolbar.setupWithNavController(navController, appBarConfiguration)
         activityMainBinding.playerView.player=exoPlayer
@@ -121,11 +121,12 @@ class MainActivity : AppCompatActivity(){
             Timber.i("some item selected")
         when (item.itemId) {
             android.R.id.home -> {
-                val fragManager: FragmentManager = this.supportFragmentManager
-                val fragTransacion: FragmentTransaction = fragManager.beginTransaction()
-                if(fragManager.backStackEntryCount>0){
-                    fragManager.popBackStack()
-                }
+                Timber.i("up button clicked")
+//                val fragManager: FragmentManager = this.supportFragmentManager
+//                if(fragManager.backStackEntryCount>0){
+//                    fragManager.popBackStack()
+//                }
+                this.navController.popBackStack()
                 return true
             }
             R.id.menu_media -> {
@@ -138,6 +139,14 @@ class MainActivity : AppCompatActivity(){
             else -> return super.onOptionsItemSelected(item)
         }
 
+    }
+
+    fun showUpButton() {
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    }
+
+    fun hideUpButton() {
+        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
     }
 
     //TODO remove only for testing

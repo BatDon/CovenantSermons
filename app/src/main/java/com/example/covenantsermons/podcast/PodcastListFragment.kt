@@ -121,9 +121,9 @@ class PodcastListFragment : Fragment() {
                 //Toast.makeText(activity, "title ${sermon.title} audio file${sermon.audioFile}", Toast.LENGTH_LONG).show()
                 Timber.i("on Click called title ${sermon.title}")
                 //podcast_list_rv.adapter=it
-                Timber.i("podcastListViewModel.transformLiveData() ${podcastListViewModel.transformLiveData().size}")
+//                Timber.i("podcastListViewModel.transformLiveData() ${podcastListViewModel.transformLiveData().size}")
 //                playerViewModel.play(sermon, podcastListViewModel.transformLiveData())
-                podcastListViewModel.podcasts.value?.let { it1 -> playerViewModel.play(sermon, it1) }
+                podcastListViewModel.podcasts.value?.let { sermonArrayList -> playerViewModel.play(sermon, sermonArrayList) }
 
                 findNavController().navigate(
                         R.id.action_mainFragment_to_podcastDetailsFragment,

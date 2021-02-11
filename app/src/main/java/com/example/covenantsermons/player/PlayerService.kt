@@ -63,10 +63,10 @@ class PlayerService : MediaBrowserServiceCompat() {
         // pendingIntent launches mainActivity from notification when clicked
         val sessionActivityPendingIntent =
                 packageManager?.getLaunchIntentForPackage(packageName)?.let { mediaSessionIntent ->
-                    val sermonBundle = Bundle()
-                    val sermonParcelable=Sermon()
-                    sermonBundle.putParcelable(SERMON_PODCAST_PARCELABLE,sermonParcelable)
-                    mediaSessionIntent.putExtra(SERMON_PODCAST_BUNDLE,sermonBundle)
+//                    val sermonBundle = Bundle()
+//                    val sermonParcelable=Sermon()
+//                    sermonBundle.putParcelable(SERMON_PODCAST_PARCELABLE,sermonParcelable)
+//                    mediaSessionIntent.putExtra(SERMON_PODCAST_BUNDLE,sermonBundle)
 
                     PendingIntent.getActivity(this, 1, mediaSessionIntent, PendingIntent.FLAG_UPDATE_CURRENT)
                 }

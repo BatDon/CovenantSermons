@@ -60,7 +60,9 @@ class PlayerViewModel(
 //            }
             //TODO error if press previous button, because it increases value of current index
             if (reason==Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT){
+                Timber.i("_playlist size= ${_playlist.size}")
                 currentIndex=exoPlayer.currentWindowIndex
+                Timber.i("currentIndex= $currentIndex")
                 _currentlyPlaying.value = _playlist[currentIndex]
                 Timber.i("onPositionDiscontinuity DISCONTINUITY_REASON_SEEK_ADJUSTMENT triggered")
 //                if (currentIndex==previousIndex && previousIndex > 0){

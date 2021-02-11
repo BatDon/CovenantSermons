@@ -76,15 +76,6 @@ class MainActivity : AppCompatActivity(){
         activityMainBinding.playerView.requestFocus()
 
         intent.let{
-//            Timber.i("intent does not equal null")
-//            val sermonBundle=intent.getBundleExtra(SERMON_PODCAST_BUNDLE)
-//            val sermon=sermonBundle?.getParcelable<Sermon>(SERMON_PODCAST_PARCELABLE)
-//            Timber.i("sermon from intent= $sermon")
-//            sermon.let{
-//               if (sermon != null) {
-//                   setCurrentSermonTitle(sermon)
-//               }
-//            val sermon= podcastListViewModel.podcasts.value?.get(exoPlayer.currentTag as Sermon)
             val sermon=exoPlayer.currentTag as? Sermon
             Timber.i("exoplayer.currentTag sermon $sermon")
 
@@ -92,7 +83,7 @@ class MainActivity : AppCompatActivity(){
             if (sermon != null) {
                 setCurrentSermonTitle(sermon)
             }
-           }
+        }
 
 
 
@@ -110,6 +101,7 @@ class MainActivity : AppCompatActivity(){
 
         playerViewModel.currentlyPlaying.observe(this, Observer { sermon ->
             setCurrentSermonTitle(sermon)
+
 //            activityMainBinding.currentSermonTitle.text = sermon.title
 //            Timber.i("sermon Title changed")
 //            Timber.i("sermon.title is ${sermon.title}")

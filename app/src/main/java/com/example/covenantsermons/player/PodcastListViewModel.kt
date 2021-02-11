@@ -3,9 +3,7 @@ package com.example.covenantsermons.player
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.covenantsermons.extensions.liveDataToSermonArrayList
 import com.example.covenantsermons.modelDatabase.Sermon
-import timber.log.Timber
 
 class PodcastListViewModel(
        // private val sermonDatabase: SermonDatabase
@@ -50,24 +48,24 @@ class PodcastListViewModel(
 
     }
 
-    fun transformLiveData():ArrayList<Sermon> {
-//        val sermonArrayList=ArrayList<Sermon>()
-//        val sermon:Sermon = podcasts.map{sermon ->
-//            sermonArrayList.add(sermon)
-//        }
-//        return sermonArrayList
-        val sermonAdrrayList:ArrayList<Sermon>? =podcasts.value
-        Timber.i("sermonAdrrayList $sermonAdrrayList")
-
+//    fun transformLiveData():ArrayList<Sermon> {
+////        val sermonArrayList=ArrayList<Sermon>()
+////        val sermon:Sermon = podcasts.map{sermon ->
+////            sermonArrayList.add(sermon)
+////        }
+////        return sermonArrayList
+//        val sermonAdrrayList:ArrayList<Sermon>? =podcasts.value
+//        Timber.i("sermonAdrrayList $sermonAdrrayList")
+//
+////        val sermonArrayList:ArrayList<Sermon> =liveDataToSermonArrayList(podcasts){ list -> list }
+////        Timber.i("transform live data sermonArrayList size ${sermonArrayList.size}")
+////        return sermonArrayList
+//
 //        val sermonArrayList:ArrayList<Sermon> =liveDataToSermonArrayList(podcasts){ list -> list }
 //        Timber.i("transform live data sermonArrayList size ${sermonArrayList.size}")
 //        return sermonArrayList
-
-        val sermonArrayList:ArrayList<Sermon> =liveDataToSermonArrayList(podcasts){ list -> list }
-        Timber.i("transform live data sermonArrayList size ${sermonArrayList.size}")
-        return sermonArrayList
-//        return liveDataToSermonArrayList(podcasts) { list -> list }
-    }
+////        return liveDataToSermonArrayList(podcasts) { list -> list }
+//    }
 
 //        Timber.i("transformLiveData podcasts size= ${podcasts.value?.size}")
 //

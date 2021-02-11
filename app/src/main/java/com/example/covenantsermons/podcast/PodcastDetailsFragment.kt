@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.R
@@ -14,6 +15,7 @@ import com.example.covenantsermons.databinding.PodcastDetailFragmentBinding
 import com.example.covenantsermons.modelDatabase.Sermon
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
@@ -22,14 +24,23 @@ import java.io.File
 class PodcastDetailsFragment : Fragment() {
 //class PodcastDetailsFragment : Fragment(R.layout.podcast_detail_fragment) {
 //    private val podcastDetailsViewModel:PodcastDetailsViewModel by viewModel()
-    private val playerViewModel: PlayerViewModel by viewModel()
+    private val playerViewModel: PlayerViewModel by sharedViewModel()
     private val podcastListViewModel: PodcastListViewModel by viewModel()
-    private lateinit var sermon: Sermon
+    private var sermon: Sermon?= null
     private var podcastDetailFragmentBinding: PodcastDetailFragmentBinding?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sermon = (arguments?.getParcelable<Sermon>(podcastSermonArgument) ?: Sermon())
+
+        playerViewModel.currentlyPlaying.observe(this, Observer { sermon ->
+            this.sermon=sermon
+            setUpFragmentViews()
+
+//            activityMainBinding.currentSermonTitle.text = sermon.title
+//            Timber.i("sermon Title changed")
+//            Timber.i("sermon.title is ${sermon.title}")
+        })
         //Toast.makeText(activity, "title ${sermon.title} audio file${sermon.audioFile}", Toast.LENGTH_LONG).show()
 
 
@@ -71,16 +82,14 @@ class PodcastDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.i("onViewCreated called")
+
+        setUpFragmentViews()
 //        val binding = PodcastDetailFragmentBinding.bind(view)
 //        podcastDetailFragmentBinding = binding
 
 //        val base64= sermon.image?.let { stringToBase64(it) }
 //        val bitmap: Bitmap?=stringToBitmap(base64)
-        activity?.applicationContext?.let { podcastDetailFragmentBinding?.let { it1 -> Glide.with(it).load(sermon.image).error(R.drawable.cross).into(it1.sermonImageIv) } }
-//        podcastDetailFragmentBinding?.sermonImageIv!!.setImageBitmap(bitmap)
-        podcastDetailFragmentBinding?.sermonTitleTv!!.text=sermon.title
-        podcastDetailFragmentBinding?.sermonPastorNameTv!!.text=sermon.pastorName
-        Timber.i("sermon.title ${sermon.title}")
+
 
 //        if (item is EpisodeRow) {
 //            val episodes = podcastDetailsViewModel.podcastAndEpisodes.value?.episodes ?: listOf(
@@ -91,6 +100,17 @@ class PodcastDetailsFragment : Fragment() {
         //TODO uncomment only for testing
 //            playerViewModel.play(sermon, podcastListViewModel.transformLiveData())
         }
+
+    private fun setUpFragmentViews(){
+        activity?.applicationContext?.let { podcastDetailFragmentBinding?.let { it1 -> Glide.with(it).load(sermon?.image).error(R.drawable.cross).into(it1.sermonImageIv) } }
+//        podcastDetailFragmentBinding?.sermonImageIv!!.setImageBitmap(bitmap)
+        sermon?.let{
+            podcastDetailFragmentBinding?.sermonTitleTv!!.text=it.title
+            podcastDetailFragmentBinding?.sermonPastorNameTv!!.text=it.pastorName
+            Timber.i("sermon.title ${it.title}")
+        }
+
+    }
 
 
 

@@ -14,6 +14,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+
 class PlayerViewModel(
         private val exoPlayer: ExoPlayer,
         private val dataSourceFactory: DataSource.Factory,
@@ -21,20 +22,23 @@ class PlayerViewModel(
         private val playbackPreparer: PlaybackPreparer
 ) : ViewModel() {
     private val _isConnected=MutableLiveData<Boolean>()
-    val _currentlyPlaying = MutableLiveData<Sermon>()
+    private val _currentlyPlaying = MutableLiveData<Sermon>()
     private val _playlist = mutableListOf<Sermon>()
     val playlist
         get() = _playlist.subList(1, _playlist.size)
     val currentlyPlaying: LiveData<Sermon> = _currentlyPlaying
+    private var previousIndex=0
     private var currentIndex = 0
 
     private val listener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             if (playbackState == Player.STATE_ENDED) {
                 Timber.i("playBackState= STATE_ENDED")
-                currentIndex += 1
-                _currentlyPlaying.value = _playlist[currentIndex]
-
+//                currentIndex += 1
+//                _currentlyPlaying.value = _playlist[currentIndex]
+            }
+            else if(playbackState == Player.STATE_READY){
+                Timber.i("playbackState= STATE_READY")
             }
         }
         //TODO create observable here MainActivity observes and changes visibility of play and pause
@@ -47,6 +51,46 @@ class PlayerViewModel(
 //                exoPlayer.playWhenReady=false
 //            }
         }
+        override fun onPositionDiscontinuity(reason: Int) {
+            Timber.i("onPositionDiscontinuity reason= $reason")
+//            if (reason==Player.DISCONTINUITY_REASON_PERIOD_TRANSITION){
+//                Timber.i("onPositionDiscontinuity DISCONTINUITY_REASON_PERIOD_TRANSITION triggered")
+//                currentIndex += 1
+//                _currentlyPlaying.value = _playlist[currentIndex]
+//            }
+            //TODO error if press previous button, because it increases value of current index
+            if (reason==Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT){
+                currentIndex=exoPlayer.currentWindowIndex
+                _currentlyPlaying.value = _playlist[currentIndex]
+                Timber.i("onPositionDiscontinuity DISCONTINUITY_REASON_SEEK_ADJUSTMENT triggered")
+//                if (currentIndex==previousIndex && previousIndex > 0){
+//                    Timber.i("going backward in tracks")
+//                    Timber.i("previousIndex= $previousIndex")
+//                    Timber.i("currentIndex= $currentIndex")
+//                    currentIndex -= 1
+//                    _currentlyPlaying.value = _playlist[currentIndex]
+//                    Timber.i("previousIndex= $previousIndex")
+//                    Timber.i("currentIndex decrease by 1= $currentIndex")
+//                }
+//                else{
+//                    Timber.i("going forward in tracks")
+//                    Timber.i("previousIndex= $previousIndex")
+//                    Timber.i("currentIndex increase by 1= $currentIndex")
+//                    currentIndex += 1
+//                    _currentlyPlaying.value = _playlist[currentIndex]
+//                    Timber.i("previousIndex= $previousIndex")
+//                    Timber.i("currentIndex increase by 1= $currentIndex")
+//                }
+//                getPreviousTrackIndex()
+
+            }
+
+        }
+
+
+//        override fun onPlaybackStateChanged(){
+//
+//        }
 
     }
 
@@ -80,8 +124,8 @@ class PlayerViewModel(
     }
 
     private fun createPlaylist(
-        next: Sermon,
-        newPlaylist: List<Sermon>
+            next: Sermon,
+            newPlaylist: List<Sermon>
     ) {
         //runBlocking { getMediaSessionConnection() }
 //        Timber.i("runBlocking coroutine finished")
@@ -110,6 +154,7 @@ class PlayerViewModel(
         mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)
         currentIndex=0
         _currentlyPlaying.value = next
+        //getPreviousTrackIndex()
 
 
 
@@ -133,6 +178,11 @@ class PlayerViewModel(
 //        _currentlyPlaying.value = next
     }
 
+    //private fun getPreviousTrackIndex(){
+//        previousIndex=if (exoPlayer.currentWindowIndex-1<0) 0 else exoPlayer.currentWindowIndex-1
+//        Timber.i("getPreviousTrackIndex called $previousIndex")
+//    }
+
 //    suspend fun getMediaSessionConnection()=withContext(Dispatchers.IO){
     suspend fun getMediaSessionConnection(){
         Timber.i("getMediaSessionConnection called")
@@ -141,5 +191,6 @@ class PlayerViewModel(
             launch{mediaSessionConnection.mediaControllerConnection()}
         }
     }
+
 }
 //playWhenReady && playbackState == Player.STATE_READY means Exoplayer is playing

@@ -37,6 +37,7 @@ class PlayerService : MediaBrowserServiceCompat() {
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
 
+
     //supports devices such as Google Assistant, Bluetooth headsets and media buttons
     override fun onLoadChildren(
             parentId: String,
@@ -62,6 +63,11 @@ class PlayerService : MediaBrowserServiceCompat() {
         // pendingIntent launches mainActivity from notification when clicked
         val sessionActivityPendingIntent =
                 packageManager?.getLaunchIntentForPackage(packageName)?.let { mediaSessionIntent ->
+                    val sermonBundle = Bundle()
+                    val sermonParcelable=Sermon()
+                    sermonBundle.putParcelable(SERMON_PODCAST_PARCELABLE,sermonParcelable)
+                    mediaSessionIntent.putExtra(SERMON_PODCAST_BUNDLE,sermonBundle)
+
                     PendingIntent.getActivity(this, 1, mediaSessionIntent, PendingIntent.FLAG_UPDATE_CURRENT)
                 }
 
@@ -91,6 +97,7 @@ class PlayerService : MediaBrowserServiceCompat() {
         }
 
         sessionToken?.let { mediaSessionToken ->
+            Timber.i("playerNotification manager being created")
             val playerNotificationManager = PlayerNotificationManager(this, nowPlayingChannelId,
                     nowPlayingNotificationId,
                     //interface instantiation
@@ -99,6 +106,7 @@ class PlayerService : MediaBrowserServiceCompat() {
                         val controller = MediaControllerCompat(this@PlayerService, mediaSessionToken)
 
                         override fun getCurrentContentText(mPlayer: Player): String? {
+//                            val sermon = mPlayer.currentTag as? Sermon
                             val sermon = mPlayer.currentTag as? Sermon
                             return sermon?.pastorName
                         }
@@ -183,4 +191,10 @@ class PlayerService : MediaBrowserServiceCompat() {
 
         notificationManager.createNotificationChannel(notificationChannel)
     }
+
+    companion object {
+        const val SERMON_PODCAST_BUNDLE="com.example.covenantsermons.player.bundle"
+        const val SERMON_PODCAST_PARCELABLE="com.example.covenantsermons.player.parcelable"
+    }
+
 }

@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -53,6 +52,9 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Timber.i("onCreate called")
+
+
 
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
@@ -72,6 +74,28 @@ class MainActivity : AppCompatActivity(){
         //activityMainBinding.toolbar.setupWithNavController(navController, appBarConfiguration)
         activityMainBinding.playerView.player=exoPlayer
         activityMainBinding.playerView.requestFocus()
+
+        intent.let{
+//            Timber.i("intent does not equal null")
+//            val sermonBundle=intent.getBundleExtra(SERMON_PODCAST_BUNDLE)
+//            val sermon=sermonBundle?.getParcelable<Sermon>(SERMON_PODCAST_PARCELABLE)
+//            Timber.i("sermon from intent= $sermon")
+//            sermon.let{
+//               if (sermon != null) {
+//                   setCurrentSermonTitle(sermon)
+//               }
+//            val sermon= podcastListViewModel.podcasts.value?.get(exoPlayer.currentTag as Sermon)
+            val sermon=exoPlayer.currentTag as? Sermon
+            Timber.i("exoplayer.currentTag sermon $sermon")
+
+            Timber.i("currentWindowIndex sermon= $sermon")
+            if (sermon != null) {
+                setCurrentSermonTitle(sermon)
+            }
+           }
+
+
+
 //        activityMainBinding.main_activity_player_group.player_view.player = exoPlayer
 
         //TODO remove only for testing
@@ -79,11 +103,17 @@ class MainActivity : AppCompatActivity(){
 //        playerViewModel.play(podcastListViewModel.transformLiveData()[0],podcastListViewModel.transformLiveData())
 
 
-        playerViewModel._currentlyPlaying.observe(this, Observer { sermon ->
-            Timber.i("sermon playing= $sermon")
-            Toast.makeText(applicationContext, "$sermon", Toast.LENGTH_SHORT).show()
-        })
+//        playerViewModel._currentlyPlaying.observe(this, Observer { sermon ->
+//            Timber.i("sermon playing= $sermon")
+//            Toast.makeText(applicationContext, "$sermon", Toast.LENGTH_SHORT).show()
+//        })
 
+        playerViewModel.currentlyPlaying.observe(this, Observer { sermon ->
+            setCurrentSermonTitle(sermon)
+//            activityMainBinding.currentSermonTitle.text = sermon.title
+//            Timber.i("sermon Title changed")
+//            Timber.i("sermon.title is ${sermon.title}")
+        })
 //        if(activityMainBinding.playerView.exo_play)
 
 
@@ -147,6 +177,12 @@ class MainActivity : AppCompatActivity(){
 
     fun hideUpButton() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(false)
+    }
+
+    private fun setCurrentSermonTitle(sermon: Sermon){
+        activityMainBinding.currentSermonTitle.text = sermon.title
+        Timber.i("sermon Title changed")
+        Timber.i("sermon.title is ${sermon.title}")
     }
 
     //TODO remove only for testing

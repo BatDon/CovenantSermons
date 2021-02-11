@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -119,7 +118,7 @@ class PodcastListFragment : Fragment() {
 
         podcastAdapter = PodcastAdapter(sermonArrayList).also {
             it.onItemClick={ sermon ->
-                Toast.makeText(activity, "title ${sermon.title} audio file${sermon.audioFile}", Toast.LENGTH_LONG).show()
+                //Toast.makeText(activity, "title ${sermon.title} audio file${sermon.audioFile}", Toast.LENGTH_LONG).show()
                 Timber.i("on Click called title ${sermon.title}")
                 //podcast_list_rv.adapter=it
                 Timber.i("podcastListViewModel.transformLiveData() ${podcastListViewModel.transformLiveData().size}")

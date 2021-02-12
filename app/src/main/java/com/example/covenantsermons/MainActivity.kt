@@ -1,5 +1,6 @@
 package com.example.covenantsermons
 
+
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -8,6 +9,8 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -19,10 +22,13 @@ import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.podcast.PodcastAdapter
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.exo_playback_control_view.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import java.util.*
+
 
 class MainActivity : AppCompatActivity(){
     private val playerViewModel: PlayerViewModel by viewModel()
@@ -32,13 +38,14 @@ class MainActivity : AppCompatActivity(){
 
 
     private val podcastListViewModel: PodcastListViewModel by viewModel()
+    private val masterFragmentViewModel: MasterFragmentViewModel by viewModel()
 
 //    private var sermonArrayList:ArrayList<Sermon> =ArrayList<Sermon>()
-    private lateinit var sermonArrayList:ArrayList<Sermon?>
+    private lateinit var sermonArrayList: ArrayList<Sermon?>
 //    private lateinit var itemsCells: ArrayList<String?>
     private lateinit var podcastAdapter: PodcastAdapter
 
-    private lateinit var activityMainBinding: ActivityMainBinding
+    lateinit var activityMainBinding: ActivityMainBinding
 
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -63,12 +70,17 @@ class MainActivity : AppCompatActivity(){
         //SermonDatabase().getPodcastsFromDatabase()
         getPodcastsFromDatabase(podcastListViewModel)
 
+
         navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
         //up button for toolbar
-        toolbar = activityMainBinding.toolbar
+//        toolbar = activityMainBinding.appBarCollapsingToolbar.toolbar
+//        setSupportActionBar(toolbar)
+//        toolbar = activityMainBinding.appBarCollapsingToolbar.toolbar
+        toolbar = activityMainBinding.appBarToolbar
         setSupportActionBar(toolbar)
+
 
 
         //activityMainBinding.toolbar.setupWithNavController(navController, appBarConfiguration)
@@ -106,6 +118,96 @@ class MainActivity : AppCompatActivity(){
 //            Timber.i("sermon Title changed")
 //            Timber.i("sermon.title is ${sermon.title}")
         })
+
+
+
+        masterFragmentViewModel.showAppBar.observe(this, Observer { showAppBar ->
+            if (showAppBar) {
+                Timber.i("show appBar in main activity")
+                //activityMainBinding.appBarCollapsingToolbar = VISIBLE
+//                activityMainBinding.appBarCollapsingToolbar.appBar.visibility = VISIBLE
+//                activityMainBinding.appBarCollapsingToolbar.collapsingToolbar.visibility = VISIBLE
+//                toolbar = activityMainBinding.appBarCollapsingToolbar.toolbar
+//                setSupportActionBar(toolbar)
+//                activityMainBinding.toolbar.visibility = GONE
+//                activityMainBinding.appBar.visibility = VISIBLE
+//                activityMainBinding.appBarToolbar.visibility = VISIBLE
+//                toolbar = activityMainBinding.appBarToolbar
+//                setSupportActionBar(toolbar)
+//                activityMainBinding.toolbar.visibility = GONE
+
+//                activityMainBinding.appBar.setExpanded(true)
+//                activityMainBinding.appBar.visibility= VISIBLE
+//                activityMainBinding.appBarToolbar.visibility = VISIBLE
+//                toolbar = activityMainBinding.appBarToolbar
+//                setSupportActionBar(toolbar)
+//                activityMainBinding.toolbar.visibility = GONE
+
+
+//                activityMainBinding.appBar.visibility= VISIBLE
+//                activityMainBinding.appBarToolbar.visibility = VISIBLE
+
+                activityMainBinding.appBar.setExpanded(true)
+
+                ViewCompat.setNestedScrollingEnabled(activityMainBinding.nestedScrollView, true)
+
+                val appBarParams = activityMainBinding.appBar.layoutParams as CoordinatorLayout.LayoutParams
+                if (appBarParams.behavior == null)
+                    appBarParams.behavior = AppBarLayout.Behavior()
+                val behaviour = appBarParams.behavior as AppBarLayout.Behavior
+                behaviour.setDragCallback(object : AppBarLayout.Behavior.DragCallback() {
+                    override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                        return true
+                    }
+                })
+
+//                val appBarParmas = activityMainBinding.appBar.layoutParams as CoordinatorLayout.LayoutParams
+//                appBarParmas.height = 180
+//                activityMainBinding.appBar.layoutParams=appBarParmas
+
+                toolbar = activityMainBinding.appBarToolbar
+                setSupportActionBar(toolbar)
+                //activityMainBinding.toolbar.visibility = GONE
+            } else {
+                Timber.i("hide appBar in main activity")
+//                activityMainBinding.appBarCollapsingToolbar.appBar.visibility = GONE
+//                activityMainBinding.appBarCollapsingToolbar.collapsingToolbar.visibility = GONE
+//                activityMainBinding.toolbar.visibility = VISIBLE
+//                activityMainBinding.appBar.setExpanded(false)
+
+//                activityMainBinding.collapsingToolbar.
+//                activityMainBinding.appBar.visibility= GONE
+//                activityMainBinding.collapsingToolbar.visibility = GONE
+//                activityMainBinding.toolbar.visibility = VISIBLE
+
+                activityMainBinding.appBar.setExpanded(false)
+
+                ViewCompat.setNestedScrollingEnabled(activityMainBinding.nestedScrollView, false)
+
+                val appBarParams = activityMainBinding.appBar.layoutParams as CoordinatorLayout.LayoutParams
+                if (appBarParams.behavior == null)
+                    appBarParams.behavior = AppBarLayout.Behavior()
+                val behaviour = appBarParams.behavior as AppBarLayout.Behavior
+                behaviour.setDragCallback(object : AppBarLayout.Behavior.DragCallback() {
+                    override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                        return false
+                    }
+                })
+
+//                val appBarParmas = activityMainBinding.appBar.layoutParams as CoordinatorLayout.LayoutParams
+//                appBarParmas.height = android.R.attr.actionBarSize
+//                activityMainBinding.appBar.layoutParams=appBarParmas
+
+
+
+                toolbar = activityMainBinding.appBarToolbar
+                setSupportActionBar(toolbar)
+                //activityMainBinding.nestedScrollView.scrollTo(0, 0);
+            }
+        })
+
+        masterFragmentViewModel.toShowAppBar(true)
+
 //        if(activityMainBinding.playerView.exo_play)
 
 

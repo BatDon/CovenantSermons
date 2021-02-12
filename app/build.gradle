@@ -3,11 +3,11 @@ plugins {
     id 'kotlin-android'
     id 'com.google.gms.google-services'
     // parcelable
-    id 'kotlin-android-extensions'
+    //id 'kotlin-android-extensions'
 
     id 'kotlin-kapt'
     //viewbinding
-//    id 'kotlin-android-extensions'
+    id 'kotlin-android-extensions'
 
 }
 

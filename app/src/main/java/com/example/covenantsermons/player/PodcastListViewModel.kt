@@ -45,7 +45,6 @@ class PodcastListViewModel(
     fun setPodcasts(arrayListSermon: ArrayList<Sermon>){
         _podcasts.value?.clear()
         _podcasts.value=arrayListSermon
-
     }
 
 //    fun transformLiveData():ArrayList<Sermon> {

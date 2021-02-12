@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.covenantsermons.MainActivity
+import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.R
 import com.example.covenantsermons.databinding.PodcastDetailFragmentBinding
 import com.example.covenantsermons.modelDatabase.Sermon
@@ -26,6 +27,7 @@ class PodcastDetailsFragment : Fragment() {
 //    private val podcastDetailsViewModel:PodcastDetailsViewModel by viewModel()
     private val playerViewModel: PlayerViewModel by sharedViewModel()
     private val podcastListViewModel: PodcastListViewModel by viewModel()
+    private val masterFragmentViewModel: MasterFragmentViewModel by sharedViewModel()
     private var sermon: Sermon?= null
     private var podcastDetailFragmentBinding: PodcastDetailFragmentBinding?=null
 
@@ -34,7 +36,7 @@ class PodcastDetailsFragment : Fragment() {
         sermon = (arguments?.getParcelable<Sermon>(podcastSermonArgument) ?: Sermon())
 
         playerViewModel.currentlyPlaying.observe(this, Observer { sermon ->
-            this.sermon=sermon
+            this.sermon = sermon
             setUpFragmentViews()
 
 //            activityMainBinding.currentSermonTitle.text = sermon.title
@@ -59,7 +61,30 @@ class PodcastDetailsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         val mainActivity=activity as MainActivity
-        mainActivity.showUpButton()
+        mainActivity.let{
+            it.showUpButton()
+//            it.activityMainBinding.collapsingToolbar.visibility=GONE
+//            it.findViewById<View>(R.id.app_bar_collapsing_toolbar).visibility=GONE
+//            it.findViewById<View>(R.id.toolbar).visibility= VISIBLE
+
+//            it.activityMainBinding.appBarCollapsingToolbar.appBar.visibility=GONE
+//            it.activityMainBinding.toolbar.visibility= VISIBLE
+//            it.activityMainBinding.appBar.visibility=GONE
+            Timber.i("activityMainBinding in podcastDetailsFragment ${it.activityMainBinding}")
+            //it.findViewById(R.id.appBar).visibility=GONE
+//            it.appBar.visibility= GONE
+//            it.toolbar.visibility= GONE
+//            val params = it.nested_scroll_view.layoutParams
+//            params.height = 700
+//            it.nested_scroll_view.layoutParams = params
+//            it.nested_scroll_view.
+        }
+//        mainActivity.showUpButton()
+//        mainActivity.appBar.visibility=INVISIBLE
+
+        //(activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+      //  (activity as AppCompatActivity?)!!.appBar!!.visibility=INVISIBLE
+
     }
 
 //    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -82,8 +107,18 @@ class PodcastDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.i("onViewCreated called")
+        val mainActivity=activity as MainActivity
+        mainActivity.let {
+
+            it.showUpButton()
+//            it.activityMainBinding.collapsingToolbar.visibility=GONE
+//            it.findViewById<View>(R.id.app_bar_collapsing_toolbar).visibility = GONE
+//            it.findViewById<View>(R.id.toolbar).visibility = VISIBLE
+        }
+        masterFragmentViewModel.toShowAppBar(false)
 
         setUpFragmentViews()
+
 //        val binding = PodcastDetailFragmentBinding.bind(view)
 //        podcastDetailFragmentBinding = binding
 
@@ -111,6 +146,9 @@ class PodcastDetailsFragment : Fragment() {
         }
 
     }
+
+
+
 
 
 
@@ -159,7 +197,7 @@ class PodcastDetailsFragment : Fragment() {
 //        podcastDetailsViewModel.getPodcastDetails(podcastSermon)
 //    }
 
-    fun stringToBase64(imagePath:String?):String{
+    fun stringToBase64(imagePath: String?):String{
         val bytes = File(imagePath).readBytes()
         val base64 = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT)
         //android.util.Base64.decode(imagePath, android.util.Base64.DEFAULT);
@@ -172,6 +210,19 @@ class PodcastDetailsFragment : Fragment() {
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
 //        val imageBytes = Base64.decode(encodedString, 0)
 //        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+    }
+
+    override fun onStop() {
+        super.onStop()
+//        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+//        (activity as AppCompatActivity?)!!.appBar!!.visibility=VISIBLE
+        val mainActivity=activity as MainActivity
+        mainActivity.let {
+//            it.activityMainBinding.appBarCollapsingToolbar.appBar.visibility = VISIBLE
+//            it.activityMainBinding.toolbar.visibility = GONE
+//            it.findViewById<View>(R.id.app_bar_collapsing_toolbar).visibility=VISIBLE
+//            it.findViewById<View>(R.id.toolbar).visibility= GONE
+        }
     }
 
     override fun onDestroyView() {

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covenantsermons.MainActivity
+import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.R
 import com.example.covenantsermons.modelDatabase.Sermon
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
@@ -31,6 +32,7 @@ class PodcastListFragment : Fragment() {
 
     private val podcastListViewModel: PodcastListViewModel by viewModel()
     private val playerViewModel: PlayerViewModel by sharedViewModel()
+    private val masterFragmentViewModel: MasterFragmentViewModel by sharedViewModel()
 
 
     //    private val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
@@ -166,6 +168,7 @@ class PodcastListFragment : Fragment() {
             sermonArrayList = ArrayList(list)
             sermonListUpdated()
         })
+        masterFragmentViewModel.toShowAppBar(true)
     }
 
     private fun sermonListUpdated() {

@@ -1,6 +1,7 @@
 package com.example.covenantsermons.di
 
 //import com.example.covenantsermons.modelDatabase.SermonDatabase
+import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import kotlinx.coroutines.Dispatchers
@@ -36,4 +37,7 @@ val presentationModule = module {
 //    viewModel {
 //        PodcastDetailsViewModel(get(), get(), get())
 //    }
+    viewModel{
+        MasterFragmentViewModel()
+    }
 }

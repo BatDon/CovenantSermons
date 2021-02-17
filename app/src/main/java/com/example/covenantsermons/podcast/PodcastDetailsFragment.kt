@@ -54,67 +54,30 @@ class PodcastDetailsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Timber.i("onCreateView called")
         podcastDetailFragmentBinding= PodcastDetailFragmentBinding.inflate(layoutInflater)
+
         return podcastDetailFragmentBinding!!.root
 
     }
 
     override fun onResume() {
         super.onResume()
-        val mainActivity=activity as MainActivity
-        mainActivity.let{
-            it.showUpButton()
-//            it.activityMainBinding.collapsingToolbar.visibility=GONE
-//            it.findViewById<View>(R.id.app_bar_collapsing_toolbar).visibility=GONE
-//            it.findViewById<View>(R.id.toolbar).visibility= VISIBLE
-
-//            it.activityMainBinding.appBarCollapsingToolbar.appBar.visibility=GONE
-//            it.activityMainBinding.toolbar.visibility= VISIBLE
-//            it.activityMainBinding.appBar.visibility=GONE
-            Timber.i("activityMainBinding in podcastDetailsFragment ${it.activityMainBinding}")
-            //it.findViewById(R.id.appBar).visibility=GONE
-//            it.appBar.visibility= GONE
-//            it.toolbar.visibility= GONE
-//            val params = it.nested_scroll_view.layoutParams
-//            params.height = 700
-//            it.nested_scroll_view.layoutParams = params
-//            it.nested_scroll_view.
-        }
-//        mainActivity.showUpButton()
-//        mainActivity.appBar.visibility=INVISIBLE
-
-        //(activity as AppCompatActivity?)!!.supportActionBar!!.hide()
-      //  (activity as AppCompatActivity?)!!.appBar!!.visibility=INVISIBLE
+        val mainActivity:MainActivity? = activity as MainActivity
+        mainActivity?.showUpButton()
 
     }
 
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//        //        sermon_image_iv.setImageBitmap()
-//        sermon_title_tv.text=sermon.title.toString()
-//        sermon_pastor_name_tv.text=sermon.pastorName.toString()
-//
-//
-//        return inflater.inflate(R.layout.podcast_detail_fragment, container, false)
-//    }
-
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//       podcastDetailFragmentBinding = inflater.inflate(R.layout.podcast_detail_fragment, container, false)
-//                //        podcastDetailFragmentBinding.sermon_image_iv.setImageBitmap()
-//        podcastDetailFragmentBinding.sermon_title_tv=sermon.title.toString()
-//        sermon_pastor_name_tv.text=sermon.pastorName.toString()
-//        return podcastDetailFragmentBinding.root
-//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.i("onViewCreated called")
-        val mainActivity=activity as MainActivity
-        mainActivity.let {
-
-            it.showUpButton()
-//            it.activityMainBinding.collapsingToolbar.visibility=GONE
-//            it.findViewById<View>(R.id.app_bar_collapsing_toolbar).visibility = GONE
-//            it.findViewById<View>(R.id.toolbar).visibility = VISIBLE
-        }
+//        val mainActivity=activity as MainActivity
+//        mainActivity.let {
+//
+//            it.showUpButton()
+////            it.activityMainBinding.collapsingToolbar.visibility=GONE
+////            it.findViewById<View>(R.id.app_bar_collapsing_toolbar).visibility = GONE
+////            it.findViewById<View>(R.id.toolbar).visibility = VISIBLE
+//        }
         masterFragmentViewModel.toShowAppBar(false)
 
         setUpFragmentViews()
@@ -137,7 +100,7 @@ class PodcastDetailsFragment : Fragment() {
         }
 
     private fun setUpFragmentViews(){
-        activity?.applicationContext?.let { podcastDetailFragmentBinding?.let { it1 -> Glide.with(it).load(sermon?.image).error(R.drawable.cross).into(it1.sermonImageIv) } }
+        activity?.applicationContext?.let { podcastDetailFragmentBinding?.let { podcastDetailView -> Glide.with(it).load(sermon?.image).error(R.drawable.cross).into(podcastDetailView.sermonImageIv) } }
 //        podcastDetailFragmentBinding?.sermonImageIv!!.setImageBitmap(bitmap)
         sermon?.let{
             podcastDetailFragmentBinding?.sermonTitleTv!!.text=it.title
@@ -216,13 +179,13 @@ class PodcastDetailsFragment : Fragment() {
         super.onStop()
 //        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
 //        (activity as AppCompatActivity?)!!.appBar!!.visibility=VISIBLE
-        val mainActivity=activity as MainActivity
-        mainActivity.let {
+//        val mainActivity=activity as MainActivity
+//        mainActivity.let {
 //            it.activityMainBinding.appBarCollapsingToolbar.appBar.visibility = VISIBLE
 //            it.activityMainBinding.toolbar.visibility = GONE
 //            it.findViewById<View>(R.id.app_bar_collapsing_toolbar).visibility=VISIBLE
 //            it.findViewById<View>(R.id.toolbar).visibility= GONE
-        }
+//        }
     }
 
     override fun onDestroyView() {

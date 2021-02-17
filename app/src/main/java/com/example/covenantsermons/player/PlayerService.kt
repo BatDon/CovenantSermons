@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -16,12 +17,18 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.request.FutureTarget
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.modelDatabase.Sermon
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -36,6 +43,10 @@ class PlayerService : MediaBrowserServiceCompat() {
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
+
+    private var bigIconBitmap: Bitmap?=null
+
+
 
 
     //supports devices such as Google Assistant, Bluetooth headsets and media buttons
@@ -118,10 +129,49 @@ class PlayerService : MediaBrowserServiceCompat() {
 
                         //TODO no bitmap is shown
                         override fun getCurrentLargeIcon(
-                                player: Player,
+                                mPlayer: Player,
                                 callback: PlayerNotificationManager.BitmapCallback
                         ): Bitmap? {
-                            return controller.metadata?.description?.iconBitmap
+                            val sermon = mPlayer.currentTag as? Sermon
+//                            runBlocking { sermon?.image?.let { glideCreateBitmap(it) } }
+
+//                            var bitmap:Bitmap?=null
+//                            GlobalScope.launch(Dispatchers.Main) { sermon?.image?.let { bitmap= glideCreateBitmap(it) } }
+//                            Timber.i("bitmap after coroutine is $bitmap")
+
+//                            runBlocking {
+//                                val bitmap = GlobalScope.async{ sermon?.image?.let { glideCreateBitmap(it) } }
+//                                bitmap.await()
+//                            }
+
+//                            runBlocking {
+//                                val bitmap:Bitmap = launch(Dispatchers.IO){ sermon?.image?.let { glideCreateBitmap(it) } }
+//                                return bitmap
+//                            }
+                            var bitmap=null
+
+                            val coroutineScope = CoroutineScope(Dispatchers.Main)
+
+                            GlobalScope.launch(Dispatchers.Main) {
+//                                val bitmap:Bitmap? =  sermon?.image?.let { glideCreateBitmap(it) }
+                                val bitmapFromGlide:Bitmap? =  sermon?.image?.let { glideCreateBitmap(it) }
+                               // setBitmapForIcon(bitmap)
+
+                               // return@launch bitmap
+
+                            }
+                            //bitmapFromGlide
+
+//                            fun setBitmapForIcon(bitmap:Bitmap){
+//
+//                            }
+                            return bigIconBitmap
+//                            val bitmap = GlobalScope.async{ sermon?.image?.let { glideCreateBitmap(it) } }
+//                            return bitmap.await()
+
+//                            return controller.metadata?.description?.iconBitmap
+//                            return Glide.with(this@PlayerService).asBitmap().load(sermon?.image).error(R.drawable.cross)
+//                            Glide.with(this@PlayerService).load(sermon?.image).error(R.drawable.cross)
                         }
 
                         override fun createCurrentContentIntent(player: Player): PendingIntent? {
@@ -168,6 +218,7 @@ class PlayerService : MediaBrowserServiceCompat() {
         }
     }
 
+
     //only need one channel can change to singleton class
     private fun shouldCreateChannel(notificationManager: NotificationManagerCompat) =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !channelExists(
@@ -191,6 +242,144 @@ class PlayerService : MediaBrowserServiceCompat() {
 
         notificationManager.createNotificationChannel(notificationChannel)
     }
+
+  //  suspend fun glideCreateBitmap(url: String): Bitmap? =withContext(Dispatchers.IO) {
+
+
+//    suspend fun glideCreateBitmap(url: String): Bitmap? =withContext(Dispatchers.IO) {
+//
+//            var bitmap: Bitmap? = null
+//
+//            var futureTargetBitmap: FutureTarget<Bitmap>
+//
+//            Glide.with(this@PlayerService).asBitmap().load(url).into(object : CustomTarget<Bitmap?>(){
+//
+//
+//                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
+//                    bitmap = resource
+//                    Timber.i("onResourceReady bitmap= $bitmap")
+//                }
+//
+//                override fun onLoadCleared(placeholder: Drawable?) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//            })
+//
+//            return@withContext bitmap
+//        }
+
+
+
+
+//    private suspend fun glideCreateBitmap(url: String): Bitmap? =withContext(Dispatchers.IO){
+    private suspend fun glideCreateBitmap(url: String): Bitmap? {
+
+    var bitmap: Bitmap? = null
+
+    var futureTargetBitmap: FutureTarget<Bitmap>
+
+    var lmda = null
+
+//        fun foo(lmbda: (bitmap:Bitmap) -> Bitmap){
+//            lmbda()
+//        }
+
+    //bigIconBitmap=withContext(Dispatchers.IO){ Glide.with(this@PlayerService).asBitmap().load(url).into(object : CustomTarget<Bitmap?>(){
+        bigIconBitmap = withContext(Dispatchers.IO) {
+            val requestBuilderBitmap: RequestBuilder<Bitmap?> = Glide.with(this@PlayerService).asBitmap().load(url)
+            requestBuilderBitmap.into(CustomTargetObject)
+            while (CustomTargetObject.bitmapCustom == null) {
+                continue
+            }
+            return@withContext CustomTargetObject.bitmapCustom
+        }
+        return bigIconBitmap
+    }
+
+
+//            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
+//                    bigIconBitmap=resource
+////                bitmap = resource
+//                //callbackReturnBitmap(bitmap)
+//                //return bitmap
+//               // lmda={bitmap -> return bitmap}
+//                Timber.i("onResourceReady bitmap= $bitmap")
+//                return@withContext resource
+//            }
+//
+//            override fun onLoadCleared(placeholder: Drawable?) {
+//                TODO("Not yet implemented")
+//            }
+
+//            fun callbackReturnBitmap(bitmap:Bitmap?){
+//                return bitmap
+//            }
+
+ //       })
+
+//        while(bigIconBitmap==null){
+//            continue
+//        }
+
+//        while(bitmap==null){
+//            continue
+//        }
+
+//        fun callbackReturnBitmap(bitmap:Bitmap){
+//
+//        }
+
+//        return@withContext bitmap
+//    }
+
+    object CustomTargetObject: CustomTarget<Bitmap?>(){
+        var bitmapCustom:Bitmap?=null
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
+//            TODO("Not yet implemented")
+            bitmapCustom=resource
+
+        }
+
+        override fun onLoadCleared(placeholder: Drawable?) {
+            TODO("Not yet implemented")
+        }
+
+//        fun getBitmap()= bitmapCustom
+    }
+
+
+
+
+
+
+
+
+
+
+
+//    suspend fun glideCreateBitmap(url: String): Bitmap? =withContext(Dispatchers.IO) {
+////        var bitmap: Bitmap?=null
+////        launch {
+//        var bitmap: Bitmap? = null
+//
+//        Glide.with(this@PlayerService).asBitmap().load(url).into(object : CustomTarget<Bitmap?>() {
+//
+//            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
+//                bitmap = resource
+//                Timber.i("onResourceReady bitmap= $bitmap")
+//            }
+//
+//            override fun onLoadCleared(placeholder: Drawable?) {
+//                TODO("Not yet implemented")
+//            }
+//
+//        })
+
+//        return@withContext bitmap
+//    }
+
+
 
     companion object {
         const val SERMON_PODCAST_BUNDLE="com.example.covenantsermons.player.bundle"

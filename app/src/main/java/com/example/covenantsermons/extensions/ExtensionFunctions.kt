@@ -74,6 +74,8 @@ fun <X, Y> liveDataToSermonArrayList(
     return sermonTransformedList
 }
 
+
+
 //@MainThread
 //fun <X, Y> liveDataToSermonArrayList(
 //        source: LiveData<X>,

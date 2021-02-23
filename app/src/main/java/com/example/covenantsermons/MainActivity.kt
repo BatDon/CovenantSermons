@@ -33,8 +33,10 @@ import java.util.*
 class MainActivity : AppCompatActivity(){
     private val playerViewModel: PlayerViewModel by viewModel()
     private val exoPlayer: ExoPlayer by inject()
+
 //class MainActivity : AppCompatActivity(),ViewInterface, ViewInterface.NewDataInterface{
 //    private lateinit var mainViewModel: MainViewModel
+
 
 
     private val podcastListViewModel: PodcastListViewModel by viewModel()

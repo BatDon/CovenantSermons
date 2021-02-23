@@ -1,5 +1,6 @@
 package com.example.covenantsermons.player
 
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,6 +30,11 @@ class PlayerViewModel(
     val currentlyPlaying: LiveData<Sermon> = _currentlyPlaying
     private var previousIndex=0
     private var currentIndex = 0
+
+    //use coroutine to get image
+    val _currentSermonImage=MutableLiveData<Bitmap>()
+    val currentSermonImage
+        get() = _currentSermonImage
 
     private val listener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -179,6 +185,8 @@ class PlayerViewModel(
 //        currentIndex = 0
 //        _currentlyPlaying.value = next
     }
+
+
 
     //private fun getPreviousTrackIndex(){
 //        previousIndex=if (exoPlayer.currentWindowIndex-1<0) 0 else exoPlayer.currentWindowIndex-1

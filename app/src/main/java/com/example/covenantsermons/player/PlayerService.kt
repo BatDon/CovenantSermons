@@ -22,6 +22,7 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.covenantsermons.ImageRepository
 import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.modelDatabase.Sermon
 import com.google.android.exoplayer2.ExoPlayer
@@ -30,14 +31,19 @@ import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import org.koin.core.KoinComponent
 import timber.log.Timber
 
 
-class PlayerService : MediaBrowserServiceCompat() {
+class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
+//class PlayerService : MediaBrowserServiceCompat(), KoinScopeComponent{
     //only one Exoplayer created
     private val exoPlayer: ExoPlayer by inject()
     //only one PlaybackPreparer created
     private val playbackPreparer: PlaybackPreparer by inject()
+    //private val imageViewModel: ImageViewModel by inject()
+    private val imageRepository: ImageRepository by inject()
+ //   private val imageViewModel: ImageViewModel by viewModel<ImageViewModel>()
     private val nowPlayingChannelId: String = "NOW_PLAYING"
     private val nowPlayingNotificationId: Int = 1
     private lateinit var mediaSession: MediaSessionCompat
@@ -132,7 +138,17 @@ class PlayerService : MediaBrowserServiceCompat() {
                                 mPlayer: Player,
                                 callback: PlayerNotificationManager.BitmapCallback
                         ): Bitmap? {
+                            Timber.i("getCurrentLargeIcon called")
+//                            imageViewModel.currentSermonImage.observe(this@PlayerService, Observer { currentSermonImage ->
+//                            })
+
                             val sermon = mPlayer.currentTag as? Sermon
+                            val bitmap=sermon?.image?.let { imageRepository.getSermonImage(it) }
+
+                            //val sermonBitmap= imageViewModel.currentSermonImage.value
+
+//                            val sermon = mPlayer.currentTag as? Sermon
+//                            sermon.image
 //                            runBlocking { sermon?.image?.let { glideCreateBitmap(it) } }
 
 //                            var bitmap:Bitmap?=null
@@ -148,24 +164,29 @@ class PlayerService : MediaBrowserServiceCompat() {
 //                                val bitmap:Bitmap = launch(Dispatchers.IO){ sermon?.image?.let { glideCreateBitmap(it) } }
 //                                return bitmap
 //                            }
-                            var bitmap=null
-
-                            val coroutineScope = CoroutineScope(Dispatchers.Main)
-
-                            GlobalScope.launch(Dispatchers.Main) {
-//                                val bitmap:Bitmap? =  sermon?.image?.let { glideCreateBitmap(it) }
-                                val bitmapFromGlide:Bitmap? =  sermon?.image?.let { glideCreateBitmap(it) }
-                               // setBitmapForIcon(bitmap)
-
-                               // return@launch bitmap
-
-                            }
+//                            var bitmap = null
+//
+//                            val coroutineScope = CoroutineScope(Dispatchers.Main)
+//
+//                            GlobalScope.launch(Dispatchers.Main) {
+////                                val bitmap:Bitmap? =  sermon?.image?.let { glideCreateBitmap(it) }
+//                                val bitmapFromGlide: Bitmap? = sermon?.image?.let { glideCreateBitmap(it) }
+//                                // setBitmapForIcon(bitmap)
+//
+//                                // return@launch bitmap
+//
+//                            }
                             //bitmapFromGlide
 
 //                            fun setBitmapForIcon(bitmap:Bitmap){
 //
 //                            }
-                            return bigIconBitmap
+
+//                            return bigIconBitmap
+
+//                            return sermonBitmap
+                            return bitmap
+
 //                            val bitmap = GlobalScope.async{ sermon?.image?.let { glideCreateBitmap(it) } }
 //                            return bitmap.await()
 
@@ -342,7 +363,10 @@ class PlayerService : MediaBrowserServiceCompat() {
         }
 
         override fun onLoadCleared(placeholder: Drawable?) {
-            TODO("Not yet implemented")
+//            TODO("Not yet implemented")
+//            val icon = BitmapFactory.decodeResource(this.getResources(),
+//                    R.drawable.icon_resource)
+//            bitmapCustom=placeholder
         }
 
 //        fun getBitmap()= bitmapCustom

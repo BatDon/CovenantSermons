@@ -19,7 +19,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class ImageRepository(val context: Context): Repository, CoroutineScope, KoinComponent {
+class ImageRepository(val mContext: Context): Repository, CoroutineScope, KoinComponent {
 
     private val currentSermonImage = MutableLiveData<Bitmap>()
 
@@ -60,12 +60,13 @@ class ImageRepository(val context: Context): Repository, CoroutineScope, KoinCom
         when(result) {
             is EventResponse.ResourceReady -> {
                 val bitmap = result.bitmap
-                currentSermonImage.value=bitmap
+                currentSermonImage.value = bitmap
                 Timber.i("call function called bitmap= $bitmap")
-                this.bitmap=bitmap
+                this.bitmap = bitmap
 
             }
             is EventResponse.LoadCleared -> {
+                Timber.i("EventResponse.LoadCleared called")
                 val drawable = result.drawable
             }
 
@@ -112,11 +113,22 @@ class ImageRepository(val context: Context): Repository, CoroutineScope, KoinCom
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
+                    Timber.i("onLoadCleared called")
                     placeholder?.let { EventResponse.loadCleared(it) }?.let { continuation.resume(it) }
                 }
 
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    Timber.i("load failed")
+                    // Intentionally empty, this can be optionally implemented by subclasses.
+                }
+
             }
-            Glide.with(coroutineContext).asBitmap().load(url).into(bitmapEventListener)
+//            if(this==null){
+//                Timber.i("this equals null")
+//                Glide.with(mContext).asBitmap().load(R.drawable.cross).into(bitmapEventListener)
+//            }
+
+            Glide.with(mContext).asBitmap().load(this).into(bitmapEventListener)
         }
 
 

@@ -9,5 +9,4 @@ interface Repository : LifecycleObserver {
     fun getSermonImage(url:String): Bitmap?
     fun registerLifecycle(lifecycle: Lifecycle)
 
-
 }

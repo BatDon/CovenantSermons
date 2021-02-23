@@ -18,6 +18,7 @@ val presentationModule = module {
     factory<CoroutineContext> {
         SupervisorJob()
     }
+
     factory {
         Dispatchers.IO
     }
@@ -47,11 +48,14 @@ val presentationModule = module {
 //    single {
 //        ImageRepository()
 //    }
-
     single {
-        ImageRepository(repository: Repository) -> ImageRepository(repository)}
-        factory<SplashContract.Presenter> { (view: SplashContract.View) -> SplashPresenter(view) }
+        ImageRepository(get())
     }
+
+//    single {
+//        ImageRepository(repository: Repository) -> ImageRepository(repository)}
+//        factory<SplashContract.Presenter> { (view: SplashContract.View) -> SplashPresenter(view) }
+//    }
 
     single{
         ImageViewModelFactory(get())

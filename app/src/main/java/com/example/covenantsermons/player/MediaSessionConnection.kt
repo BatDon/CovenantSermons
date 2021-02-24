@@ -9,7 +9,8 @@ import timber.log.Timber
 class MediaSessionConnection(context: Context, serviceComponent: ComponentName) {
 
     private lateinit var mediaController: MediaControllerCompat
-    val transportControls: MediaControllerCompat.TransportControls get() = mediaController.transportControls
+    val transportControls: MediaControllerCompat.TransportControls
+        get() = mediaController.transportControls
 
     init{
         Timber.i("MediaSessionConnection created")

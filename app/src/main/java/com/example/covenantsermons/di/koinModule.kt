@@ -3,9 +3,11 @@ package com.example.covenantsermons.di
 import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.covenantsermons.database.SermonRoomDatabase
 import com.example.covenantsermons.player.MediaSessionConnection
 import com.example.covenantsermons.player.PlaybackPreparer
 import com.example.covenantsermons.player.PlayerService
+import com.example.covenantsermons.repository.SermonRepository
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -70,9 +72,13 @@ val koinModule = module {
         )
     }
 
+    single{
+        SermonRoomDatabase.getDatabase(get(), get())
+    }
 
-
-
+    single{
+        SermonRepository(get<SermonRoomDatabase>().sermonDao())
+    }
 
 }
 

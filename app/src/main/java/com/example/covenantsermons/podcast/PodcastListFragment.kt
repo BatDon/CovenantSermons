@@ -163,7 +163,7 @@ class PodcastListFragment : Fragment() {
     }
 
     private fun setViewModel() {
-        getPodcastsFromDatabase(podcastListViewModel)
+        activity?.let { getPodcastsFromDatabase(podcastListViewModel, it) }
         podcastListViewModel.podcasts.observe(viewLifecycleOwner, Observer { list ->
             sermonArrayList = ArrayList(list)
             sermonListUpdated()

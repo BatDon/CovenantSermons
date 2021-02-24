@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(){
 
         Timber.plant(Timber.DebugTree())
         //SermonDatabase().getPodcastsFromDatabase()
-        getPodcastsFromDatabase(podcastListViewModel)
+        getPodcastsFromDatabase(podcastListViewModel, this)
 
 
         navController = findNavController(R.id.nav_host_fragment)

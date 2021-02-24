@@ -107,7 +107,6 @@ class PodcastDetailsFragment : Fragment() {
             podcastDetailFragmentBinding?.sermonPastorNameTv!!.text=it.pastorName
             Timber.i("sermon.title ${it.title}")
         }
-
     }
 
 

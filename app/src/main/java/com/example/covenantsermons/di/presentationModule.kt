@@ -7,6 +7,8 @@ import com.example.covenantsermons.ImageViewModelFactory
 import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
+import com.example.covenantsermons.viewmodel.SermonViewModel
+import com.example.covenantsermons.viewmodel.SermonViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -63,5 +65,13 @@ val presentationModule = module {
 
     viewModel{
         ImageViewModel(get())
+    }
+
+    single{
+        SermonViewModelFactory(get())
+    }
+
+    viewModel{
+        SermonViewModel(get())
     }
 }

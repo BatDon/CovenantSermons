@@ -2,7 +2,8 @@ package com.example.covenantsermons.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.covenantsermons.modelDatabase.Sermon
+import com.example.covenantsermons.modelClass.Sermon
+
 
 class MainViewModel : ViewModel(){
     var sermonArrayListLiveData = MutableLiveData<ArrayList<Sermon>>()

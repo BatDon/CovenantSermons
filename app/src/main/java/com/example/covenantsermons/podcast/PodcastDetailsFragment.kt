@@ -13,7 +13,7 @@ import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.R
 import com.example.covenantsermons.databinding.PodcastDetailFragmentBinding
-import com.example.covenantsermons.modelDatabase.Sermon
+import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel

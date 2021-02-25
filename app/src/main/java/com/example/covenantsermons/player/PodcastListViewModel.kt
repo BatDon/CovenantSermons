@@ -3,7 +3,8 @@ package com.example.covenantsermons.player
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.covenantsermons.modelDatabase.Sermon
+import com.example.covenantsermons.modelClass.Sermon
+
 
 class PodcastListViewModel(
        // private val sermonDatabase: SermonDatabase

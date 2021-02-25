@@ -4,7 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covenantsermons.databinding.PodcastItemBinding
-import com.example.covenantsermons.modelDatabase.Sermon
+import com.example.covenantsermons.modelClass.Sermon
+
 
 class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

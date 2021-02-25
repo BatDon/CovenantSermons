@@ -7,6 +7,7 @@ import com.example.covenantsermons.ImageViewModelFactory
 import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
+import com.example.covenantsermons.repository.SermonRepository
 import com.example.covenantsermons.viewmodel.SermonViewModel
 import com.example.covenantsermons.viewmodel.SermonViewModelFactory
 import kotlinx.coroutines.Dispatchers
@@ -72,6 +73,6 @@ val presentationModule = module {
     }
 
     viewModel{
-        SermonViewModel(get())
+        SermonViewModel(get<SermonRepository>())
     }
 }

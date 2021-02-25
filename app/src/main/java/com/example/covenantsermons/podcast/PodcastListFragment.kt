@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.R
-import com.example.covenantsermons.modelDatabase.Sermon
+import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel

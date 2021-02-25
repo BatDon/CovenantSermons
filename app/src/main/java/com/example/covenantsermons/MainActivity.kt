@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import com.example.covenantsermons.databinding.ActivityMainBinding
-import com.example.covenantsermons.modelDatabase.Sermon
+import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity(){
 //            Toast.makeText(applicationContext, "$sermon", Toast.LENGTH_SHORT).show()
 //        })
 
-        playerViewModel.currentlyPlaying.observe(this, Observer { sermon ->
+        playerViewModel.currentlyPlaying.observe(this, Observer { sermon:Sermon ->
             setCurrentSermonTitle(sermon)
 
 //            activityMainBinding.currentSermonTitle.text = sermon.title

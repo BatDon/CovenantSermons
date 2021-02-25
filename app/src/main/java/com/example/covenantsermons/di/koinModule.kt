@@ -3,7 +3,8 @@ package com.example.covenantsermons.di
 import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.covenantsermons.database.SermonRoomDatabase
+import androidx.room.Room
+import com.example.covenantsermons.database.SermonEntityDatabase
 import com.example.covenantsermons.player.MediaSessionConnection
 import com.example.covenantsermons.player.PlaybackPreparer
 import com.example.covenantsermons.player.PlayerService
@@ -16,6 +17,7 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -72,12 +74,22 @@ val koinModule = module {
         )
     }
 
+    //SermonEntityDatabase
     single{
-        SermonRoomDatabase.getDatabase(get(), get())
+        Room.databaseBuilder(androidApplication(), SermonEntityDatabase::class.java, "sermon-database")
+                .build()
     }
 
+    //sermonDao
+    single { get<SermonEntityDatabase>().sermonDao() }
+
+//    single{
+//        SermonRoomDatabase.getDatabase(get(), get())
+//    }
+
+    //SermonRepository
     single{
-        SermonRepository(get<SermonRoomDatabase>().sermonDao())
+        SermonRepository(get<SermonEntityDatabase>().sermonDao())
     }
 
 }

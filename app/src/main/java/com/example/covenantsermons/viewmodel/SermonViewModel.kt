@@ -2,6 +2,7 @@ package com.example.covenantsermons.viewmodel
 
 import androidx.lifecycle.*
 import com.example.covenantsermons.modelClass.Sermon
+import com.example.covenantsermons.modelClass.SermonEntity
 import com.example.covenantsermons.repository.SermonRepository
 import kotlinx.coroutines.launch
 
@@ -11,17 +12,17 @@ class SermonViewModel(private val repository: SermonRepository) : ViewModel() {
     // - We can put an observer on the data (instead of polling for changes) and only update the
     //   the UI when the data actually changes.
     // - Repository is completely separated from the UI through the ViewModel.
-    val allSermons: LiveData<List<Sermon>> = repository.allSermons.asLiveData()
+    val allSermons: LiveData<List<SermonEntity>> = repository.allSermons.asLiveData()
 
-    fun insert(sermon: Sermon) = viewModelScope.launch {
-        repository.insert(sermon)
+    fun insert(sermonEntity: SermonEntity) = viewModelScope.launch {
+        repository.insert(sermonEntity)
     }
 
-    fun delete(sermon: Sermon ) = viewModelScope.launch {
-        repository.delete(sermon)
+    fun delete(sermonEntity: SermonEntity ) = viewModelScope.launch {
+        repository.delete(sermonEntity)
     }
 
-    fun deleteAllSermons(sermon: Sermon ) = viewModelScope.launch {
+    fun deleteAllSermons() = viewModelScope.launch {
         repository.deleteAllSermons()
     }
 }

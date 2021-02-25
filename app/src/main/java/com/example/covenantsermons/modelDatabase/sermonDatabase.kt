@@ -26,7 +26,7 @@ data class SermonList(
 //    val title: String = "",
 //    val pastorName: String=""
 //)
-
+//
 //@Parcelize
 //data class Sermon(
 //    val audioFile: String = "",
@@ -175,14 +175,17 @@ var unSubscribe: ListenerRegistration?=null
 
                         }
                         Timber.i("sermon Media= ${sermondChanges.document.data["audioFile"]}")
+                        val timeStampString: String = sermondChanges.document.data["timeStamp"].toString()
+                        val date = timeStampString.timeStampToDate()
+                        val title: String? = sermondChanges.document.data["title"] as String?
+                        val pastorName: String? = sermondChanges.document.data["pastor"] as String?
                         val audioFile: String? = sermondChanges.document.data["audioFile"] as String?
                         val durationLong: Long? = sermondChanges.document.data["duration"] as Long?
                         val duration: Int? = durationLong?.toInt()
                         //                    val duration: Int? =sermondChanges.document.data["duration"].toInt()
                         val image: String? = sermondChanges.document.data["image"] as String?
-                        val pastorName: String? = sermondChanges.document.data["pastor"] as String?
-                        val timeStampString: String = sermondChanges.document.data["timeStamp"].toString()
-                        val date = timeStampString.timeStampToDate()
+
+
 
                         //                    val timeStamp: Timestamp=sermondChanges.document.data["timeStamp"] as Timestamp
                         //                    val longTimeStamp: Long=timeStamp.seconds.toLong()
@@ -195,7 +198,7 @@ var unSubscribe: ListenerRegistration?=null
                         //                    val timeStamp: Date?= timeStampString?.toLongOrNull()?.let { Date(it) }
                         //                    Timber.i("date= ${longTimeStamp}")
                         //                    Timber.i("timeStamp=$timeStamp")
-                        val title: String? = sermondChanges.document.data["title"] as String?
+
 
                         sermonList.add(Sermon(date, title, pastorName, audioFile, duration, image))
                         Timber.i("sermonList= ${sermonList[0]}")

@@ -24,6 +24,7 @@ allprojects {
     }
 
     project.ext {
+        lifecycleExtensionVersion="2.2.0"
         lifecycleVersion="2.3.0"
         exoPlayerVersion = "2.8.1"
         rxJavaVersion = "2.1.12"

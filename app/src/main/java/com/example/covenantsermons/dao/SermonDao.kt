@@ -1,22 +1,20 @@
 package com.example.covenantsermons.dao
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import com.example.covenantsermons.modelClass.Sermon
+import androidx.room.*
+import com.example.covenantsermons.modelClass.SermonEntity
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface SermonDao {
 
     @Query("SELECT * FROM sermon_table ORDER BY date ASC")
-    fun getDateOrderedSermons(): Flow<List<Sermon>>
+    fun getDateOrderedSermons(): Flow<List<SermonEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(sermon: Sermon)
+    suspend fun insert(sermonEntity: SermonEntity)
 
     @Delete
-    suspend fun delete(sermon: Sermon)
+    suspend fun delete(sermonEntity: SermonEntity)
 
     @Query("DELETE FROM sermon_table")
     suspend fun deleteAllSermons()

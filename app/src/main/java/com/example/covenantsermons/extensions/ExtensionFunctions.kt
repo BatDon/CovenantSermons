@@ -4,7 +4,7 @@ import androidx.annotation.MainThread
 import androidx.arch.core.util.Function
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.example.covenantsermons.modelDatabase.Sermon
+import com.example.covenantsermons.modelClass.Sermon
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*

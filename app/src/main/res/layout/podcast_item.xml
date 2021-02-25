@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/grey">
+    android:background="@color/white">
+<!--    android:background="@color/grey">-->
 
     <TextView
         android:id="@+id/sermonItemDateTV"
@@ -44,11 +45,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+<!--        <ImageView-->
+<!--            android:layout_width="30dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            app:srcCompat="@drawable/play_list_image" />-->
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/play_list_image" />
+            app:srcCompat="@drawable/download_down_arrow" />
 
         <TextView
             android:id="@+id/sermonItemDurationTV"

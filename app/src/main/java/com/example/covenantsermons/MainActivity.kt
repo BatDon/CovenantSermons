@@ -23,6 +23,7 @@ import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.podcast.PodcastAdapter
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import kotlinx.android.synthetic.main.exo_playback_control_view.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity(){
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var toolbar: Toolbar
+    private lateinit var collapsingToolbar: CollapsingToolbarLayout
 
 //    override fun onSupportNavigateUp(): Boolean {
 //        return NavigationUI.navigateUp(navController, appBarConfiguration)
@@ -82,6 +84,12 @@ class MainActivity : AppCompatActivity(){
 //        toolbar = activityMainBinding.appBarCollapsingToolbar.toolbar
         toolbar = activityMainBinding.appBarToolbar
         setSupportActionBar(toolbar)
+
+        collapsingToolbar= activityMainBinding.collapsingToolbar
+
+        collapsingToolbar.title = getString(R.string.app_name_with_space);
+        collapsingToolbar.setExpandedTitleTextAppearance(R.style.AppBarExpanded);
+        collapsingToolbar.setCollapsedTitleTextAppearance(R.style.AppBarCollapsed);
 
 
         //activityMainBinding.toolbar.setupWithNavController(navController, appBarConfiguration)

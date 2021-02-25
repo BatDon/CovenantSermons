@@ -3,13 +3,29 @@
   <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">
 
     <!-- your app branding color for the app bar -->
-    <item name="colorPrimary">#241c5c</item>
+    <item name="colorPrimary">@color/church_blue</item>
 
     <!-- darker variant for the status bar and contextual app bars -->
-    <item name="colorPrimaryDark">#241c5c</item>
+    <item name="colorPrimaryDark">@color/church_blue</item>
 
     <!-- theme UI controls like checkboxes and text fields -->
     <item name="colorAccent">#64dd17</item>
+  </style>
+
+<!--  <style name="CustomToolbarTheme" parent="@style/AppTheme.NoActionBar">-->
+<!--    <item name="android:textColorPrimary">@color/church_blue</item>-->
+<!--  </style>-->
+
+  <style name="AppBarCollapsed" parent="@android:style/TextAppearance.Medium">
+    <item name="android:textSize">16sp</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textStyle">normal</item>
+  </style>
+
+  <style name="AppBarExpanded" parent="@android:style/TextAppearance.Medium">
+    <item name="android:textSize">32sp</item>
+    <item name="android:textColor">@color/church_blue</item>
+    <item name="android:textStyle">normal</item>
   </style>
 
 

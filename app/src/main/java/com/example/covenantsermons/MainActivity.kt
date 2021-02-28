@@ -15,12 +15,15 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.work.WorkManager
 import com.example.covenantsermons.databinding.ActivityMainBinding
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.podcast.PodcastAdapter
+import com.example.covenantsermons.workers.ImageWorker
+import com.example.covenantsermons.workers.ImageWorker.Companion.KEY_IMAGE_BITMAP
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -34,6 +37,8 @@ import java.util.*
 class MainActivity : AppCompatActivity(){
     private val playerViewModel: PlayerViewModel by viewModel()
     private val exoPlayer: ExoPlayer by inject()
+    private val workManager: WorkManager by inject()
+
 
 //class MainActivity : AppCompatActivity(),ViewInterface, ViewInterface.NewDataInterface{
 //    private lateinit var mainViewModel: MainViewModel
@@ -146,6 +151,17 @@ class MainActivity : AppCompatActivity(){
                 }
             })
         })
+    }
+
+    fun observeImageDownload(){
+        workManager.getWorkInfoByIdLiveData(ImageWorker.id)
+                .observe(this, Observer { info ->
+                    if (info != null && info.state.isFinished) {
+                        val myResult = info.outputData.(KEY_IMAGE_BITMAP,
+                                0)
+                        // ... do something with the result ...
+                    }
+                })
     }
 
 

@@ -51,6 +51,7 @@
 <!--            android:layout_gravity="center_horizontal"-->
 <!--            app:srcCompat="@drawable/play_list_image" />-->
         <ImageView
+            android:id="@+id/downloadCancelPlayIV"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal"

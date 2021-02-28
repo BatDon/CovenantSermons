@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.example.covenantsermons.database.SermonEntityDatabase
 import com.example.covenantsermons.player.MediaSessionConnection
 import com.example.covenantsermons.player.PlaybackPreparer
@@ -90,6 +91,11 @@ val koinModule = module {
     //SermonRepository
     single{
         SermonRepository(get<SermonEntityDatabase>().sermonDao())
+    }
+
+    //WorkManager
+    single{
+        WorkManager.getInstance(androidApplication())
     }
 
 }

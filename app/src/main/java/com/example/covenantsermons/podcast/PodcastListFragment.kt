@@ -138,6 +138,12 @@ class PodcastListFragment : Fragment() {
                 )
             }
 
+            it.onDownloadCancelPlayClick={ sermon ->
+                Timber.i("onDownloadCancelPlayClick called ${sermon.title}")
+                //TODO pass to sermon or service so user can close app and still download
+                //val httpsReference = storage.getReferenceFromUrl(sermon.audioFile)
+            }
+
 
             podcast_list_rv.adapter=it
         }

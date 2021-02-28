@@ -148,4 +148,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
     kapt "androidx.room:room-compiler:$rootProject.roomVersion"
     androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
+
+    //workManager
+    implementation "androidx.work:work-runtime-ktx:$rootProject.workManagerVersion"
 }

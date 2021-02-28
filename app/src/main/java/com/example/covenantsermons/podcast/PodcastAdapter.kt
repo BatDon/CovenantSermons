@@ -5,11 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covenantsermons.databinding.PodcastItemBinding
 import com.example.covenantsermons.modelClass.Sermon
+import kotlinx.android.synthetic.main.podcast_item.view.*
 
 
 class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onItemClick: ((Sermon) -> Unit)? = null
+    var onDownloadCancelPlayClick: ((Sermon) -> Unit)?=null
     //val sermonList=sermonArrayList
 //    var contacts: List<Contact> = emptyList()
 
@@ -21,6 +23,9 @@ class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.
         init {
             viewBinding.root.setOnClickListener {
                 sermonList[adapterPosition]?.let { sermon -> onItemClick?.invoke(sermon) }
+            }
+            viewBinding.root.downloadCancelPlayIV.setOnClickListener {
+                sermonList[adapterPosition]?.let { sermon -> onDownloadCancelPlayClick?.invoke(sermon) }
             }
         }
     }

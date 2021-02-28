@@ -5,9 +5,11 @@ import androidx.arch.core.util.Function
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.example.covenantsermons.modelClass.Sermon
+import com.google.gson.Gson
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 fun Date.formatDate():String {
 
@@ -40,6 +42,17 @@ fun String.timeStampToDate():String{
     calendar.timeInMillis = lastTimeStampSubstring.toLong()*1000
     return dayMonthYearFormat.format(calendar.time)
 
+}
+
+
+fun Sermon.serializeToJson(): String {
+    val gson = Gson()
+    return gson.toJson(this)
+}
+
+fun String.deserializeFromJson(): Sermon? {
+    val gson = Gson()
+    return gson.fromJson(this, Sermon::class.java)
 }
 
 //@MainThread

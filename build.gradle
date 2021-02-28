@@ -32,6 +32,7 @@ allprojects {
         appCompatVersion="1.2.0"
         supportLibraryVersion="22.2.0"
         roomVersion = '2.2.5'
+        workManagerVersion='2.5.0'
     }
 }
 

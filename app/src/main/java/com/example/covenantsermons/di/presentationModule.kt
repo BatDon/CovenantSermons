@@ -1,7 +1,7 @@
 package com.example.covenantsermons.di
 
 //import com.example.covenantsermons.modelDatabase.SermonDatabase
-import androidx.work.WorkManager
+//import com.example.covenantsermons.viewmodel.DownloadViewModelFactory
 import com.example.covenantsermons.ImageRepository
 import com.example.covenantsermons.ImageViewModel
 import com.example.covenantsermons.ImageViewModelFactory
@@ -10,7 +10,6 @@ import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.repository.SermonRepository
 import com.example.covenantsermons.viewmodel.DownloadViewModel
-import com.example.covenantsermons.viewmodel.DownloadViewModelFactory
 import com.example.covenantsermons.viewmodel.SermonViewModel
 import com.example.covenantsermons.viewmodel.SermonViewModelFactory
 import kotlinx.coroutines.Dispatchers
@@ -79,11 +78,18 @@ val presentationModule = module {
         SermonViewModel(get<SermonRepository>())
     }
 
-    single{
-        DownloadViewModelFactory(get<WorkManager>())
+//    single{
+//        DownloadViewModelFactory(get<WorkManager>())
+//    }
+
+//    viewModel{
+//        DownloadViewModel(get())
+//    }
+    viewModel{
+        DownloadViewModel(get())
     }
 
-    viewModel{
-        DownloadViewModel(get<WorkManager>())
-    }
+//    viewModel{
+//        DownloadViewModel(get<WorkManager>())
+//    }
 }

@@ -148,6 +148,7 @@ var unSubscribe: ListenerRegistration?=null
 
         var rootRef: FirebaseFirestore? = FirebaseFirestore.getInstance()
 
+
         //    var unSubscribe: ListenerRegistration?=null
 
         var sermonList = ArrayList<Sermon>()
@@ -179,7 +180,9 @@ var unSubscribe: ListenerRegistration?=null
                         val date = timeStampString.timeStampToDate()
                         val title: String? = sermondChanges.document.data["title"] as String?
                         val pastorName: String? = sermondChanges.document.data["pastor"] as String?
-                        val audioFile: String? = sermondChanges.document.data["audioFile"] as String?
+                        //val audioFileCompletePath: String? = sermondChanges.document.data["audioFile"] as String?
+//                        val audioFile= audioFileCompletePath?.httpsRefToStorageRef()
+                        val audioFile=sermondChanges.document.data["audioFile"] as String?
                         val durationLong: Long? = sermondChanges.document.data["duration"] as Long?
                         val duration: Int? = durationLong?.toInt()
                         //                    val duration: Int? =sermondChanges.document.data["duration"].toInt()

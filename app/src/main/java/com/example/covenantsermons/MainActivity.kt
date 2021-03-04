@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.covenantsermons.databinding.ActivityMainBinding
 import com.example.covenantsermons.modelClass.Sermon
@@ -22,8 +23,7 @@ import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.podcast.PodcastAdapter
-import com.example.covenantsermons.workers.ImageWorker
-import com.example.covenantsermons.workers.ImageWorker.Companion.KEY_IMAGE_BITMAP
+import com.example.covenantsermons.viewmodel.DownloadViewModel
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -38,7 +38,11 @@ class MainActivity : AppCompatActivity(){
     private val playerViewModel: PlayerViewModel by viewModel()
     private val exoPlayer: ExoPlayer by inject()
     private val workManager: WorkManager by inject()
-
+//    private val downloadViewModelFactory: DownloadViewModelFactory by inject()
+//    private val downloadViewModel: DownloadViewModel by viewModel(){
+//        downloadViewModelFactory
+//    }
+//    private val downloadViewModel: DownloadViewModel by viewModel()
 
 //class MainActivity : AppCompatActivity(),ViewInterface, ViewInterface.NewDataInterface{
 //    private lateinit var mainViewModel: MainViewModel
@@ -47,7 +51,7 @@ class MainActivity : AppCompatActivity(){
 
     private val podcastListViewModel: PodcastListViewModel by viewModel()
     private val masterFragmentViewModel: MasterFragmentViewModel by viewModel()
-
+    private val downloadViewModel: DownloadViewModel by viewModel()
 //    private var sermonArrayList:ArrayList<Sermon> =ArrayList<Sermon>()
     private lateinit var sermonArrayList: ArrayList<Sermon?>
 //    private lateinit var itemsCells: ArrayList<String?>
@@ -112,6 +116,7 @@ class MainActivity : AppCompatActivity(){
         }
 
 
+
 //        activityMainBinding.main_activity_player_group.player_view.player = exoPlayer
 
         //TODO remove only for testing
@@ -151,18 +156,88 @@ class MainActivity : AppCompatActivity(){
                 }
             })
         })
+
+        downloadViewModel.outputWorkInfos.observe(this, workInfosObserver())
     }
 
-    fun observeImageDownload(){
-        workManager.getWorkInfoByIdLiveData(ImageWorker.id)
-                .observe(this, Observer { info ->
-                    if (info != null && info.state.isFinished) {
-                        val myResult = info.outputData.(KEY_IMAGE_BITMAP,
-                                0)
-                        // ... do something with the result ...
-                    }
-                })
+
+
+//    fun observeImageAudioDownload() {
+//        downloadViewModel.outputImageAudioWorkInfos.observe(this, workInfosObserver())
+//    }
+
+    private fun workInfosObserver(): Observer<List<WorkInfo>> {
+        Timber.i("workInfosObserver called")
+        return Observer { listOfAllWorkInfos ->
+
+            if (listOfAllWorkInfos.isNullOrEmpty()) {
+                Timber.i("listOfAllWorkInfos is null or empty")
+                return@Observer
+            }
+
+            // We only care about the one output status.
+            // Every continuation has only one worker tagged TAG_OUTPUT
+            val workInfo = listOfAllWorkInfos[0]
+
+            //bosh image and audio finished
+            if (workInfo.state.isFinished) {
+                Timber.i("work finished")
+                Timber.i("workInfo.outputData ${workInfo.outputData}")
+
+
+            } else {
+                Timber.i("work is still in progress")
+            }
+        }
     }
+
+
+//    private fun workInfosObserver(): Observer<List<WorkInfo>> {
+//        return Observer { listOfWorkInfo ->
+//
+//            // Note that these next few lines grab a single WorkInfo if it exists
+//            // This code could be in a Transformation in the ViewModel; they are included here
+//            // so that the entire process of displaying a WorkInfo is in one location.
+//
+//            // If there are no matching work info, do nothing
+//            if (listOfWorkInfo.isNullOrEmpty()) {
+//                return@Observer
+//            }
+//
+//            // We only care about the one output status.
+//            // Every continuation has only one worker tagged TAG_OUTPUT
+//            val imageWorkInfo = listOfWorkInfo[0]
+//            val audioWorkInfo = listOfWorkInfo[1]
+//
+//            if (imageWorkInfo.state.isFinished && audioWorkInfo.state.isFinished) {
+//                Timber.i("work finished")
+//            } else {
+//                Timber.i("work hasn't finished yet")
+//            }
+//        }
+//    }
+
+
+
+
+
+
+//        workManager.getWorkInfoByIdLiveData(ImageWorker.id)
+//                .observe(this, Observer { info ->
+//                    if (info != null && info.state.isFinished) {
+//                        val myResult = info.outputData.(KEY_IMAGE_BITMAP,
+//                                0)
+//                        // ... do something with the result ...
+//                    }
+//                    if(info != null && info.state.isCancelled) {
+//                        val myResult=null
+//                    }
+//                    if(info != null && info.state.isFailed) {
+//                        val myResult=null
+//                    }
+
+
+    //}
 
 
 

@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +16,7 @@ import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
+import com.example.covenantsermons.viewmodel.DownloadViewModel
 import kotlinx.android.synthetic.main.podcast_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,6 +32,9 @@ class PodcastListFragment : Fragment() {
     private val podcastListViewModel: PodcastListViewModel by viewModel()
     private val playerViewModel: PlayerViewModel by sharedViewModel()
     private val masterFragmentViewModel: MasterFragmentViewModel by sharedViewModel()
+    private val downloadViewModel: DownloadViewModel by viewModel()
+//    private var downloadViewModel: DownloadViewModel? =null
+
 
 
     //    private val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
@@ -40,12 +42,12 @@ class PodcastListFragment : Fragment() {
     private var sermonArrayList: ArrayList<Sermon?> = ArrayList<Sermon?>()
     private lateinit var podcastAdapter: PodcastAdapter
 
-//    companion object {
-//
-//        fun newInstance(): PodcastListFragment {
-//            return PodcastListFragment()
-//        }
-//    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+       // downloadViewModel=get<DownloadViewModel>()
+    }
+
+
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -118,38 +120,45 @@ class PodcastListFragment : Fragment() {
     private fun setAdapter() {
         Timber.i("setAdapter called")
 
-        podcastAdapter = PodcastAdapter(sermonArrayList).also {
-            it.onItemClick={ sermon ->
+        podcastAdapter = PodcastAdapter(sermonArrayList).also { it ->
+            it.onItemClick = { sermon ->
                 //Toast.makeText(activity, "title ${sermon.title} audio file${sermon.audioFile}", Toast.LENGTH_LONG).show()
                 Timber.i("on Click called title ${sermon.title}")
                 //podcast_list_rv.adapter=it
 //                Timber.i("podcastListViewModel.transformLiveData() ${podcastListViewModel.transformLiveData().size}")
 //                playerViewModel.play(sermon, podcastListViewModel.transformLiveData())
-                podcastListViewModel.podcasts.value?.let { sermonArrayList -> playerViewModel.play(sermon, sermonArrayList) }
+//                downloadViewModel.startWork(sermon)
 
-                findNavController().navigate(
-                        R.id.action_mainFragment_to_podcastDetailsFragment,
-                        bundleOf(
-                                PodcastDetailsFragment.podcastSermonArgument to sermon,
-                        ), null, null
-//                        Bundle().apply{
-//                            putSerializable(PodcastDetailsFragment.podcastSermonArgument, sermon)
-//                        }, null, null
-                )
+                //TODO make sure sermon in room database before going to detail fragment
+                //      otherwise toast that it needs to be downloaded first
+
+//                podcastListViewModel.podcasts.value?.let { sermonArrayList -> playerViewModel.play(sermon, sermonArrayList) }
+//                findNavController().navigate(
+//                        R.id.action_mainFragment_to_podcastDetailsFragment,
+//                        bundleOf(
+//                                PodcastDetailsFragment.podcastSermonArgument to sermon,
+//                        ), null, null)
+
             }
 
-            it.onDownloadCancelPlayClick={ sermon ->
+            it.onDownloadCancelPlayClick = { sermon ->
                 Timber.i("onDownloadCancelPlayClick called ${sermon.title}")
-                //TODO pass to sermon or service so user can close app and still download
-                //val httpsReference = storage.getReferenceFromUrl(sermon.audioFile)
+                downloadViewModel.let {
+                    it.startWork(sermon)
+                }
+                //downloadViewModel.startWork(sermon)
+//                //TODO pass to sermon or service so user can close app and still download
+//                //val httpsReference = storage.getReferenceFromUrl(sermon.audioFile)
+//            }
+
+
+//                podcast_list_rv.adapter = it
             }
-
-
-            podcast_list_rv.adapter=it
-        }
+            podcast_list_rv.adapter = it
             //podcast_list_rv.adapter=it
 
 //        podcast_list_rv.adapter = podcastAdapter
+        }
     }
 
     private fun setRVLayoutManager() {

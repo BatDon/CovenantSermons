@@ -2,23 +2,68 @@ package com.example.covenantsermons.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.work.*
-import com.example.covenantsermons.ImageRepository
 import com.example.covenantsermons.extensions.serializeToJson
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.workers.AudioWorker
 import com.example.covenantsermons.workers.ImageWorker
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import timber.log.Timber
 
 //class DownloadViewModel(application: Application) : AndroidViewModel(application) {
-class DownloadViewModel(private val workManager: WorkManager) : ViewModel(), BaseDownloadViewModel, KoinComponent {
+class DownloadViewModel(private val workManager: WorkManager) : ViewModel(){
+//class DownloadViewModel() : ViewModel(), KoinComponent {
 
+//    init{
+//        WorkManager.getInstance(mContext)
+//        if(workManager==null){
+//            Timber.i("workManager equals null")
+//        }
+//        else{
+//            Timber.i("workManager does not equal null")
+//        }
+//    }
+
+
+
+
+   // var outputWorkInfos: LiveData<(MutableList<WorkInfo>)> = workManager.getWorkInfosByTagLiveData(IMAGE_TAG)
+
+    //TODO can tag as list or seperate
+
+    val outputImageWorkInfos: LiveData<List<WorkInfo>>
+    val outputAudioWorkInfos: LiveData<List<WorkInfo>>
+    internal val outputWorkInfos: LiveData<List<WorkInfo>>
+
+//    val audioImageWorkInfo: LiveData<List<WorkInfo>>
+//    val outputImageAudioWorkInfos: LiveData<List<WorkInfo>>
+//        get()=_outputImageAudioWorkInfos
+//    private val _outputImageAudioWorkInfos: MutableLiveData<List<WorkInfo>> = MutableLiveData<List<WorkInfo>>()
+
+
+    init {
+        //TODO add both IMAGE_WORK AND AUDIO_WORK
+
+        outputImageWorkInfos= workManager.getWorkInfosByTagLiveData(IMAGE_WORK)
+        outputAudioWorkInfos= workManager.getWorkInfosByTagLiveData(AUDIO_WORK)
+        outputWorkInfos = workManager.getWorkInfosByTagLiveData(IMAGE_AUDIO_DOWNLOAD_WORK)
+//        audioImageWorkInfo=workManager.getWorkInfosForUniqueWork()
+//        var imageWorkInfo: WorkInfo?= outputImageWorkInfos.value?.get(0)
+//        var audioWorkInfo: WorkInfo?= outputAudioWorkInfos.value?.get(0)
+
+//        _outputImageAudioWorkInfos=MutableLiveData<List<WorkInfo>>()
+     //   _outputImageAudioWorkInfos.postValue(listOf(imageWorkInfo!!,audioWorkInfo!!))
+
+//        _outputWorkInfos.value.
+//        add(workManager.getWorkInfosByTagLiveData(AUDIO_WORK))
+//        val workInfoListLiveData: MutableLiveData<List<WorkInfo>>=workManager.getWorkInfosByTagLiveData(IMAGE_WORK)
+//        workInfoListLiveData.value.add(workManager.getWorkInfosByTagLiveData(AUDIO_WORK))
+//        outputWorkInfos = workManager.getWorkInfosByTagLiveData(IMAGE_WORK)
+//        workInfoListLiveData=_outputWorkInfos
+    }
 
 
     //Monitors state of worker
-    override var outputWorkInfos =workManager.getWorkInfosByTagLiveData(IMAGE_TAG)
+//    var outputWorkInfos: LiveData<(MutableList<WorkInfo>)> = workManager.getWorkInfosByTagLiveData(IMAGE_TAG)
 
 //    override fun startWork() {
 //        workManager.beginUniqueWork(
@@ -30,27 +75,61 @@ class DownloadViewModel(private val workManager: WorkManager) : ViewModel(), Bas
 //    }
 
 
-    override fun startWork() {
+    fun startWork(sermon: Sermon) {
+        val workRequests=buildWorkRequests(sermon)
+        //labels chain of work requests
+        Timber.i("startWork called $sermon")
         workManager.beginUniqueWork(
                 IMAGE_AUDIO_DOWNLOAD_WORK,
-                ExistingWorkPolicy.APPEND,
-                listOf(createImageWorkRequest(),
-                        createAudioWorkRequest())
+                ExistingWorkPolicy.REPLACE,
+                workRequests
+//                listOf(createImageWorkRequest(sermon),
+//                        createAudioWorkRequest(sermon))
         ).enqueue()
     }
 
-
-    private fun createImageWorkRequest()=
-        OneTimeWorkRequestBuilder<ImageWorker>()
+    private fun buildWorkRequests(sermon: Sermon): MutableList<OneTimeWorkRequest>{
+        val workRequests = mutableListOf<OneTimeWorkRequest>()
+        workRequests.add(createImageWorkRequest(sermon))
+        workRequests.add(createAudioWorkRequest(sermon))
+        return workRequests
+    }
+    private fun createImageWorkRequest(sermon: Sermon):OneTimeWorkRequest {
+        Timber.i("createImageWorkRequest sermon= $sermon")
+        return OneTimeWorkRequest.Builder(ImageWorker::class.java)
+                .addTag(IMAGE_WORK)
                 .setConstraints(createDownloadConstraints())
-                .setInputData(createDataObject())
+                .setInputData(createDataObject(sermon))
+//                .setInputData(workDataOf(KEY_SERMON_SERIALIZED to "sermonString"))
                 .build()
+    }
 
-    private fun createAudioWorkRequest()=
-        OneTimeWorkRequestBuilder<AudioWorker>()
+    private fun createAudioWorkRequest(sermon: Sermon):OneTimeWorkRequest {
+//        OneTimeWorkRequestBuilder<AudioWorker>()
+        Timber.i("createAudioWorkRequest called sermon= $sermon")
+        return OneTimeWorkRequest.Builder(AudioWorker::class.java)
+                .addTag(AUDIO_WORK)
                 .setConstraints(createDownloadConstraints())
-                .setInputData(createDataObject())
+//                .setInputData(workDataOf(KEY_SERMON_SERIALIZED to "sermonString"))
+                .setInputData(createDataObject(sermon))
                 .build()
+    }
+
+//    private fun createImageWorkRequest(sermon: Sermon)=
+//         OneTimeWorkRequest.Builder(ImageWorker::class.java)
+//                .addTag(IMAGE_WORK)
+//                .setConstraints(createDownloadConstraints())
+//                .setInputData(createDataObject(sermon))
+//                .build()
+
+//    private fun createAudioWorkRequest(sermon: Sermon)=
+////        OneTimeWorkRequestBuilder<AudioWorker>()
+//            Timber.i("createAudioWorkRequest called sermon= $sermon")
+//            OneTimeWorkRequest.Builder(AudioWorker::class.java)
+//                .addTag(AUDIO_WORK)
+//                .setConstraints(createDownloadConstraints())
+//                .setInputData(createDataObject(sermon))
+//                .build()
 
     private fun createDownloadConstraints()=
        Constraints.Builder()
@@ -60,7 +139,7 @@ class DownloadViewModel(private val workManager: WorkManager) : ViewModel(), Bas
                 .build()
 
 
-    override fun cancelWork() {
+    fun cancelWork() {
         workManager.cancelUniqueWork(IMAGE_AUDIO_DOWNLOAD_WORK)
     }
 
@@ -71,28 +150,31 @@ class DownloadViewModel(private val workManager: WorkManager) : ViewModel(), Bas
 //                KEY_AUDIO_URI to audioUri)
 //    }
 
-    fun createDataObject (sermon: Sermon):Data{
+    private fun createDataObject (sermon: Sermon):Data{
         val serializedSermon=sermon.serializeToJson()
         return workDataOf(KEY_SERMON_SERIALIZED to serializedSermon)
     }
 
     companion object{
         const val IMAGE_AUDIO_DOWNLOAD_WORK="IMAGE_AUDIO_DOWNLOAD_WORK"
+        const val IMAGE_AUDIO_OUTPUT=" IMAGE_AUDIO_OUTPUT"
         const val IMAGE_DOWNLOAD_WORK="IMAGE_DOWNLOAD_WORK"
         const val KEY_SERMON_SERIALIZED="KEY_SERMON_SERIALIZED"
         const val KEY_SERMON_DATE = "KEY_SERMON_DATE"
         const val KEY_IMAGE_URI="KEY_IMAGE_URI"
         const val KEY_AUDIO_URI="KEY_AUDIO_URI"
+        const val IMAGE_WORK="IMAGE_WORK"
+        const val AUDIO_WORK="AUDIO_WORK"
     }
 }
 
-class DownloadViewModelFactory(private val workManager: WorkManager) : ViewModelProvider.Factory {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DownloadViewModel::class.java)) {
-            return DownloadViewModel(workManager) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
+//class DownloadViewModelFactory(private val workManager: WorkManager) : ViewModelProvider.Factory {
+//
+//    @Suppress("UNCHECKED_CAST")
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        if (modelClass.isAssignableFrom(DownloadViewModel::class.java)) {
+//            return DownloadViewModel(workManager) as T
+//        }
+//        throw IllegalArgumentException("Unknown ViewModel class")
+//    }
+//}

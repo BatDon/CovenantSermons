@@ -5,6 +5,7 @@ import androidx.arch.core.util.Function
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.example.covenantsermons.modelClass.Sermon
+import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -53,6 +54,11 @@ fun Sermon.serializeToJson(): String {
 fun String.deserializeFromJson(): Sermon? {
     val gson = Gson()
     return gson.fromJson(this, Sermon::class.java)
+}
+
+fun String.httpsRefToStorageRef():String {
+    val localPath = FirebaseStorage.getInstance().getReferenceFromUrl(this)
+    return localPath.toString()
 }
 
 //@MainThread

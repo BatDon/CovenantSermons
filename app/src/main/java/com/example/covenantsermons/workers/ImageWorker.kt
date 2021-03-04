@@ -17,11 +17,17 @@ import timber.log.Timber
 import java.io.FileOutputStream
 import java.io.IOException
 
-class ImageWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params), KoinComponent {
+//class ImageWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params), KoinComponent {
+class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
+
+    init{
+       Timber.i("ImageWorker created")
+    }
 
     private val imageRepository: ImageRepository by inject()
 
     override fun doWork(): Result {
+        Timber.i("doWork called")
         val appContext = applicationContext
 
         val serializedSermon=inputData.getString(KEY_SERMON_SERIALIZED)
@@ -39,7 +45,7 @@ class ImageWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params),
                 bitmap?.let {
                     saveBitmapToFile(sermon, it)
                 }
-                val outputBitmap: Data = workDataOf(KEY_IMAGE_BITMAP to bitmap)
+                val outputBitmap: Data = workDataOf(KEY_IMAGE_BITMAP_FILE_PATH to bitmap)
                 Result.success(outputBitmap)
             }
 
@@ -51,16 +57,19 @@ class ImageWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params),
 
     }
 
-    private fun saveBitmapToFile(sermon: Sermon, bitmap: Bitmap){
-        try {
+    private fun saveBitmapToFile(sermon: Sermon, bitmap: Bitmap):String?{
+        return try {
+            Timber.i("saveBitmapToFile bitmap= $bitmap")
             val filePath=Uri.Builder().appendPath(sermon.date)
                     .appendPath(sermon.title)
                     .appendPath(sermon.image)
             FileOutputStream(filePath.toString()).use { fileOutputStream ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream) // bmp is your Bitmap instance
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
             }
+            filePath.toString()
         } catch (e: IOException) {
             e.printStackTrace()
+            null
         }
     }
 
@@ -89,7 +98,7 @@ class ImageWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params),
 //    }
 
     companion object{
-        const val KEY_IMAGE_BITMAP="KEY_IMAGE_BITMAP"
+        const val KEY_IMAGE_BITMAP_FILE_PATH="KEY_IMAGE_BITMAP_FILE_PATH"
     }
 
 }

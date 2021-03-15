@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.example.covenantsermons.modelClass.Sermon
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -57,12 +58,12 @@ fun String.deserializeFromJson(): Sermon? {
     return gson.fromJson(this, Sermon::class.java)
 }
 
-fun String.httpsRefToStorageRef():String {
+fun String.httpsRefToStorageRef():StorageReference {
     val localPath = FirebaseStorage.getInstance().getReferenceFromUrl(this)
-    return localPath.toString()
+    return localPath
 }
 
-fun String.pathToImageName():String {
+fun String.pathToName():String {
     val uri=this.toUri()
     val path = uri.path
     val imageSegment: Int = path!!.lastIndexOf('/')
@@ -74,12 +75,16 @@ fun String.pathToImageName():String {
     return imageName.toString()
 }
 
+fun Sermon.dateToUnderscoredDate():String?=
+        this.date?.replace("/","_")
+
+
 fun Sermon.createImagePath():String{
    val stringBuilder=StringBuilder()
            stringBuilder.apply{
         stringBuilder.append(this@createImagePath.date)
         stringBuilder.append(this@createImagePath.title)
-        stringBuilder.append(this@createImagePath.image?.pathToImageName())
+        stringBuilder.append(this@createImagePath.image?.pathToName())
     }
     return stringBuilder.toString()
 }

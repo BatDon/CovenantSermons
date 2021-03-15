@@ -1,4 +1,4 @@
-package com.example.covenantsermons
+package com.example.covenantsermons.repository
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -36,7 +36,7 @@ class ImageRepository(val mContext: Context): Repository, CoroutineScope, KoinCo
 //    }
 
   //  override fun getSermonImage(url: String): LiveData<Bitmap> {
-    override fun getSermonImage(url: String): Bitmap?{
+    fun getSermonImage(url: String): Bitmap?{
       Timber.i("getSermonImage called url= $url")
       var bitmap:Bitmap?=null
 //        launch{
@@ -109,7 +109,7 @@ class ImageRepository(val mContext: Context): Repository, CoroutineScope, KoinCo
 //        Bitmap.getBitmapFromGlide():
 //    }
 
-        suspend fun String.getBitmapFromGlide(): EventResponse= suspendCoroutine { continuation ->
+        suspend fun String.getBitmapFromGlide(): EventResponse = suspendCoroutine { continuation ->
             Timber.i("getBitmapFromGlide called")
             val bitmapEventListener= object: CustomTarget<Bitmap?>(){
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
@@ -135,6 +135,8 @@ class ImageRepository(val mContext: Context): Repository, CoroutineScope, KoinCo
 
             Glide.with(mContext).asBitmap().load(this).into(bitmapEventListener)
         }
+
+
 
 
 
@@ -215,6 +217,10 @@ class ImageRepository(val mContext: Context): Repository, CoroutineScope, KoinCo
 //
 //        }
 //    }
+
+    fun cancelImageJob(){
+        job.cancel()
+    }
 
     override fun registerLifecycle(lifecycle: Lifecycle) {
         lifecycle.addObserver(this)

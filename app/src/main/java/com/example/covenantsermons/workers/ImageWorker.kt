@@ -6,10 +6,11 @@ import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.example.covenantsermons.ImageRepository
+import com.example.covenantsermons.extensions.dateToUnderscoredDate
 import com.example.covenantsermons.extensions.deserializeFromJson
-import com.example.covenantsermons.extensions.pathToImageName
+import com.example.covenantsermons.extensions.pathToName
 import com.example.covenantsermons.modelClass.Sermon
+import com.example.covenantsermons.repository.ImageRepository
 import com.example.covenantsermons.viewmodel.DownloadViewModel.Companion.KEY_SERMON_SERIALIZED
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -55,7 +56,7 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
                 val outputBitmap= workDataOf(KEY_IMAGE_BITMAP_FILE_PATH to bitmapPath)
                 outputBitmap.let{
                     if (it != null) {
-                       return Result.success(it)
+                       return@doWork Result.success(it)
                     }
                 }
 
@@ -71,7 +72,7 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
 
         } catch (throwable: Throwable) {
             Timber.e(throwable, "Error downloading image")
-            Result.failure()
+            return Result.failure()
         }
 
     }
@@ -95,7 +96,7 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
 
     private fun saveBitmapToInternalStorage(mContext: Context, sermon: Sermon, bitmap: Bitmap?):String {
         val imagePath:String =createImagePath(sermon)
-        val imageFileName:String?=sermon.image?.pathToImageName()
+        val imageFileName:String?=sermon.image?.pathToName()
         val dir= File(mContext.filesDir, imagePath)
         if (!dir.exists()) {
             Timber.i("making dir imagePath= $imagePath")
@@ -114,15 +115,26 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
             //writer.close()
             outputStream.flush()
             outputStream.close()
+            Timber.i("finished try saveBitmapToInternalStorage")
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        Timber.i("returning imagePath")
         return imagePath
     }
 
-    fun createImagePath(sermon: Sermon)=
-            "cat".replace("/","_")
-    val dateUnderscored=sermon.date.replace("/","_")
+    fun createImagePath(sermon: Sermon):String{
+        val dateUnderscored= sermon.dateToUnderscoredDate()
+        //val dateUnderscored=sermon.date?.replace("/","_")
+        val bitmapName=sermon.image?.pathToName()?.split(".")!![0]
+        val imagePath=dateUnderscored+"_"+sermon.title+"_"+"bitmapImage_"+bitmapName
+        return imagePath
+    }
+
+
+//    fun createImagePath(sermon: Sermon)=
+//            "cat".replace("/","_")
+//    val dateUnderscored=sermon.date.replace("/","_")
     //sermon.date.replaceAll("/", "_")+"/"+sermon.title+"/bitmapImage/"+sermon.image?.pathToImageName()
 
 //    fun createImagePath(sermon: Sermon)=

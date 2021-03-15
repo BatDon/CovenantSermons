@@ -2,12 +2,13 @@ package com.example.covenantsermons.di
 
 //import com.example.covenantsermons.modelDatabase.SermonDatabase
 //import com.example.covenantsermons.viewmodel.DownloadViewModelFactory
-import com.example.covenantsermons.ImageRepository
 import com.example.covenantsermons.ImageViewModel
 import com.example.covenantsermons.ImageViewModelFactory
 import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
+import com.example.covenantsermons.repository.AudioRepository
+import com.example.covenantsermons.repository.ImageRepository
 import com.example.covenantsermons.repository.SermonRepository
 import com.example.covenantsermons.viewmodel.DownloadViewModel
 import com.example.covenantsermons.viewmodel.SermonViewModel
@@ -55,6 +56,10 @@ val presentationModule = module {
 //    }
     single {
         ImageRepository(get())
+    }
+
+    single{
+        AudioRepository(get())
     }
 
 //    single {

@@ -157,7 +157,9 @@ class MainActivity : AppCompatActivity(){
             })
         })
 
-        downloadViewModel.outputWorkInfos.observe(this, workInfosObserver())
+//        downloadViewModel.outputWorkInfos.observe(this, workInfosObserver())
+        downloadViewModel.outputImageWorkInfos.observe(this, workInfosObserver())
+        downloadViewModel.outputAudioWorkInfos.observe(this, workInfosObserver())
     }
 
 
@@ -177,6 +179,7 @@ class MainActivity : AppCompatActivity(){
 
             // We only care about the one output status.
             // Every continuation has only one worker tagged TAG_OUTPUT
+            Timber.i("listOfAllWorkInfos size= ${listOfAllWorkInfos.size}")
             val workInfo = listOfAllWorkInfos[0]
 
             //bosh image and audio finished

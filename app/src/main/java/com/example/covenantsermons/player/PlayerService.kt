@@ -22,7 +22,7 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.covenantsermons.ImageRepository
+import com.example.covenantsermons.repository.ImageRepository
 import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.modelClass.Sermon
 import com.google.android.exoplayer2.ExoPlayer

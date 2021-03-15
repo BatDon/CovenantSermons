@@ -3,6 +3,7 @@ package com.example.covenantsermons
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.covenantsermons.repository.Repository
 import org.koin.core.KoinComponent
 
 class ImageViewModel(private val repository: Repository) : ViewModel() , KoinComponent {

@@ -2,6 +2,7 @@ package com.example.covenantsermons
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.covenantsermons.repository.Repository
 
 class ImageViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
 

@@ -2,6 +2,7 @@ package com.example.covenantsermons.extensions
 
 import androidx.annotation.MainThread
 import androidx.arch.core.util.Function
+import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.example.covenantsermons.modelClass.Sermon
@@ -60,6 +61,30 @@ fun String.httpsRefToStorageRef():String {
     val localPath = FirebaseStorage.getInstance().getReferenceFromUrl(this)
     return localPath.toString()
 }
+
+fun String.pathToImageName():String {
+    val uri=this.toUri()
+    val path = uri.path
+    val imageSegment: Int = path!!.lastIndexOf('/')
+    var imageName: String? =null
+    if (imageSegment != -1) {
+        imageName = path.substring(imageSegment + 1);
+    }
+    Timber.i("imageName in pathToImageName ${imageName.toString()}")
+    return imageName.toString()
+}
+
+fun Sermon.createImagePath():String{
+   val stringBuilder=StringBuilder()
+           stringBuilder.apply{
+        stringBuilder.append(this@createImagePath.date)
+        stringBuilder.append(this@createImagePath.title)
+        stringBuilder.append(this@createImagePath.image?.pathToImageName())
+    }
+    return stringBuilder.toString()
+}
+
+
 
 //@MainThread
 //@NonNull

@@ -81,7 +81,7 @@ class DownloadViewModel(private val workManager: WorkManager) : ViewModel(){
         Timber.i("startWork called $sermon")
         workManager.beginUniqueWork(
                 IMAGE_AUDIO_DOWNLOAD_WORK,
-                ExistingWorkPolicy.REPLACE,
+                ExistingWorkPolicy.APPEND_OR_REPLACE,
                 workRequests
 //                listOf(createImageWorkRequest(sermon),
 //                        createAudioWorkRequest(sermon))

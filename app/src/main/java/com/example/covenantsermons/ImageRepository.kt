@@ -9,10 +9,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.koin.core.KoinComponent
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -41,28 +38,35 @@ class ImageRepository(val mContext: Context): Repository, CoroutineScope, KoinCo
   //  override fun getSermonImage(url: String): LiveData<Bitmap> {
     override fun getSermonImage(url: String): Bitmap?{
       Timber.i("getSermonImage called url= $url")
-        launch{
-            call(url)
+      var bitmap:Bitmap?=null
+//        launch{
+      runBlocking(coroutineContext){
+            bitmap=call(url)
+            currentSermonImage.value = bitmap!!
 //        coroutineScope.launch {
 //            call()
         }
         //return currentSermonImage
+        Timber.i("return bitmap called bitmap=$bitmap")
         return bitmap
     }
 
 
 
-    private suspend fun call(url: String){
+    //private suspend fun call(url: String){
+//    private suspend fun call(url: String)=withContext(Dispatchers.IO){
+    private suspend fun call(url: String): Bitmap? =withContext(Dispatchers.IO){
         Timber.i("call function called")
-        val result=url.getBitmapFromGlide()
+        val result= url.getBitmapFromGlide()
         Timber.i("result= $result")
         //val result = database.getReference("ref").singleValueEvent()
         when(result) {
             is EventResponse.ResourceReady -> {
                 val bitmap = result.bitmap
-                currentSermonImage.value = bitmap
+//                currentSermonImage.value = bitmap
                 Timber.i("call function called bitmap= $bitmap")
-                this.bitmap = bitmap
+//                this.bitmap = bitmap
+                return@withContext bitmap
 
             }
             is EventResponse.LoadCleared -> {
@@ -71,6 +75,7 @@ class ImageRepository(val mContext: Context): Repository, CoroutineScope, KoinCo
             }
 
         }
+        return@withContext null
 
     }
 

@@ -2,26 +2,29 @@ package com.example.covenantsermons.workers
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.example.covenantsermons.ImageRepository
 import com.example.covenantsermons.extensions.deserializeFromJson
+import com.example.covenantsermons.extensions.pathToImageName
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.viewmodel.DownloadViewModel.Companion.KEY_SERMON_SERIALIZED
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
+import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 
 //class ImageWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params), KoinComponent {
 class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
+    private lateinit var mContext: Context
+
     init{
        Timber.i("ImageWorker created")
+        mContext=context
     }
 
     private val imageRepository: ImageRepository by inject()
@@ -36,18 +39,34 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
 //        val imageUri = inputData.getString(KEY_IMAGE_URI)
 
         return try {
+            var outputBitmap: Data?=null
             if (sermon==null) {
                 Timber.e("Invalid input uri")
                 throw IllegalArgumentException("Invalid input uri")
             }
             else{
                 val bitmap=sermon.image?.let { imageRepository.getSermonImage(it) }
+                var bitmapPath : String? =null
+                Timber.i("bitmap using imageRepository= $bitmap")
                 bitmap?.let {
-                    saveBitmapToFile(sermon, it)
+                    //saveBitmapToFile(sermon, it)
+                   bitmapPath= saveBitmapToInternalStorage(mContext,sermon, it)
                 }
-                val outputBitmap: Data = workDataOf(KEY_IMAGE_BITMAP_FILE_PATH to bitmap)
-                Result.success(outputBitmap)
+                val outputBitmap= workDataOf(KEY_IMAGE_BITMAP_FILE_PATH to bitmapPath)
+                outputBitmap.let{
+                    if (it != null) {
+                       return Result.success(it)
+                    }
+                }
+
             }
+            return Result.failure()
+//            outputBitmap.let{
+//                if (it != null) {
+//                    Result.success(it)
+//                }
+//            }
+//            Result.success(outputBitmap)
 
 
         } catch (throwable: Throwable) {
@@ -57,21 +76,60 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
 
     }
 
-    private fun saveBitmapToFile(sermon: Sermon, bitmap: Bitmap):String?{
-        return try {
-            Timber.i("saveBitmapToFile bitmap= $bitmap")
-            val filePath=Uri.Builder().appendPath(sermon.date)
-                    .appendPath(sermon.title)
-                    .appendPath(sermon.image)
-            FileOutputStream(filePath.toString()).use { fileOutputStream ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
-            }
-            filePath.toString()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
+//    private fun saveBitmapToFile(sermon: Sermon, bitmap: Bitmap):String?{
+//        return try {
+//            Timber.i("saveBitmapToFile bitmap= $bitmap")
+//            val filePath=Uri.Builder().appendPath(sermon.date)
+//                    .appendPath(sermon.title)
+//                    .appendPath(sermon.image?.pathToImageName())
+//            Timber.i("saveBitmapToFile path= $filePath")
+//            FileOutputStream(filePath.toString()).use { fileOutputStream ->
+//                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
+//            }
+//            filePath.toString()
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//            null
+//        }
+//    }
+
+    private fun saveBitmapToInternalStorage(mContext: Context, sermon: Sermon, bitmap: Bitmap?):String {
+        val imagePath:String =createImagePath(sermon)
+        val imageFileName:String?=sermon.image?.pathToImageName()
+        val dir= File(mContext.filesDir, imagePath)
+        if (!dir.exists()) {
+            Timber.i("making dir imagePath= $imagePath")
+            dir.mkdir()
         }
+        else{
+            Timber.i("dir already exists imagePath= $imagePath")
+        }
+        try {
+            val bitmapFile = File(dir, imageFileName!!)
+            //val writer = FileWriter(bitmapFile)
+            val outputStream= FileOutputStream(bitmapFile)
+            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            //writer.append(bitmap)
+            //writer.flush()
+            //writer.close()
+            outputStream.flush()
+            outputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return imagePath
     }
+
+    fun createImagePath(sermon: Sermon)=
+            "cat".replace("/","_")
+    val dateUnderscored=sermon.date.replace("/","_")
+    //sermon.date.replaceAll("/", "_")+"/"+sermon.title+"/bitmapImage/"+sermon.image?.pathToImageName()
+
+//    fun createImagePath(sermon: Sermon)=
+//            "cat".replace("/","_")
+//        val dateUnderscored=sermon.date.replace("/","_")
+//        //sermon.date.replaceAll("/", "_")+"/"+sermon.title+"/bitmapImage/"+sermon.image?.pathToImageName()
+
 
 //    fun saveBitmapToFile(bitmap: Bitmap, fileNameToSave: String): File? { // File name like "image.png"
 //        //create a file to write bitmap data

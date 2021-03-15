@@ -184,7 +184,6 @@ class MainActivity : AppCompatActivity(){
                 Timber.i("work finished")
                 Timber.i("workInfo.outputData ${workInfo.outputData}")
 
-
             } else {
                 Timber.i("work is still in progress")
             }

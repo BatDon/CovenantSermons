@@ -143,7 +143,17 @@ class PodcastListFragment : Fragment() {
 
             it.onDownloadCancelPlayClick = { sermon ->
                 Timber.i("onDownloadCancelPlayClick called ${sermon.title}")
+                Timber.i("onDownloadCancelPlayClick sermon= $sermon")
+                val sermonArrayList = arrayListOf<Sermon>(sermon)
+               // downloadViewModel.setUpCurrentSermon(sermonArrayList)
+
+
+                //TODO save sermon to downloadViewModel
                 downloadViewModel.let {
+                    //TODO check if already in database
+                    //sermonViewModel
+                    downloadViewModel.sermonArrayList.clear()
+                    downloadViewModel.sermonArrayList.add(sermon)
                     it.startWork(sermon)
                 }
                 //downloadViewModel.startWork(sermon)

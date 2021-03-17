@@ -19,11 +19,15 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.covenantsermons.databinding.ActivityMainBinding
 import com.example.covenantsermons.modelClass.Sermon
+import com.example.covenantsermons.modelClass.SermonEntity
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.podcast.PodcastAdapter
 import com.example.covenantsermons.viewmodel.DownloadViewModel
+import com.example.covenantsermons.viewmodel.SermonViewModel
+import com.example.covenantsermons.workers.AudioWorker
+import com.example.covenantsermons.workers.ImageWorker
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -48,7 +52,7 @@ class MainActivity : AppCompatActivity(){
 //    private lateinit var mainViewModel: MainViewModel
 
 
-
+    private val sermonViewModel: SermonViewModel by viewModel()
     private val podcastListViewModel: PodcastListViewModel by viewModel()
     private val masterFragmentViewModel: MasterFragmentViewModel by viewModel()
     private val downloadViewModel: DownloadViewModel by viewModel()
@@ -64,6 +68,11 @@ class MainActivity : AppCompatActivity(){
 
     private lateinit var toolbar: Toolbar
     private lateinit var collapsingToolbar: CollapsingToolbarLayout
+
+    var imagePath:Boolean=false
+    var audioPath:Boolean=false
+
+    private var currentSermonDownloading : Sermon?=null
 
 //    override fun onSupportNavigateUp(): Boolean {
 //        return NavigationUI.navigateUp(navController, appBarConfiguration)
@@ -158,9 +167,22 @@ class MainActivity : AppCompatActivity(){
         })
 
 //        downloadViewModel.outputWorkInfos.observe(this, workInfosObserver())
-        downloadViewModel.outputImageWorkInfos.observe(this, workInfosObserver())
-        downloadViewModel.outputAudioWorkInfos.observe(this, workInfosObserver())
+     //   currentSermonDownloadingListener()
+        downloadViewModel.outputImageWorkInfos.observe(this, workInfosObserver(IMAGE_FILE))
+        downloadViewModel.outputAudioWorkInfos.observe(this, workInfosObserver(AUDIO_FILE))
     }
+
+//    private fun currentSermonDownloadingListener(){
+//        Timber.i("currentSermonDownloadingListener called")
+//        Timber.i("before listener triggered currentSermonDownloading= $currentSermonDownloading")
+//
+//        downloadViewModel.currentSermonDownloading.observe(this, Observer { sermonArrayList ->
+//            Timber.i("currentSermonDownloadingListener triggered")
+//            currentSermonDownloading=ArrayList(sermonArrayList)[0]
+//            Timber.i("currentSermonDownloadingListener triggered sermon= $currentSermonDownloading")
+//
+//        })
+//    }
 
 
 
@@ -168,8 +190,9 @@ class MainActivity : AppCompatActivity(){
 //        downloadViewModel.outputImageAudioWorkInfos.observe(this, workInfosObserver())
 //    }
 
-    private fun workInfosObserver(): Observer<List<WorkInfo>> {
+    private fun workInfosObserver(imageOrAudio: String): Observer<List<WorkInfo>> {
         Timber.i("workInfosObserver called")
+
         return Observer { listOfAllWorkInfos ->
 
             if (listOfAllWorkInfos.isNullOrEmpty()) {
@@ -184,13 +207,64 @@ class MainActivity : AppCompatActivity(){
 
             //bosh image and audio finished
             if (workInfo.state.isFinished) {
+                Timber.i("imagePath= $imagePath audioPath= $audioPath")
                 Timber.i("work finished")
                 Timber.i("workInfo.outputData ${workInfo.outputData}")
-
+                when (imageOrAudio) {
+                    IMAGE_FILE -> {
+                        imagePath=true
+                        downloadViewModel.imageFileLocation = workInfo.outputData.getString(ImageWorker.KEY_IMAGE_BITMAP_FILE_PATH)
+//                        if(imagePath && audioPath){
+//                            //val sermon=downloadViewModel.currentSermon
+//                            createSermonForRoom()
+//                            imagePath=false
+//                            audioPath=false
+//                        }
+                    }
+                    AUDIO_FILE -> {
+                        audioPath=true
+                        downloadViewModel.audioFileLocation = workInfo.outputData.getString(AudioWorker.KEY_AUDIO_FILE_PATH)
+                        //downloadViewModel.currentSermonDownloading = workInfo.outputData.
+//                        downloadViewModel.currentSermonDownloading = workInfo.outputData.getParcelable(AudioWorker.KEY_SERMON_DOWNLOADING)
+//                        if(imagePath && audioPath) {
+//                            createSermonForRoom()
+//                            imagePath=false
+//                            audioPath=false
+//                        }
+                    }
+                }
+                if(imagePath && audioPath){
+                    //val sermon=downloadViewModel.currentSermon
+                    createSermonForRoom()
+                    imagePath=false
+                    audioPath=false
+                }
             } else {
                 Timber.i("work is still in progress")
+                when (imageOrAudio) {
+                    IMAGE_FILE -> downloadViewModel.imageFileLocation = null
+                    AUDIO_FILE -> downloadViewModel.audioFileLocation = null
+                }
             }
         }
+    }
+
+    @Synchronized
+    fun createSermonForRoom(){
+        Timber.i("createSermonForRoom called")
+        //val sermon=downloadViewModel.currentSermonDownloading.value
+//        val sermon=currentSermonDownloading
+        val sermon=downloadViewModel.sermonArrayList[0]
+        val imageFileLocation=downloadViewModel.imageFileLocation
+        val audioFileLocation=downloadViewModel.audioFileLocation
+        Timber.i("downloadViewModel.imageFileLocation $imageFileLocation audioFileLocation= $audioFileLocation")
+        //TODO sermon equals null this is why there is an error
+        Timber.i("sermon = $sermon")
+        val sermonEntity = SermonEntity(sermon?.date!!, sermon.title, sermon.pastorName, audioFileLocation, sermon.duration, imageFileLocation)
+        Timber.i("sermonEntity= $sermonEntity")
+        sermonViewModel.insert(sermonEntity)
+
+
     }
 
 
@@ -329,6 +403,11 @@ class MainActivity : AppCompatActivity(){
     //TODO unbind from service
     override fun onStop() {
         super.onStop()
+    }
+
+    companion object{
+        const val IMAGE_FILE="IMAGE_FILE"
+        const val AUDIO_FILE="AUDIO_FILE"
     }
 
 

@@ -90,9 +90,10 @@ val presentationModule = module {
 //    viewModel{
 //        DownloadViewModel(get())
 //    }
-    viewModel{
-        DownloadViewModel(get())
-    }
+//    viewModel{
+//        DownloadViewModel(get())
+//    }
+    single { DownloadViewModel(get()) }
 
 //    viewModel{
 //        DownloadViewModel(get<WorkManager>())

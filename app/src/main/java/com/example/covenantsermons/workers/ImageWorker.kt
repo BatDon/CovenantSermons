@@ -54,6 +54,8 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
                    bitmapPath= saveBitmapToInternalStorage(mContext,sermon, it)
                 }
                 val outputBitmap= workDataOf(KEY_IMAGE_BITMAP_FILE_PATH to bitmapPath)
+                //val outputSermon= workDataOf(KEY_SERMON to sermon)
+               // val dataArray= arrayOf<Data>(outputBitmap,outputSermon)
                 outputBitmap.let{
                     if (it != null) {
                        return@doWork Result.success(it)
@@ -169,6 +171,7 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
 
     companion object{
         const val KEY_IMAGE_BITMAP_FILE_PATH="KEY_IMAGE_BITMAP_FILE_PATH"
+        const val KEY_SERMON="KEY_SERMON"
     }
 
 }

@@ -47,7 +47,7 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
         var fileName:String
 
         return try {
-            var outputfileName: Data = workDataOf(AudioWorker.KEY_AUDIO to "audioFile")
+            var outputfileName: Data = workDataOf(AudioWorker.KEY_AUDIO_FILE_PATH to "audioFile")
             Timber.i("in try block")
             if (sermon==null) {
                 Timber.e("Invalid input uri")
@@ -70,7 +70,8 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
                     }
                 }
                 Timber.i("outputFileName assigned to $audioFile")
-                outputfileName = workDataOf(AudioWorker.KEY_AUDIO to audioFile)
+                outputfileName = workDataOf(AudioWorker.KEY_AUDIO_FILE_PATH to audioFile)
+                //outputfileName = workDataOf(AudioWorker.KEY_SERMON_DOWNLOADING to sermon)
 
             }
 //            val outputfileName: Data = workDataOf(AudioWorker.KEY_AUDIO to "someString")
@@ -157,7 +158,8 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
     }
 
     companion object{
-        const val KEY_AUDIO="KEY_AUDIO"
+        const val KEY_AUDIO_FILE_PATH="KEY_AUDIO_FILE_PATH"
+        const val KEY_SERMON_DOWNLOADING="KEY_SERMON_DOWNLOADING"
     }
 
     fun cancelAudioJob(){

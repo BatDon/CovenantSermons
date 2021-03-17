@@ -11,6 +11,12 @@ import timber.log.Timber
 
 //class DownloadViewModel(application: Application) : AndroidViewModel(application) {
 class DownloadViewModel(private val workManager: WorkManager) : ViewModel(){
+    var imageFileLocation: String?=null
+    var audioFileLocation: String?=null
+
+    var sermonArrayList: ArrayList<Sermon> = ArrayList<Sermon>()
+//    private val _currentSermonDownloading = MutableLiveData<ArrayList<Sermon>>()
+//    val currentSermonDownloading: LiveData<ArrayList<Sermon>> = _currentSermonDownloading
 //class DownloadViewModel() : ViewModel(), KoinComponent {
 
 //    init{
@@ -60,6 +66,13 @@ class DownloadViewModel(private val workManager: WorkManager) : ViewModel(){
 //        outputWorkInfos = workManager.getWorkInfosByTagLiveData(IMAGE_WORK)
 //        workInfoListLiveData=_outputWorkInfos
     }
+
+//    fun setUpCurrentSermon(sermonArrayList: ArrayList<Sermon>){
+//        Timber.i("sermon= $sermonArrayList")
+//        _currentSermonDownloading.value?.clear()
+//        _currentSermonDownloading.value=sermonArrayList
+//        Timber.i("_currentSermonDownloading.value= ${_currentSermonDownloading.value}")
+//    }
 
 
     //Monitors state of worker

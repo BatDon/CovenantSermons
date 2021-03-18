@@ -1,14 +1,19 @@
 package com.example.covenantsermons.podcast
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.covenantsermons.R
 import com.example.covenantsermons.databinding.PodcastItemBinding
 import com.example.covenantsermons.modelClass.Sermon
+import com.example.covenantsermons.modelClass.SermonEntity.Companion.DOWNLOADING_STATE_IMAGES_CANCEL
+import com.example.covenantsermons.modelClass.SermonEntity.Companion.DOWNLOADING_STATE_IMAGES_DOWNLOAD
+import com.example.covenantsermons.modelClass.SermonEntity.Companion.DOWNLOADING_STATE_IMAGES_PLAY
 import kotlinx.android.synthetic.main.podcast_item.view.*
 
 
-class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PodcastAdapter(private var mContext: Context?, private var sermonList: ArrayList<Sermon?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onItemClick: ((Sermon) -> Unit)? = null
     var onDownloadCancelPlayClick: ((Sermon) -> Unit)?=null
@@ -57,7 +62,21 @@ class PodcastAdapter(private var sermonList: ArrayList<Sermon?>) : RecyclerView.
         itemViewHolder.viewBinding.sermonItemTitleTV.text = sermonList[position]?.title
         val formattedDuration="${sermonList[position]?.duration.toString()} min"
         itemViewHolder.viewBinding.sermonItemDurationTV.text = formattedDuration
+        val imageDrawable=sermonList[position]?.downloadingButtonImage?.let { downloadingImageState(it) }
+        itemViewHolder.viewBinding.downloadCancelPlayIV.setImageDrawable(imageDrawable)
+        //itemViewHolder.viewBinding.downloadCancelPlayIV=sermonList[position]?.downloadingButtonImage
     }
+
+    fun downloadingImageState(downloadingStateImages: String)= when (downloadingStateImages) {
+//        DownloadingStateImages.DOWNLOAD -> Resources.getDrawable(mContext?.getResources(),)
+//        DownloadingStateImages.DOWNLOAD -> Resources.getDrawable(mContext?,mContext?.getDrawable(R.drawable.download_down_arrow))
+            DOWNLOADING_STATE_IMAGES_DOWNLOAD -> mContext?.getResources()?.getDrawable(R.drawable.download_down_arrow)
+            DOWNLOADING_STATE_IMAGES_CANCEL -> mContext?.getResources()?.getDrawable(R.drawable.cancel_icon)
+            DOWNLOADING_STATE_IMAGES_PLAY -> mContext?.getResources()?.getDrawable(R.drawable.play_icon)
+        else -> mContext?.getResources()?.getDrawable(R.drawable.download_down_arrow)
+    }
+
+
 
     fun updateSermonList(newList: ArrayList<Sermon?>) {
         sermonList.clear()

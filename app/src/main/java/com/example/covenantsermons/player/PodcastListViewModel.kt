@@ -16,6 +16,8 @@ class PodcastListViewModel(
 //    val podcasts: LiveData<List<Sermon>> = _podcasts
     private val _podcasts = MutableLiveData<ArrayList<Sermon>>()
     val podcasts: LiveData<ArrayList<Sermon>> = _podcasts
+    private val _podcastsWithDownloaded = MutableLiveData<ArrayList<Sermon>>()
+    val podcastsWithDownloaded: LiveData<ArrayList<Sermon>> = _podcasts
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
     private val _errors = MutableLiveData<String>()

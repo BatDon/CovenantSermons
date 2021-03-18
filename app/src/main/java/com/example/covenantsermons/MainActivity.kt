@@ -20,6 +20,7 @@ import androidx.work.WorkManager
 import com.example.covenantsermons.databinding.ActivityMainBinding
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelClass.SermonEntity
+import com.example.covenantsermons.modelClass.SermonEntity.Companion.DOWNLOADING_STATE_IMAGES_PLAY
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
@@ -260,7 +261,7 @@ class MainActivity : AppCompatActivity(){
         Timber.i("downloadViewModel.imageFileLocation $imageFileLocation audioFileLocation= $audioFileLocation")
         //TODO sermon equals null this is why there is an error
         Timber.i("sermon = $sermon")
-        val sermonEntity = SermonEntity(sermon?.date!!, sermon.title, sermon.pastorName, audioFileLocation, sermon.duration, imageFileLocation)
+        val sermonEntity = SermonEntity(sermon?.date!!, sermon.title, sermon.pastorName, audioFileLocation, sermon.duration, imageFileLocation, DOWNLOADING_STATE_IMAGES_PLAY)
         Timber.i("sermonEntity= $sermonEntity")
         sermonViewModel.insert(sermonEntity)
 

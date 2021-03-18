@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.covenantsermons.modelClass.SermonEntity.Companion.DOWNLOADING_STATE_IMAGES_DOWNLOAD
 import kotlinx.android.parcel.Parcelize
 
 //@Entity(tableName = "sermon_table")
@@ -11,59 +12,72 @@ import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "sermon_table")
 data class SermonEntity(
-    @PrimaryKey
-    @NonNull
-    var date: String = "",
-    var title: String? = "",
-    var pastorName: String? = "",
-    var audioFile: String? = "",
-    var duration: Int? = 0,
-    var image: String? = ""
-){
-    companion object{
-        fun fromSermonEntityToSermon(sermonEntity:SermonEntity)=Sermon(
-            date=sermonEntity.date,
-            title=sermonEntity.title,
-            pastorName = sermonEntity.pastorName,
-            audioFile = sermonEntity.audioFile,
-            duration = sermonEntity.duration,
-            image = sermonEntity.image)
+        @PrimaryKey
+        @NonNull
+        var date: String = "",
+        var title: String? = "",
+        var pastorName: String? = "",
+        var audioFile: String? = "",
+        var duration: Int? = 0,
+        var image: String? = "",
+        var downloadingButtonImage: String? = DOWNLOADING_STATE_IMAGES_PLAY
+) {
+    companion object {
+        fun fromSermonEntityToSermon(sermonEntity: SermonEntity) = Sermon(
+                date = sermonEntity.date,
+                title = sermonEntity.title,
+                pastorName = sermonEntity.pastorName,
+                audioFile = sermonEntity.audioFile,
+                duration = sermonEntity.duration,
+                image = sermonEntity.image,
+                downloadingButtonImage = sermonEntity.downloadingButtonImage)
 
-        fun fromSermonEntityToSermon(sermonEntityList :List<SermonEntity>)=sermonEntityList.map{ SermonEntity.fromSermonEntityToSermon(it)}
+        fun fromSermonEntityToSermon(sermonEntityList: List<SermonEntity>) = sermonEntityList.map { SermonEntity.fromSermonEntityToSermon(it) }
+
+        const val DOWNLOADING_STATE_IMAGES_DOWNLOAD: String="DOWNLOADING_STATE_IMAGES_DOWNLOAD"
+        const val DOWNLOADING_STATE_IMAGES_CANCEL: String="DOWNLOADING_STATE_IMAGES_CANCEL"
+        const val DOWNLOADING_STATE_IMAGES_PLAY: String="DOWNLOADING_STATE_IMAGES_PLAY"
     }
 
-    fun fromSermonToSermonEntity()=SermonEntity(
-        date=this.date,
-        title=this.title,
-        pastorName=this.pastorName,
-        audioFile=this.audioFile,
-        duration=this.duration,
-        image=this.image
+    fun fromSermonToSermonEntity() = SermonEntity(
+            date = this.date,
+            title = this.title,
+            pastorName = this.pastorName,
+            audioFile = this.audioFile,
+            duration = this.duration,
+            image = this.image,
+            downloadingButtonImage = this.downloadingButtonImage
     )
 }
 
 
 @Parcelize
 data class Sermon(
-    var date: String? = "",
-    var title: String? = "",
-    var pastorName: String? = "",
-    var audioFile: String? = "",
-    var duration: Int? = 0,
-    var image: String? = ""
+        var date: String? = "",
+        var title: String? = "",
+        var pastorName: String? = "",
+        var audioFile: String? = "",
+        var duration: Int? = 0,
+        var image: String? = "",
+        var downloadingButtonImage: String? = DOWNLOADING_STATE_IMAGES_DOWNLOAD
 
-): Parcelable {
+) : Parcelable {
     init {
         date = date ?: ""
         title = title ?: ""
         pastorName = pastorName ?: ""
         audioFile = audioFile ?: ""
-        duration = duration?:0
+        duration = duration ?: 0
         image = image ?: ""
     }
 }
 
 
+//enum class DownloadingStateImages {
+//    val DOWNLOAD:Int=1,
+//    val CANCEL=2,
+//    val PLAY=3;
+//}
 
 
 //@Entity(tableName = "sermon_table")

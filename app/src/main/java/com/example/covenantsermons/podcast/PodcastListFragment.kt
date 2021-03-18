@@ -120,7 +120,7 @@ class PodcastListFragment : Fragment() {
     private fun setAdapter() {
         Timber.i("setAdapter called")
 
-        podcastAdapter = PodcastAdapter(sermonArrayList).also { it ->
+        podcastAdapter = PodcastAdapter(activity, sermonArrayList).also { it ->
             it.onItemClick = { sermon ->
                 //Toast.makeText(activity, "title ${sermon.title} audio file${sermon.audioFile}", Toast.LENGTH_LONG).show()
                 Timber.i("on Click called title ${sermon.title}")

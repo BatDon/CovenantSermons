@@ -19,4 +19,8 @@ interface SermonDao {
     @Query("DELETE FROM sermon_table")
     suspend fun deleteAllSermons()
 
+    //check if SermonEntity exists
+    @Query("SELECT COUNT() FROM sermon_table WHERE date = :date")
+    suspend fun count(date: String): Int
+
 }

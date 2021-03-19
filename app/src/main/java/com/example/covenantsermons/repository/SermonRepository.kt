@@ -2,7 +2,6 @@ package com.example.covenantsermons.repository
 
 import androidx.annotation.WorkerThread
 import com.example.covenantsermons.dao.SermonDao
-import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelClass.SermonEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -26,6 +25,12 @@ class SermonRepository(private val sermonDao: SermonDao) {
     @WorkerThread
     suspend fun deleteAllSermons(){
         sermonDao.deleteAllSermons()
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun count(date: String): Int {
+        return sermonDao.count(date)
     }
 
 

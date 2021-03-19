@@ -6,6 +6,8 @@ import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.example.covenantsermons.modelClass.Sermon
+import com.example.covenantsermons.modelClass.SermonEntity
+import com.example.covenantsermons.modelClass.SermonEntity.Companion.fromSermonEntityToSermon
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
@@ -88,6 +90,37 @@ fun Sermon.createImagePath():String{
     }
     return stringBuilder.toString()
 }
+
+fun ArrayList<SermonEntity>.combineSermonLists(sermonArrayList: ArrayList<Sermon?>):ArrayList<Sermon?> {
+    Timber.i("combineSermonLists called")
+    Timber.i("sermonArrayList= $sermonArrayList")
+    Timber.i("sermonEntityArrayList= $this")
+    val sermonArrayListModified = sermonArrayList
+    val sermonEntityIterator = this.listIterator()
+//    val sermonIterator = sermonArrayList?.listIterator()
+    while (sermonEntityIterator.hasNext()) {
+        Timber.i("sermonEntityIterator.hasNext() called")
+        var sermonEntity = sermonEntityIterator.next()
+        Timber.i("sermonEntity= $sermonEntity")
+        val sermonIterator = sermonArrayList?.listIterator()
+        var sermonEntityDate = sermonEntity.date
+        while (sermonIterator!!.hasNext()) {
+            Timber.i("sermonIterator.hasNext() called")
+            var sermonIndex = sermonIterator.nextIndex()
+            var sermon = sermonIterator.next()
+            Timber.i("sermon= $sermon")
+            var sermonDate = sermon!!.date
+            if (sermonEntityDate == sermonDate) {
+                Timber.i("sermonEntityDate == sermonDate $sermonEntityDate")
+                Timber.i("sermonIndex= $sermonIndex")
+                sermonArrayListModified!![sermonIndex] = fromSermonEntityToSermon(sermonEntity)
+            }
+        }
+    }
+    return sermonArrayListModified
+}
+
+
 
 
 

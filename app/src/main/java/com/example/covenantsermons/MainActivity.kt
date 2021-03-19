@@ -259,11 +259,16 @@ class MainActivity : AppCompatActivity(){
         val imageFileLocation=downloadViewModel.imageFileLocation
         val audioFileLocation=downloadViewModel.audioFileLocation
         Timber.i("downloadViewModel.imageFileLocation $imageFileLocation audioFileLocation= $audioFileLocation")
-        //TODO sermon equals null this is why there is an error
+
         Timber.i("sermon = $sermon")
         val sermonEntity = SermonEntity(sermon?.date!!, sermon.title, sermon.pastorName, audioFileLocation, sermon.duration, imageFileLocation, DOWNLOADING_STATE_IMAGES_PLAY)
         Timber.i("sermonEntity= $sermonEntity")
         sermonViewModel.insert(sermonEntity)
+        //TODO Remove only for testing
+//        val sermonEntityArrayList=ArrayList<SermonEntity>()
+//        sermonEntityArrayList.add(sermonEntity)
+//        sermonEntityArrayList.combineSermonLists(podcastListViewModel.)
+//        sermonViewModel.allSermons.combineSermonLists()
 
 
     }

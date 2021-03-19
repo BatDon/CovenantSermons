@@ -12,11 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.R
+import com.example.covenantsermons.extensions.combineSermonLists
 import com.example.covenantsermons.modelClass.Sermon
+import com.example.covenantsermons.modelClass.SermonEntity
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.viewmodel.DownloadViewModel
+import com.example.covenantsermons.viewmodel.SermonViewModel
 import kotlinx.android.synthetic.main.podcast_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,6 +36,7 @@ class PodcastListFragment : Fragment() {
     private val playerViewModel: PlayerViewModel by sharedViewModel()
     private val masterFragmentViewModel: MasterFragmentViewModel by sharedViewModel()
     private val downloadViewModel: DownloadViewModel by viewModel()
+    private val sermonViewModel: SermonViewModel by viewModel()
 //    private var downloadViewModel: DownloadViewModel? =null
 
 
@@ -40,6 +44,8 @@ class PodcastListFragment : Fragment() {
     //    private val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
 //    private lateinit var podcastListViewModel: PodcastListViewModel
     private var sermonArrayList: ArrayList<Sermon?> = ArrayList<Sermon?>()
+    private var sermonEntityArrayList: ArrayList<SermonEntity> = ArrayList<SermonEntity>()
+    private var combinedSermonArrayList:ArrayList<Sermon?> =ArrayList<Sermon?>()
     private lateinit var podcastAdapter: PodcastAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +105,8 @@ class PodcastListFragment : Fragment() {
 
         setAdapter()
         setRVLayoutManager()
-        setViewModel()
+        setPodcastViewModel()
+        setSermonViewModel()
         //adapterOnClickListener()
 
 //        val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
@@ -149,12 +156,20 @@ class PodcastListFragment : Fragment() {
 
 
                 //TODO save sermon to downloadViewModel
-                downloadViewModel.let {
-                    //TODO check if already in database
-                    //sermonViewModel
-                    downloadViewModel.sermonArrayList.clear()
-                    downloadViewModel.sermonArrayList.add(sermon)
-                    it.startWork(sermon)
+                sermon.date?.let { date ->
+                    if(sermonViewModel.count(date)==0) {
+                        downloadViewModel.let {
+                            //TODO check if already in database
+                            //sermonViewModel
+                            downloadViewModel.sermonArrayList.clear()
+                            downloadViewModel.sermonArrayList.add(sermon)
+                            it.startWork(sermon)
+                        }
+                    }
+                    //TODO remove only for testing
+                    else{
+                        Timber.i("SermonEntity already exists")
+                    }
                 }
                 //downloadViewModel.startWork(sermon)
 //                //TODO pass to sermon or service so user can close app and still download
@@ -187,17 +202,42 @@ class PodcastListFragment : Fragment() {
         }
     }
 
-    private fun setViewModel() {
+    private fun setPodcastViewModel() {
         activity?.let { getPodcastsFromDatabase(podcastListViewModel, it) }
         podcastListViewModel.podcasts.observe(viewLifecycleOwner, Observer { list ->
             sermonArrayList = ArrayList(list)
+            if(sermonEntityArrayList.size>0){
+                createCombinedSermonArrayList()
+            }else{
+                combinedSermonArrayList=sermonArrayList
+            }
             sermonListUpdated()
         })
         masterFragmentViewModel.toShowAppBar(true)
     }
 
+    private fun setSermonViewModel(){
+        sermonViewModel.allSermons.observe(viewLifecycleOwner, Observer { list ->
+            sermonEntityArrayList = ArrayList(list)
+            Timber.i("sermonEntityArrayList= $sermonEntityArrayList")
+            Timber.i("sermonEntityArrayList size= ${sermonEntityArrayList.size}")
+            if(sermonEntityArrayList.size>0){
+                createCombinedSermonArrayList()
+            }else{
+                combinedSermonArrayList=sermonArrayList
+            }
+
+        })
+    }
+
+    private fun createCombinedSermonArrayList(){
+        combinedSermonArrayList = sermonEntityArrayList.combineSermonLists(sermonArrayList)
+        sermonListUpdated()
+    }
+
     private fun sermonListUpdated() {
-        podcastAdapter.updateSermonList(sermonArrayList)
+        Timber.i("sermonListUpdated called")
+        podcastAdapter.updateSermonList(combinedSermonArrayList)
         podcast_list_rv.visibility = View.VISIBLE
         progress_bar.visibility = View.INVISIBLE
     }

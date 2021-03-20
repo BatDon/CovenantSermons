@@ -10,7 +10,7 @@ interface SermonDao {
     @Query("SELECT * FROM sermon_table ORDER BY date ASC")
     fun getDateOrderedSermons(): Flow<List<SermonEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(sermonEntity: SermonEntity)
 
     @Delete

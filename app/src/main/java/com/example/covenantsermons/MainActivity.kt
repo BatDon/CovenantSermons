@@ -21,6 +21,7 @@ import com.example.covenantsermons.databinding.ActivityMainBinding
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelClass.SermonEntity
 import com.example.covenantsermons.modelClass.SermonEntity.Companion.DOWNLOADING_STATE_IMAGES_PLAY
+import com.example.covenantsermons.modelClass.SermonEntity.Companion.fromSermonEntityToSermon
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
@@ -69,6 +70,8 @@ class MainActivity : AppCompatActivity(){
 
     private lateinit var toolbar: Toolbar
     private lateinit var collapsingToolbar: CollapsingToolbarLayout
+
+    private lateinit var sermonEntityList: ArrayList<SermonEntity>
 
     var imagePath:Boolean=false
     var audioPath:Boolean=false
@@ -139,13 +142,8 @@ class MainActivity : AppCompatActivity(){
 //            Toast.makeText(applicationContext, "$sermon", Toast.LENGTH_SHORT).show()
 //        })
 
-        playerViewModel.currentlyPlaying.observe(this, Observer { sermon:Sermon ->
-            setCurrentSermonTitle(sermon)
+        setUpViewModels()
 
-//            activityMainBinding.currentSermonTitle.text = sermon.title
-//            Timber.i("sermon Title changed")
-//            Timber.i("sermon.title is ${sermon.title}")
-        })
 
 
         masterFragmentViewModel.toShowAppBar(true)
@@ -171,6 +169,28 @@ class MainActivity : AppCompatActivity(){
      //   currentSermonDownloadingListener()
         downloadViewModel.outputImageWorkInfos.observe(this, workInfosObserver(IMAGE_FILE))
         downloadViewModel.outputAudioWorkInfos.observe(this, workInfosObserver(AUDIO_FILE))
+    }
+
+    private fun setUpViewModels(){
+        playerViewModel.currentlyPlaying.observe(this, Observer { sermon:Sermon ->
+            setCurrentSermonTitle(sermon)
+
+//            activityMainBinding.currentSermonTitle.text = sermon.title
+//            Timber.i("sermon Title changed")
+//            Timber.i("sermon.title is ${sermon.title}")
+        })
+
+        sermonViewModel.allSermons.observe(this, Observer { sermonEntityListLiveData:List<SermonEntity> ->
+            Timber.i("list SermonEntity observer called $sermonEntityListLiveData")
+            this@MainActivity.sermonEntityList=ArrayList<SermonEntity>(sermonEntityListLiveData)
+            Timber.i("list SermonEntity observer called sermonEntityList $sermonEntityList")
+
+            setDownloadedSermons()
+
+//            activityMainBinding.currentSermonTitle.text = sermon.title
+//            Timber.i("sermon Title changed")
+//            Timber.i("sermon.title is ${sermon.title}")
+        })
     }
 
 //    private fun currentSermonDownloadingListener(){
@@ -264,6 +284,9 @@ class MainActivity : AppCompatActivity(){
         val sermonEntity = SermonEntity(sermon?.date!!, sermon.title, sermon.pastorName, audioFileLocation, sermon.duration, imageFileLocation, DOWNLOADING_STATE_IMAGES_PLAY)
         Timber.i("sermonEntity= $sermonEntity")
         sermonViewModel.insert(sermonEntity)
+
+        //setDownloadedSermons()
+
         //TODO Remove only for testing
 //        val sermonEntityArrayList=ArrayList<SermonEntity>()
 //        sermonEntityArrayList.add(sermonEntity)
@@ -271,6 +294,37 @@ class MainActivity : AppCompatActivity(){
 //        sermonViewModel.allSermons.combineSermonLists()
 
 
+    }
+
+    private fun setDownloadedSermons(){
+        val downloadedSermonList=roomSermonsToDownloadedSermonsList()
+        podcastListViewModel.setDownloadedPodcasts(downloadedSermonList)
+    }
+
+//    TODO need to finish this method
+    private fun roomSermonsToDownloadedSermonsList():ArrayList<Sermon>{
+
+        var sermonDownloadedArrayList:ArrayList<Sermon>?=null
+    Timber.i("sermonViewModel.allSermons.value ${sermonViewModel.allSermons.value}")
+
+//        sermonViewModel.allSermons.value?.let{ sermonEntityList ->
+        sermonEntityList.let{ sermonEntityList ->
+            Timber.i("sermonEntityList= $sermonEntityList")
+            sermonDownloadedArrayList = if(sermonEntityList.isNotEmpty()){
+                ArrayList<Sermon>(fromSermonEntityToSermon(sermonEntityList))
+                //return@roomSermonsToDownloadedSermonsList ArrayList<Sermon>(fromSermonEntityToSermon(sermonEntityList))
+            }else{
+                Timber.i("else called ")
+                ArrayList<Sermon>()
+                //return@roomSermonsToDownloadedSermonsList ArrayList<Sermon>()
+            }
+
+        }
+
+        Timber.i("sermonDownloadedArrayList $sermonDownloadedArrayList")
+        return sermonDownloadedArrayList!!
+
+       // podcastListViewModel.setDownloadedPodcasts(ArrayList(sermonViewModel.allSermons.value?.let { SermonEntity.fromSermonEntityToSermon(it) }))
     }
 
 

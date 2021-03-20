@@ -79,7 +79,7 @@ val presentationModule = module {
         SermonViewModelFactory(get())
     }
 
-    viewModel{
+    single{
         SermonViewModel(get<SermonRepository>())
     }
 

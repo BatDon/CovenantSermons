@@ -120,6 +120,15 @@ fun ArrayList<SermonEntity>.combineSermonLists(sermonArrayList: ArrayList<Sermon
     return sermonArrayListModified
 }
 
+fun ArrayList<Sermon>.sermonInCombinedList(sermon: Sermon?):Boolean{
+    this.forEach{
+        if(it.date==sermon?.date){
+            return true
+        }
+    }
+    return false
+}
+
 
 
 

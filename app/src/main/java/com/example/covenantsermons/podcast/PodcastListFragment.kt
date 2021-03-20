@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +16,7 @@ import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.R
 import com.example.covenantsermons.extensions.combineSermonLists
+import com.example.covenantsermons.extensions.sermonInCombinedList
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelClass.SermonEntity
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
@@ -139,12 +143,18 @@ class PodcastListFragment : Fragment() {
                 //TODO make sure sermon in room database before going to detail fragment
                 //      otherwise toast that it needs to be downloaded first
 
-//                podcastListViewModel.podcasts.value?.let { sermonArrayList -> playerViewModel.play(sermon, sermonArrayList) }
-//                findNavController().navigate(
-//                        R.id.action_mainFragment_to_podcastDetailsFragment,
-//                        bundleOf(
-//                                PodcastDetailsFragment.podcastSermonArgument to sermon,
-//                        ), null, null)
+                //TODO check podcastsWithDownloaded list for sermon
+                if(podcastListViewModel.podcastsWithDownloaded.value?.sermonInCombinedList(sermon)==true) {
+
+                    podcastListViewModel.podcastsWithDownloaded.value?.let { sermonArrayList -> playerViewModel.play(sermon, sermonArrayList) }
+                    findNavController().navigate(
+                            R.id.action_mainFragment_to_podcastDetailsFragment,
+                            bundleOf(
+                                    PodcastDetailsFragment.podcastSermonArgument to sermon,
+                            ), null, null)
+                }else{
+                    Toast.makeText(activity, "Please download first.",Toast.LENGTH_LONG).show()
+                }
 
             }
 

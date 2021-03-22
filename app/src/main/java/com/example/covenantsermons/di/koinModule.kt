@@ -10,9 +10,7 @@ import com.example.covenantsermons.player.MediaSessionConnection
 import com.example.covenantsermons.player.PlaybackPreparer
 import com.example.covenantsermons.player.PlayerService
 import com.example.covenantsermons.repository.SermonRepository
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
@@ -31,12 +29,27 @@ val koinModule = module {
     }
 
     single<ExoPlayer> {
-        SimpleExoPlayer.Builder(androidContext()).build().apply {
+        SimpleExoPlayer.Builder(androidContext(), get<RenderersFactory>()).build().apply {
             this.setAudioAttributes(
                     AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MUSIC)
                             .setUsage(C.USAGE_MEDIA).build(), true
             )
             this.setHandleAudioBecomingNoisy(true)
+        }
+    }
+
+    single<RenderersFactory> {
+        val defaultRenderersFactory: DefaultRenderersFactory = DefaultRenderersFactory(androidContext(), null, DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF)
+        defaultRenderersFactory
+    }
+
+//    single<ExoPlayer> {
+//        SimpleExoPlayer.Builder(androidContext()).build().apply {
+//            this.setAudioAttributes(
+//                    AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MUSIC)
+//                            .setUsage(C.USAGE_MEDIA).build(), true
+//            )
+//            this.setHandleAudioBecomingNoisy(true)
 
 //            this.addListener(object : Player.EventListener {
 //                override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -44,8 +57,8 @@ val koinModule = module {
 //                    layout.idAttribute.
 //                }
 //            })
-        }
-    }
+      //  }
+ //   }
 
 
     single(named("userAgent")) {
@@ -72,7 +85,7 @@ val koinModule = module {
                 androidContext(),
                 ComponentName(androidContext(), PlayerService::class.java),
 
-        )
+                )
     }
 
     //SermonEntityDatabase
@@ -97,6 +110,7 @@ val koinModule = module {
     single{
         WorkManager.getInstance(androidApplication())
     }
+
 
 }
 

@@ -6,13 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
 import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.MasterFragmentViewModel
-import com.example.covenantsermons.R
 import com.example.covenantsermons.databinding.PodcastDetailFragmentBinding
+import com.example.covenantsermons.extensions.createRootStoragePath
+import com.example.covenantsermons.extensions.pathToName
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
@@ -20,6 +21,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
 
 
 class PodcastDetailsFragment : Fragment() {
@@ -100,12 +103,26 @@ class PodcastDetailsFragment : Fragment() {
         }
 
     private fun setUpFragmentViews(){
-        activity?.applicationContext?.let { podcastDetailFragmentBinding?.let { podcastDetailView -> Glide.with(it).load(sermon?.image).error(R.drawable.cross).into(podcastDetailView.sermonImageIv) } }
+        loadImageFromFile()
+        //activity?.applicationContext?.let { podcastDetailFragmentBinding?.let { podcastDetailView -> Glide.with(it).load(sermon?.image).error(R.drawable.cross).into(podcastDetailView.sermonImageIv) } }
 //        podcastDetailFragmentBinding?.sermonImageIv!!.setImageBitmap(bitmap)
         sermon?.let{
             podcastDetailFragmentBinding?.sermonTitleTv!!.text=it.title
             podcastDetailFragmentBinding?.sermonPastorNameTv!!.text=it.pastorName
             Timber.i("sermon.title ${it.title}")
+        }
+    }
+
+    private fun loadImageFromFile(){
+        try {
+//            val f: File = File(activity?.filesDir.toString() + "/"+sermon?.image, sermon?.image?.pathToName()+".jpeg")
+            val f: File = File(activity?.createRootStoragePath() +sermon?.image, sermon?.image?.pathToName()+".jpeg")
+            val b = BitmapFactory.decodeStream(FileInputStream(f))
+            Timber.i("bitmap= $b")
+            val img: ImageView? = podcastDetailFragmentBinding?.sermonImageIv
+            img?.setImageBitmap(b)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
         }
     }
 

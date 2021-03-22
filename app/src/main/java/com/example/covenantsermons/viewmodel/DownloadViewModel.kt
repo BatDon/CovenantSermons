@@ -149,7 +149,6 @@ class DownloadViewModel(private val workManager: WorkManager) : ViewModel(){
        Constraints.Builder()
                 .setRequiresStorageNotLow(true)
                 .setRequiresBatteryNotLow(true)
-                .setRequiresStorageNotLow(true)
                 .build()
 
 

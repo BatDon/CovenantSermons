@@ -85,6 +85,9 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //val storageRoot=this.filesDir.toString() + "/"
+        //playerViewModel.setStorageRoot(storageRoot)
+
         Timber.i("onCreate called")
 
 
@@ -109,7 +112,7 @@ class MainActivity : AppCompatActivity(){
 
         collapsingToolbar= activityMainBinding.collapsingToolbar
 
-        collapsingToolbar.title = getString(R.string.app_name_with_space);
+        collapsingToolbar.title = getString(R.string.app_name_with_space)
         collapsingToolbar.setExpandedTitleTextAppearance(R.style.AppBarExpanded);
         collapsingToolbar.setCollapsedTitleTextAppearance(R.style.AppBarCollapsed);
 
@@ -275,15 +278,17 @@ class MainActivity : AppCompatActivity(){
         Timber.i("createSermonForRoom called")
         //val sermon=downloadViewModel.currentSermonDownloading.value
 //        val sermon=currentSermonDownloading
-        val sermon=downloadViewModel.sermonArrayList[0]
-        val imageFileLocation=downloadViewModel.imageFileLocation
-        val audioFileLocation=downloadViewModel.audioFileLocation
-        Timber.i("downloadViewModel.imageFileLocation $imageFileLocation audioFileLocation= $audioFileLocation")
+        if(downloadViewModel.sermonArrayList.isNotEmpty()) {
+            val sermon = downloadViewModel.sermonArrayList[0]
+            val imageFileLocation = downloadViewModel.imageFileLocation
+            val audioFileLocation = downloadViewModel.audioFileLocation
+            Timber.i("downloadViewModel.imageFileLocation $imageFileLocation audioFileLocation= $audioFileLocation")
 
-        Timber.i("sermon = $sermon")
-        val sermonEntity = SermonEntity(sermon?.date!!, sermon.title, sermon.pastorName, audioFileLocation, sermon.duration, imageFileLocation, DOWNLOADING_STATE_IMAGES_PLAY)
-        Timber.i("sermonEntity= $sermonEntity")
-        sermonViewModel.insert(sermonEntity)
+            Timber.i("sermon = $sermon")
+            val sermonEntity = SermonEntity(sermon?.date!!, sermon.title, sermon.pastorName, audioFileLocation, sermon.duration, imageFileLocation, DOWNLOADING_STATE_IMAGES_PLAY)
+            Timber.i("sermonEntity= $sermonEntity")
+            sermonViewModel.insert(sermonEntity)
+        }
 
         //setDownloadedSermons()
 

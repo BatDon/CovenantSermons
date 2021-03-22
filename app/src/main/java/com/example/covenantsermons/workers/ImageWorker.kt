@@ -6,6 +6,7 @@ import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.example.covenantsermons.extensions.createRootStoragePath
 import com.example.covenantsermons.extensions.dateToUnderscoredDate
 import com.example.covenantsermons.extensions.deserializeFromJson
 import com.example.covenantsermons.extensions.pathToName
@@ -100,6 +101,7 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
         val imagePath:String =createImagePath(sermon)
         val imageFileName:String?=sermon.image?.pathToName()
         val dir= File(mContext.filesDir, imagePath)
+        var bitmapPath:String=""
         if (!dir.exists()) {
             Timber.i("making dir imagePath= $imagePath")
             dir.mkdir()
@@ -109,6 +111,7 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
         }
         try {
             val bitmapFile = File(dir, imageFileName!!)
+            bitmapPath=bitmapFile.toString()
             //val writer = FileWriter(bitmapFile)
             val outputStream= FileOutputStream(bitmapFile)
             bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
@@ -122,14 +125,14 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
             e.printStackTrace()
         }
         Timber.i("returning imagePath")
-        return imagePath
+        return bitmapPath
     }
 
     fun createImagePath(sermon: Sermon):String{
         val dateUnderscored= sermon.dateToUnderscoredDate()
         //val dateUnderscored=sermon.date?.replace("/","_")
         val bitmapName=sermon.image?.pathToName()?.split(".")!![0]
-        val imagePath=dateUnderscored+"_"+sermon.title+"_"+"bitmapImage_"+bitmapName
+        val imagePath=mContext.createRootStoragePath()+dateUnderscored+"_"+sermon.title+"_"+"bitmapImage_"+bitmapName
         return imagePath
     }
 

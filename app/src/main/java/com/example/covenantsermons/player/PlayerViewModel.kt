@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.upstream.DataSource
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.File
 
 
 class PlayerViewModel(
@@ -31,6 +32,9 @@ class PlayerViewModel(
     private var previousIndex=0
     private var currentIndex = 0
 
+    var audioDir: File? =null
+
+   // private var storageRoot:String=""
     //use coroutine to get image
     val _currentSermonImage=MutableLiveData<Bitmap>()
     val currentSermonImage
@@ -126,6 +130,7 @@ class PlayerViewModel(
 
     fun playFromPlaylist(next: Sermon) {
         val current = _playlist[currentIndex]
+        Timber.i("next.audioFile= $next.audioFile")
         val newPlaylist =
             _playlist.filter { it.audioFile != next.audioFile && it.audioFile != current.audioFile }
         createPlaylist(next, newPlaylist)
@@ -159,7 +164,23 @@ class PlayerViewModel(
         Timber.i("before mediaSessionConnection.transportControls")
         //runBlocking { getMediaSessionConnection() }
         //Timber.i("runBlocking coroutine finished")
-        mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)
+
+
+
+//        mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)
+//        Timber.i("before creatingfile")
+//        val audioFile=File(next.audioFile)
+//        Timber.i("after creatingFile")
+//        val inputStream= FileInputStream(audioFile)
+//            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+        //writer.append(bitmap)
+        //writer.flush()
+        //writer.close()
+//        inputStream.close()
+//        mediaSessionConnection.transportControls.playFromMediaId((inputStream.toString()), null)
+                mediaSessionConnection.transportControls.playFromMediaId((next.audioFile), null)
+       // val uri=Uri.parse(next.audioFile)
+       // mediaSessionConnection.transportControls.playFromMediaId(uri.path, null)
         currentIndex=0
         _currentlyPlaying.value = next
         //getPreviousTrackIndex()
@@ -185,6 +206,10 @@ class PlayerViewModel(
 //        currentIndex = 0
 //        _currentlyPlaying.value = next
     }
+
+//    fun setStorageRoot(internalStorageRoot:String){
+//        storageRoot=internalStorageRoot
+//    }
 
 
 

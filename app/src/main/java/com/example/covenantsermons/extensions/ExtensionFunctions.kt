@@ -1,5 +1,6 @@
 package com.example.covenantsermons.extensions
 
+import android.content.Context
 import androidx.annotation.MainThread
 import androidx.arch.core.util.Function
 import androidx.core.net.toUri
@@ -12,6 +13,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import timber.log.Timber
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -128,6 +130,13 @@ fun ArrayList<Sermon>.sermonInCombinedList(sermon: Sermon?):Boolean{
     }
     return false
 }
+
+fun Context.createRootStoragePath()=this.filesDir.toString()+"/"
+
+fun Context.createDir(filePath: String)= File(this.filesDir, filePath)
+    //val inputStream= FileInputStream(dir)
+
+fun File.createDirFileName(file: File, fileName: String)=File(file, fileName)
 
 
 

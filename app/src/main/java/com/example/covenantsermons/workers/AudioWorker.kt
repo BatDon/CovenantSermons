@@ -7,10 +7,7 @@ import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.example.covenantsermons.extensions.dateToUnderscoredDate
-import com.example.covenantsermons.extensions.deserializeFromJson
-import com.example.covenantsermons.extensions.httpsRefToStorageRef
-import com.example.covenantsermons.extensions.pathToName
+import com.example.covenantsermons.extensions.*
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.repository.Repository
 import com.example.covenantsermons.viewmodel.DownloadViewModel
@@ -32,9 +29,12 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
+    private lateinit var rootStoragePath:String
+
     init{
         Timber.i("AudioWorker created")
         mContext=context
+        rootStoragePath=mContext.createRootStoragePath()
     }
 
     override fun doWork(): Result {
@@ -88,7 +88,12 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
     private suspend fun saveToFile(sermon: Sermon, audioStorageReference:StorageReference, mContext: Context):String? = withContext(Dispatchers.IO){
         var audioPath: String?=createAudioPath(sermon)
         val audioFileName:String?=sermon.audioFile?.pathToName()
-        val dir= File(mContext.filesDir, audioPath!!)
+        //val dir= File(mContext.filesDir, audioPath!!)
+        val fileRoot=File(this@AudioWorker.mContext.filesDir.toString())
+        Timber.i("fileRoot= $fileRoot")
+        val dir= mContext.createDir(audioPath!!)
+        var audioFile:File?=null
+        Timber.i("dir= $dir")
         if (!dir.exists()) {
             Timber.i("making dir imagePath= $audioPath")
             dir.mkdir()
@@ -99,7 +104,8 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
         try {
 
             //val audioFile:File? = audioFileName.let{File.createTempFile(it!!, "mp3")}
-            val audioFile = File(dir, audioFileName!!)
+            audioFile = File(dir, audioFileName!!)
+            Timber.i("try audioFile= $audioFile")
             //val writer = FileWriter(bitmapFile)
             val outputStream= FileOutputStream(audioFile)
 //            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
@@ -113,7 +119,7 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
             e.printStackTrace()
         }
         Timber.i("returning imagePath")
-        return@withContext audioPath
+        return@withContext audioFile.toString()
     }
 
 
@@ -154,7 +160,7 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
         val dateUnderscored= sermon.dateToUnderscoredDate()
 //        val dateUnderscored=sermon.date?.replace("/","_")
         val audioName=sermon.audioFile?.pathToName()?.split(".")!![0]
-        return dateUnderscored+"_"+sermon.title+"_"+"bitmapImage_"+audioName
+        return dateUnderscored+"_"+sermon.title+"_mp3File_"+audioName
     }
 
     companion object{

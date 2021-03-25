@@ -12,8 +12,6 @@ import androidx.lifecycle.Observer
 import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.databinding.PodcastDetailFragmentBinding
-import com.example.covenantsermons.extensions.createRootStoragePath
-import com.example.covenantsermons.extensions.pathToName
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
@@ -116,11 +114,19 @@ class PodcastDetailsFragment : Fragment() {
     private fun loadImageFromFile(){
         try {
 //            val f: File = File(activity?.filesDir.toString() + "/"+sermon?.image, sermon?.image?.pathToName()+".jpeg")
-            val f: File = File(activity?.createRootStoragePath() +sermon?.image, sermon?.image?.pathToName()+".jpeg")
-            val b = BitmapFactory.decodeStream(FileInputStream(f))
-            Timber.i("bitmap= $b")
-            val img: ImageView? = podcastDetailFragmentBinding?.sermonImageIv
-            img?.setImageBitmap(b)
+//            val f: File = File(activity?.createRootStoragePath() +sermon?.image, sermon?.image?.pathToName()+".jpeg")
+    //TODO same method in PlayerService make an extension fun
+            sermon.let{
+                sermon?.image.let{
+                    val sermonImage=sermon!!.image!!
+                    val file: File = File(sermonImage)
+                    val b = BitmapFactory.decodeStream(FileInputStream(file))
+                    Timber.i("bitmap= $b")
+                    val img: ImageView? = podcastDetailFragmentBinding?.sermonImageIv
+                    img?.setImageBitmap(b)
+                }
+            }
+
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         }

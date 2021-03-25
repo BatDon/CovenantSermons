@@ -6,13 +6,11 @@ import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.example.covenantsermons.extensions.createRootStoragePath
-import com.example.covenantsermons.extensions.dateToUnderscoredDate
-import com.example.covenantsermons.extensions.deserializeFromJson
-import com.example.covenantsermons.extensions.pathToName
+import com.example.covenantsermons.extensions.*
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.repository.ImageRepository
 import com.example.covenantsermons.viewmodel.DownloadViewModel.Companion.KEY_SERMON_SERIALIZED
+import com.google.firebase.storage.StorageReference
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
@@ -52,7 +50,11 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
                 Timber.i("bitmap using imageRepository= $bitmap")
                 bitmap?.let {
                     //saveBitmapToFile(sermon, it)
-                   bitmapPath= saveBitmapToInternalStorage(mContext,sermon, it)
+                    val imageStorageReference = sermon.image?.httpsRefToStorageRef()
+                    imageStorageReference.let{imageStorageReference ->
+                        bitmapPath= saveBitmapToInternalStorage(sermon, imageStorageReference!!, it,mContext)
+                    }
+
                 }
                 val outputBitmap= workDataOf(KEY_IMAGE_BITMAP_FILE_PATH to bitmapPath)
                 //val outputSermon= workDataOf(KEY_SERMON to sermon)
@@ -97,10 +99,17 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
 //        }
 //    }
 
-    private fun saveBitmapToInternalStorage(mContext: Context, sermon: Sermon, bitmap: Bitmap?):String {
+   //TODO download from Firebase and save to internal storage check AudioWorker for reference
+    private fun saveBitmapToInternalStorage(sermon: Sermon, imageStorageReference: StorageReference,  bitmap: Bitmap?, mContext: Context, ):String {
+
+
+
         val imagePath:String =createImagePath(sermon)
         val imageFileName:String?=sermon.image?.pathToName()
-        val dir= File(mContext.filesDir, imagePath)
+       val fileRoot=File(this@ImageWorker.mContext.filesDir.toString())
+       val dir=mContext.createDir(imagePath)
+      //  val dir= File(mContext.filesDir, imagePath)
+       var imageFile:File?=null
         var bitmapPath:String=""
         if (!dir.exists()) {
             Timber.i("making dir imagePath= $imagePath")
@@ -110,11 +119,13 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
             Timber.i("dir already exists imagePath= $imagePath")
         }
         try {
-            val bitmapFile = File(dir, imageFileName!!)
-            bitmapPath=bitmapFile.toString()
+            imageFile = File(dir, imageFileName!!)
+            imageStorageReference.getFile(imageFile)
+            bitmapPath=imageFile.toString()
             //val writer = FileWriter(bitmapFile)
-            val outputStream= FileOutputStream(bitmapFile)
-            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            val outputStream= FileOutputStream(imageFile)
+            //bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            //imageStorageReference.getFile(imageFile)
             //writer.append(bitmap)
             //writer.flush()
             //writer.close()
@@ -132,8 +143,8 @@ class ImageWorker(context: Context, workerParams: WorkerParameters) : Worker(con
         val dateUnderscored= sermon.dateToUnderscoredDate()
         //val dateUnderscored=sermon.date?.replace("/","_")
         val bitmapName=sermon.image?.pathToName()?.split(".")!![0]
-        val imagePath=mContext.createRootStoragePath()+dateUnderscored+"_"+sermon.title+"_"+"bitmapImage_"+bitmapName
-        return imagePath
+//        val imagePath=mContext.createRootStoragePath()+dateUnderscored+"_"+sermon.title+"_"+"bitmapImage_"+bitmapName
+        return dateUnderscored+"_"+sermon.title+"_bitmapImage_"+bitmapName
     }
 
 

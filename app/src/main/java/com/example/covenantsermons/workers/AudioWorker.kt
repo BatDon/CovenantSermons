@@ -56,6 +56,7 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
             else{
                 var audioFile: String?=null
                 runBlocking(coroutineContext) {
+                    Timber.i("else block sermon.audioFile= ${sermon.audioFile}")
                     val audioStorageReference = sermon.audioFile?.httpsRefToStorageRef()
 
                     //getAudioFile()
@@ -86,6 +87,10 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
 
 
     private suspend fun saveToFile(sermon: Sermon, audioStorageReference:StorageReference, mContext: Context):String? = withContext(Dispatchers.IO){
+        //TODO test remove after testing only works for first sermon
+        val storageReferenceAudioName=audioStorageReference.child("audio_files")
+
+
         var audioPath: String?=createAudioPath(sermon)
         val audioFileName:String?=sermon.audioFile?.pathToName()
         //val dir= File(mContext.filesDir, audioPath!!)
@@ -105,6 +110,7 @@ class AudioWorker(context: Context, params: WorkerParameters) : Worker(context, 
 
             //val audioFile:File? = audioFileName.let{File.createTempFile(it!!, "mp3")}
             audioFile = File(dir, audioFileName!!)
+            audioStorageReference.getFile(audioFile)
             Timber.i("try audioFile= $audioFile")
             //val writer = FileWriter(bitmapFile)
             val outputStream= FileOutputStream(audioFile)

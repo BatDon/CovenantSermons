@@ -76,6 +76,22 @@ val koinModule = module {
         )
     }
 
+//    single<DataSource.Factory>{
+//        DataSource.Factory(
+//            override fun createDataSource(): DataSource {
+//                //            TODO("Not yet implemented")
+//                return FileDataSource()
+//            }
+//        )
+//    }
+
+//    single<FileDataSource.Factory>()
+//    single<DataSource.Factory>{DataSource.Factory(
+//            createDataSource():DataSource {
+//        return FileDataSource()
+//    })
+//    }
+
     single {
         PlaybackPreparer(get())
     }
@@ -83,9 +99,8 @@ val koinModule = module {
     single {
         MediaSessionConnection(
                 androidContext(),
-                ComponentName(androidContext(), PlayerService::class.java),
-
-                )
+                ComponentName(androidContext(), PlayerService::class.java)
+        )
     }
 
     //SermonEntityDatabase

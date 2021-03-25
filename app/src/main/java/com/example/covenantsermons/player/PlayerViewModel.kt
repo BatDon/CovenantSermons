@@ -11,6 +11,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.FileDataSource
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -20,6 +21,7 @@ import java.io.File
 class PlayerViewModel(
         private val exoPlayer: ExoPlayer,
         private val dataSourceFactory: DataSource.Factory,
+//        private val dataSourceFactory: FileDataSource.Factory,
         private val mediaSessionConnection: MediaSessionConnection,
         private val playbackPreparer: PlaybackPreparer
 ) : ViewModel() {
@@ -151,19 +153,22 @@ class PlayerViewModel(
         Timber.i("next= $next")
         Timber.i("1 _playlist size= ${_playlist.size}")
 
-        //TODO review this is correct mediaSources list has next, next and then two more items. next and next are the same
-//        val mediaSources = (listOf(next) + _playlist).map {
+
+//        val mediaSources = (listOf(next) + playlist).map {
+//            ProgressiveMediaSource.Factory(dataSourceFactory)
+//                .setTag(it)
+//                .createMediaSource(Uri.parse(it.audioFile))
+//        }.toTypedArray()
         val mediaSources = (listOf(next) + playlist).map {
-            ProgressiveMediaSource.Factory(dataSourceFactory)
-                .setTag(it)
-                .createMediaSource(Uri.parse(it.audioFile))
+            ProgressiveMediaSource.Factory(createDataSource())
+                    .setTag(it)
+                    .createMediaSource(Uri.parse(it.audioFile))
         }.toTypedArray()
         Timber.i("mediaSources size= ${mediaSources.size}")
         Timber.i("_playlist size= ${_playlist.size}")
         playbackPreparer.mediaSource = ConcatenatingMediaSource(*mediaSources)
         Timber.i("before mediaSessionConnection.transportControls")
-        //runBlocking { getMediaSessionConnection() }
-        //Timber.i("runBlocking coroutine finished")
+
 
 
 
@@ -178,7 +183,18 @@ class PlayerViewModel(
         //writer.close()
 //        inputStream.close()
 //        mediaSessionConnection.transportControls.playFromMediaId((inputStream.toString()), null)
-                mediaSessionConnection.transportControls.playFromMediaId((next.audioFile), null)
+        Timber.i("before mediaSessionConnection.transportControls.playFromMediaId((next.audioFile), null)")
+//        mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)
+//        val fileInputStream=FileInputStream(next.audioFile)
+//        val mp3File=fileInputStream.read()
+//        mediaSessionConnection.transportControls.playFromMediaId(mp3File.toString(), null)
+//        mediaSessionConnection.transportControls.playFromMediaId(mp3File.toString(), null)
+        Timber.i("after mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)")
+//        val dataSourceFactory: DataSource.Factory = FileDataSourceFactory()
+//        val extractorsFactory=ExtractorMediaSource(Uri.parse(next.audioFile), dataSourceFactory,
+//                DefaultExtractorsFactory(), null, null)
+//        mediaSessionConnection.transportControls.playFromUri(Uri.parse(next.audioFile), null)
+        mediaSessionConnection.transportControls.playFromMediaId((next.audioFile), null)
        // val uri=Uri.parse(next.audioFile)
        // mediaSessionConnection.transportControls.playFromMediaId(uri.path, null)
         currentIndex=0
@@ -217,6 +233,20 @@ class PlayerViewModel(
 //        previousIndex=if (exoPlayer.currentWindowIndex-1<0) 0 else exoPlayer.currentWindowIndex-1
 //        Timber.i("getPreviousTrackIndex called $previousIndex")
 //    }
+
+//    private fun createDataSource():DataSource{
+//        DataSource.Factory():DataSource {
+//            override fun createDataSource()=FileDataSource()
+//        }
+//    }
+    private fun createDataSource():DataSource.Factory{
+        return object:DataSource.Factory{
+            override fun createDataSource(): DataSource {
+    //            TODO("Not yet implemented")
+                return FileDataSource()
+            }
+        }
+    }
 
 //    suspend fun getMediaSessionConnection()=withContext(Dispatchers.IO){
     suspend fun getMediaSessionConnection(){

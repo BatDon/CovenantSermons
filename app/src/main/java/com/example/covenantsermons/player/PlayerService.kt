@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -22,9 +23,9 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.covenantsermons.repository.ImageRepository
 import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.modelClass.Sermon
+import com.example.covenantsermons.repository.ImageRepository
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -143,7 +144,23 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 //                            })
 
                             val sermon = mPlayer.currentTag as? Sermon
-                            val bitmap=sermon?.image?.let { imageRepository.getSermonImage(it) }
+                            Timber.i("sermon= $sermon")
+                            sermon.let{
+                                sermon?.image.let{
+                                    val sermonImage=sermon!!.image!!
+                                    Timber.i("sermonImage= $sermonImage")
+//                                    val file: File = File(sermonImage)
+//                                    val b = BitmapFactory.decodeStream(FileInputStream(file))
+//                                    Timber.i("bitmap= $b")
+                                    val bitmap=BitmapFactory.decodeFile(sermonImage);
+                                    Timber.i("bitmap= $bitmap")
+                                    return bitmap
+                                }
+                            }
+
+
+
+//                            val bitmap=sermon?.image?.let { imageRepository.getSermonImage(it) }
 
                             //val sermonBitmap= imageViewModel.currentSermonImage.value
 
@@ -185,7 +202,7 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 //                            return bigIconBitmap
 
 //                            return sermonBitmap
-                            return bitmap
+                            //return bitmap
 
 //                            val bitmap = GlobalScope.async{ sermon?.image?.let { glideCreateBitmap(it) } }
 //                            return bitmap.await()

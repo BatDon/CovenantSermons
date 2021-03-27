@@ -34,6 +34,8 @@ import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.core.KoinComponent
 import timber.log.Timber
+import java.io.File
+import java.io.FileInputStream
 
 
 class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
@@ -131,8 +133,8 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                         }
 
                         override fun getCurrentContentTitle(mPlayer: Player): String {
-                            Timber.i("mPlayer= $mPlayer")
-                            Timber.i("mPlayer.currentTag= ${mPlayer.currentTag}")
+                            Timber.i("getCurrentContentTitle mPlayer= $mPlayer")
+                            Timber.i("getCurrentContentTitle mPlayer.currentTag= ${mPlayer.currentTag}")
                             val sermon = mPlayer.currentTag as? Sermon
                             Timber.i("getCurrentContentTitle called sermon =$sermon")
                             return sermon?.title ?: "sermon title not found"
@@ -144,31 +146,38 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                                 callback: PlayerNotificationManager.BitmapCallback
                         ): Bitmap? {
 
+                            Timber.i("getCurrentLargeIcon mPlayer= $mPlayer")
+                            Timber.i("getCurrentLargeIcon mPlayer.currentTag= ${mPlayer.currentTag}")
+                            if(mPlayer.currentTag ==null){
+                                return controller.metadata?.description?.iconBitmap
+                            }
+
                             val sermon = mPlayer.currentTag as? Sermon
-                            Timber.i("sermon= $sermon")
-                            val sermonImage=sermon!!.image!!
-                                    Timber.i("sermonImage= $sermonImage")
-                                    val bitmap= BitmapFactory.decodeFile(sermonImage)
-                                    Timber.i("bitmap= $bitmap")
-                                    return bitmap
+                            Timber.i("getCurrentLargeIcon sermon= $sermon")
+//                            val sermonImage=sermon!!.image!!
+//                                    Timber.i("sermonImage= $sermonImage")
+//                                    val bitmap= BitmapFactory.decodeFile(sermonImage)
+//                                    Timber.i("bitmap= $bitmap")
+//                                    return bitmap
 
 //                            return controller.metadata?.description?.iconBitmap
 //                            Timber.i("getCurrentLargeIcon called")
 //
 //                            val sermon = mPlayer.currentTag as? Sermon
 //                            Timber.i("sermon= $sermon")
-//                            sermon.let{
-//                                sermon?.image.let{
-//                                    val sermonImage=sermon!!.image!!
-//                                    Timber.i("sermonImage= $sermonImage")
-////                                    val file: File = File(sermonImage)
-////                                    val b = BitmapFactory.decodeStream(FileInputStream(file))
-////                                    Timber.i("bitmap= $b")
-//                                    val bitmap= BitmapFactory.decodeFile(sermonImage)
-//                                    Timber.i("bitmap= $bitmap")
-//                                    return bitmap
-//                                }
-//                            }
+
+                            val sermonImage = sermon?.image!!
+                            Timber.i("sermonImage= $sermonImage")
+                            val file: File = File(sermonImage)
+                            val b = BitmapFactory.decodeStream(FileInputStream(file))
+                            Timber.i("bitmap= $b")
+                            //  val bitmap= BitmapFactory.decodeFile(sermonImage)
+                            //Timber.i("bitmap= $bitmap")
+                            return b
+//
+//                            val icon = BitmapFactory.decodeResource(this@PlayerService.context.getResources(),
+//                                    R.drawable.icon_resource)
+
 
 //                                                        imageViewModel.currentSermonImage.observe(this@PlayerService, Observer { currentSermonImage ->
 //                            })

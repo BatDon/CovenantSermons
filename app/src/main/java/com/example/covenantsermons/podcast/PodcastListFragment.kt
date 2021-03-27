@@ -16,7 +16,7 @@ import com.example.covenantsermons.MainActivity
 import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.R
 import com.example.covenantsermons.extensions.combineSermonLists
-import com.example.covenantsermons.extensions.sermonInCombinedList
+import com.example.covenantsermons.extensions.sermonInDownloadedList
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelClass.SermonEntity
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
@@ -47,9 +47,11 @@ class PodcastListFragment : Fragment() {
 
     //    private val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
 //    private lateinit var podcastListViewModel: PodcastListViewModel
+    private var sermonPlayArrayList: ArrayList<Sermon?> = ArrayList<Sermon?>()
     private var sermonArrayList: ArrayList<Sermon?> = ArrayList<Sermon?>()
     private var sermonEntityArrayList: ArrayList<SermonEntity> = ArrayList<SermonEntity>()
     private var combinedSermonArrayList:ArrayList<Sermon?> =ArrayList<Sermon?>()
+    private var podcastsDownloaded:ArrayList<Sermon?> =ArrayList<Sermon?>()
     private lateinit var podcastAdapter: PodcastAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,6 +137,7 @@ class PodcastListFragment : Fragment() {
             it.onItemClick = { sermon ->
                 //Toast.makeText(activity, "title ${sermon.title} audio file${sermon.audioFile}", Toast.LENGTH_LONG).show()
                 Timber.i("on Click called title ${sermon.title}")
+                Timber.i("sermon= $sermon")
                 //podcast_list_rv.adapter=it
 //                Timber.i("podcastListViewModel.transformLiveData() ${podcastListViewModel.transformLiveData().size}")
 //                playerViewModel.play(sermon, podcastListViewModel.transformLiveData())
@@ -143,10 +146,15 @@ class PodcastListFragment : Fragment() {
                 //TODO make sure sermon in room database before going to detail fragment
                 //      otherwise toast that it needs to be downloaded first
 
-                //TODO check podcastsWithDownloaded list for sermon
-                if(podcastListViewModel.podcastsWithDownloaded.value?.sermonInCombinedList(sermon)==true) {
+                //TODO check podcastsDownloaded list for sermon
+//                Timber.i("podcastListViewModel.podcastsDownloaded.value= ${podcastListViewModel.podcastsDownloaded.value}")
+//                if(podcastListViewModel.podcastsDownloaded.value?.sermonInDownloadedList(sermon)==true) {
+                Timber.i("podcastListViewModel.getDownloadedPodcasts()= ${podcastListViewModel.getDownloadedPodcasts()}")
+                if(podcastsDownloaded.sermonInDownloadedList(sermon)) {
 
-                    podcastListViewModel.podcastsWithDownloaded.value?.let { sermonArrayList -> playerViewModel.play(sermon, sermonArrayList) }
+                    Timber.i("podcastListViewModel.podcastsDownloaded.value= ${podcastListViewModel.podcastsDownloaded.value}")
+
+                    podcastListViewModel.podcastsDownloaded.value?.let { sermonArrayList -> playerViewModel.play(sermon, sermonArrayList) }
                     findNavController().navigate(
                             R.id.action_mainFragment_to_podcastDetailsFragment,
                             bundleOf(
@@ -161,7 +169,7 @@ class PodcastListFragment : Fragment() {
             it.onDownloadCancelPlayClick = { sermon ->
                 Timber.i("onDownloadCancelPlayClick called ${sermon.title}")
                 Timber.i("onDownloadCancelPlayClick sermon= $sermon")
-                val sermonArrayList = arrayListOf<Sermon>(sermon)
+                //val sermonArrayList = arrayListOf<Sermon>(sermon)
                // downloadViewModel.setUpCurrentSermon(sermonArrayList)
 
 
@@ -213,9 +221,23 @@ class PodcastListFragment : Fragment() {
     }
 
     private fun setPodcastViewModel() {
+        Timber.i("setPodcastViewModel called")
         activity?.let { getPodcastsFromDatabase(podcastListViewModel, it) }
         podcastListViewModel.podcasts.observe(viewLifecycleOwner, Observer { list ->
+            Timber.i("podcasts observer called")
             sermonArrayList = ArrayList(list)
+            if(sermonEntityArrayList.size>0){
+                createCombinedSermonArrayList()
+            }else{
+                combinedSermonArrayList= sermonArrayList
+            }
+            sermonListUpdated()
+        })
+
+        podcastListViewModel.podcastsDownloaded.observe(viewLifecycleOwner, Observer { list ->
+            Timber.i("podcastsDownloaded observer called")
+            podcastsDownloaded=ArrayList(list)
+            Timber.i("podcastsDownloaded= $podcastsDownloaded")
             if(sermonEntityArrayList.size>0){
                 createCombinedSermonArrayList()
             }else{
@@ -223,6 +245,8 @@ class PodcastListFragment : Fragment() {
             }
             sermonListUpdated()
         })
+
+
         masterFragmentViewModel.toShowAppBar(true)
     }
 

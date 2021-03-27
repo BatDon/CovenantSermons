@@ -122,10 +122,14 @@ fun ArrayList<SermonEntity>.combineSermonLists(sermonArrayList: ArrayList<Sermon
     return sermonArrayListModified
 }
 
-fun ArrayList<Sermon>.sermonInCombinedList(sermon: Sermon?):Boolean{
+fun ArrayList<Sermon?>.sermonInDownloadedList(sermon: Sermon?):Boolean{
+    Timber.i("ArrayList<Sermon>= $sermon")
     this.forEach{
-        if(it.date==sermon?.date){
-            return true
+        Timber.i("it.date= ${it?.date}   sermon.date= ${sermon?.date}")
+        if(it?.date !=null && sermon?.date !=null){
+            if(it.date?.compareTo(sermon.date!!, false)==0){
+                return true
+            }
         }
     }
     return false

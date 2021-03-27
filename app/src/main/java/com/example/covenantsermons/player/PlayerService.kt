@@ -86,7 +86,8 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 //                    sermonBundle.putParcelable(SERMON_PODCAST_PARCELABLE,sermonParcelable)
 //                    mediaSessionIntent.putExtra(SERMON_PODCAST_BUNDLE,sermonBundle)
 
-                    PendingIntent.getActivity(this, 1, mediaSessionIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+//                    PendingIntent.getActivity(this, 1, mediaSessionIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    PendingIntent.getActivity(this, 1, mediaSessionIntent, 0)
                 }
 
         mediaSession = MediaSessionCompat(this, "Player Service")
@@ -94,14 +95,14 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                     setSessionActivity(sessionActivityPendingIntent)
                     isActive = true
                     //added below 2/6/2021
-                    setFlags(
-                            MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
-                                    MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-                    )
-                    mStateBuilder = PlaybackStateCompat.Builder()
-                            .setActions(PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
-                                    or PlaybackStateCompat.ACTION_PAUSE)
-                    setPlaybackState(mStateBuilder.build())
+//                    setFlags(
+//                            MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
+//                                    MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+//                    )
+//                    mStateBuilder = PlaybackStateCompat.Builder()
+//                            .setActions(PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
+//                                    or PlaybackStateCompat.ACTION_PAUSE)
+//                    setPlaybackState(mStateBuilder.build())
                     //added above 2/6/2021
                 }
 
@@ -130,7 +131,10 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                         }
 
                         override fun getCurrentContentTitle(mPlayer: Player): String {
+                            Timber.i("mPlayer= $mPlayer")
+                            Timber.i("mPlayer.currentTag= ${mPlayer.currentTag}")
                             val sermon = mPlayer.currentTag as? Sermon
+                            Timber.i("getCurrentContentTitle called sermon =$sermon")
                             return sermon?.title ?: "sermon title not found"
                         }
 
@@ -139,78 +143,40 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                                 mPlayer: Player,
                                 callback: PlayerNotificationManager.BitmapCallback
                         ): Bitmap? {
-                            Timber.i("getCurrentLargeIcon called")
-//                            imageViewModel.currentSermonImage.observe(this@PlayerService, Observer { currentSermonImage ->
-//                            })
 
                             val sermon = mPlayer.currentTag as? Sermon
                             Timber.i("sermon= $sermon")
-                            sermon.let{
-                                sermon?.image.let{
-                                    val sermonImage=sermon!!.image!!
+                            val sermonImage=sermon!!.image!!
                                     Timber.i("sermonImage= $sermonImage")
-//                                    val file: File = File(sermonImage)
-//                                    val b = BitmapFactory.decodeStream(FileInputStream(file))
-//                                    Timber.i("bitmap= $b")
-                                    val bitmap=BitmapFactory.decodeFile(sermonImage);
+                                    val bitmap= BitmapFactory.decodeFile(sermonImage)
                                     Timber.i("bitmap= $bitmap")
                                     return bitmap
-                                }
-                            }
-
-
-
-//                            val bitmap=sermon?.image?.let { imageRepository.getSermonImage(it) }
-
-                            //val sermonBitmap= imageViewModel.currentSermonImage.value
-
-//                            val sermon = mPlayer.currentTag as? Sermon
-//                            sermon.image
-//                            runBlocking { sermon?.image?.let { glideCreateBitmap(it) } }
-
-//                            var bitmap:Bitmap?=null
-//                            GlobalScope.launch(Dispatchers.Main) { sermon?.image?.let { bitmap= glideCreateBitmap(it) } }
-//                            Timber.i("bitmap after coroutine is $bitmap")
-
-//                            runBlocking {
-//                                val bitmap = GlobalScope.async{ sermon?.image?.let { glideCreateBitmap(it) } }
-//                                bitmap.await()
-//                            }
-
-//                            runBlocking {
-//                                val bitmap:Bitmap = launch(Dispatchers.IO){ sermon?.image?.let { glideCreateBitmap(it) } }
-//                                return bitmap
-//                            }
-//                            var bitmap = null
-//
-//                            val coroutineScope = CoroutineScope(Dispatchers.Main)
-//
-//                            GlobalScope.launch(Dispatchers.Main) {
-////                                val bitmap:Bitmap? =  sermon?.image?.let { glideCreateBitmap(it) }
-//                                val bitmapFromGlide: Bitmap? = sermon?.image?.let { glideCreateBitmap(it) }
-//                                // setBitmapForIcon(bitmap)
-//
-//                                // return@launch bitmap
-//
-//                            }
-                            //bitmapFromGlide
-
-//                            fun setBitmapForIcon(bitmap:Bitmap){
-//
-//                            }
-
-//                            return bigIconBitmap
-
-//                            return sermonBitmap
-                            //return bitmap
-
-//                            val bitmap = GlobalScope.async{ sermon?.image?.let { glideCreateBitmap(it) } }
-//                            return bitmap.await()
 
 //                            return controller.metadata?.description?.iconBitmap
-//                            return Glide.with(this@PlayerService).asBitmap().load(sermon?.image).error(R.drawable.cross)
-//                            Glide.with(this@PlayerService).load(sermon?.image).error(R.drawable.cross)
+//                            Timber.i("getCurrentLargeIcon called")
+//
+//                            val sermon = mPlayer.currentTag as? Sermon
+//                            Timber.i("sermon= $sermon")
+//                            sermon.let{
+//                                sermon?.image.let{
+//                                    val sermonImage=sermon!!.image!!
+//                                    Timber.i("sermonImage= $sermonImage")
+////                                    val file: File = File(sermonImage)
+////                                    val b = BitmapFactory.decodeStream(FileInputStream(file))
+////                                    Timber.i("bitmap= $b")
+//                                    val bitmap= BitmapFactory.decodeFile(sermonImage)
+//                                    Timber.i("bitmap= $bitmap")
+//                                    return bitmap
+//                                }
+//                            }
+
+//                                                        imageViewModel.currentSermonImage.observe(this@PlayerService, Observer { currentSermonImage ->
+//                            })
+//                            mPlayer.
+//                            Timber.i("mPlayer.getCurrentMediaItem= ${mPlayer.getCurrentMediaItem()}")
+
                         }
+
 
                         override fun createCurrentContentIntent(player: Player): PendingIntent? {
                             return PendingIntent.getActivity(

@@ -11,6 +11,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.FileDataSource
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -72,6 +73,7 @@ class PlayerViewModel(
 //            }
             //TODO error if press previous button, because it increases value of current index
             if (reason==Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT){
+                Timber.i("_playlist= $_playlist")
                 Timber.i("_playlist size= ${_playlist.size}")
                 currentIndex=exoPlayer.currentWindowIndex
                 Timber.i("currentIndex= $currentIndex")
@@ -122,6 +124,7 @@ class PlayerViewModel(
     }
 
     fun play(currentSermon: Sermon, sermonList: List<Sermon>) {
+        Timber.i("play called currentSermon=$currentSermon")
         val newPlaylist = sermonList.filter { it.audioFile != currentSermon.audioFile }
         createPlaylist(currentSermon, newPlaylist)
     }
@@ -151,6 +154,7 @@ class PlayerViewModel(
         _playlist.addAll(newPlaylist)
         Timber.i("newPlaylist size= ${newPlaylist.size}")
         Timber.i("next= $next")
+        Timber.i("newPlaylist= $newPlaylist")
         Timber.i("1 _playlist size= ${_playlist.size}")
 
 
@@ -160,9 +164,11 @@ class PlayerViewModel(
 //                .createMediaSource(Uri.parse(it.audioFile))
 //        }.toTypedArray()
         val mediaSources = (listOf(next) + playlist).map {
-            ProgressiveMediaSource.Factory(createDataSource())
+//            ProgressiveMediaSource.Factory(it.audioFile?.let { sermonAudioFile -> createDataSource(sermonAudioFile) })
+            ProgressiveMediaSource.Factory(FileDataSource.Factory())
                     .setTag(it)
-                    .createMediaSource(Uri.parse(it.audioFile))
+                    .createMediaSource(Uri.fromFile(File(it.audioFile!!)))
+//                    .createMediaSource(Uri.parse(it.audioFile))
         }.toTypedArray()
         Timber.i("mediaSources size= ${mediaSources.size}")
         Timber.i("_playlist size= ${_playlist.size}")
@@ -239,12 +245,21 @@ class PlayerViewModel(
 //            override fun createDataSource()=FileDataSource()
 //        }
 //    }
-    private fun createDataSource():DataSource.Factory{
-        return object:DataSource.Factory{
-            override fun createDataSource(): DataSource {
-    //            TODO("Not yet implemented")
-                return FileDataSource()
-            }
+//    private fun createDataSource():DataSource.Factory{
+//        return object:DataSource.Factory{
+//            override fun createDataSource(): DataSource {
+//    //            TODO("Not yet implemented")
+//                return FileDataSource()
+//            }
+//        }
+//    }
+
+    private fun createDataSource(audioFile:String):DataSource.Factory{
+        return DataSource.Factory {
+            val dataSpec=DataSpec(Uri.parse(audioFile))
+            val fileDataSource=FileDataSource()
+            fileDataSource.open(dataSpec)
+            fileDataSource
         }
     }
 

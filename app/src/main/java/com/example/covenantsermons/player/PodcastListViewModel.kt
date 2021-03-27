@@ -18,6 +18,8 @@ class PodcastListViewModel(
     val podcasts: LiveData<ArrayList<Sermon>> = _podcasts
     private val _podcastsWithDownloaded = MutableLiveData<ArrayList<Sermon>?>()
     val podcastsWithDownloaded: LiveData<ArrayList<Sermon>?> = _podcasts
+    private val _podcastsDownloaded = MutableLiveData<ArrayList<Sermon>?>()
+    val podcastsDownloaded: LiveData<ArrayList<Sermon>?> = _podcastsDownloaded
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
     private val _errors = MutableLiveData<String>()
@@ -31,10 +33,17 @@ class PodcastListViewModel(
         _podcasts.value=arrayListSermon
     }
 
+//    fun setDownloadedPodcasts(arrayListSermon: ArrayList<Sermon>){
+//        _podcastsWithDownloaded .value?.clear()
+//        _podcastsWithDownloaded .value=arrayListSermon
+//    }
+
     fun setDownloadedPodcasts(arrayListSermon: ArrayList<Sermon>){
-        _podcastsWithDownloaded .value?.clear()
-        _podcastsWithDownloaded .value=arrayListSermon
+        _podcastsDownloaded .value?.clear()
+        _podcastsDownloaded .value=arrayListSermon
     }
+
+    fun getDownloadedPodcasts()= podcastsDownloaded.value
 
 
 

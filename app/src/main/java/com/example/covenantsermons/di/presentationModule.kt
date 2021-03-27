@@ -40,7 +40,7 @@ val presentationModule = module {
 //    viewModel {
 //        PodcastListViewModel(get(), get(), get())
 //    }
-    viewModel {
+    single {
         PodcastListViewModel()
     }
 //

@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity(){
 
 
     private val sermonViewModel: SermonViewModel by viewModel()
+//    private val podcastListViewModel: PodcastListViewModel by viewModel()
     private val podcastListViewModel: PodcastListViewModel by viewModel()
     private val masterFragmentViewModel: MasterFragmentViewModel by viewModel()
     private val downloadViewModel: DownloadViewModel by viewModel()
@@ -304,6 +305,7 @@ class MainActivity : AppCompatActivity(){
     private fun setDownloadedSermons(){
         val downloadedSermonList=roomSermonsToDownloadedSermonsList()
         podcastListViewModel.setDownloadedPodcasts(downloadedSermonList)
+        Timber.i("downloadedSermonList= $downloadedSermonList")
     }
 
 //    TODO need to finish this method

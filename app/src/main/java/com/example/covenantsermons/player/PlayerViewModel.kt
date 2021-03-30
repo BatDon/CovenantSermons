@@ -141,16 +141,19 @@ class PlayerViewModel(
         createPlaylist(next, newPlaylist)
     }
 
-    private fun createPlaylist(
-            next: Sermon,
+    fun createPlaylist(
+            next: Sermon?,
             newPlaylist: List<Sermon>
     ) {
         //runBlocking { getMediaSessionConnection() }
 //        Timber.i("runBlocking coroutine finished")
 //        mediaSessionConnection
 
+
         _playlist.clear()
-        _playlist.add(next)
+        if(next!=null){
+            _playlist.add(next)
+        }
         _playlist.addAll(newPlaylist)
         Timber.i("newPlaylist size= ${newPlaylist.size}")
         Timber.i("next= $next")
@@ -163,17 +166,27 @@ class PlayerViewModel(
 //                .setTag(it)
 //                .createMediaSource(Uri.parse(it.audioFile))
 //        }.toTypedArray()
-        val mediaSources = (listOf(next) + playlist).map {
+        var playListNext:List<Sermon>? =null
+        playListNext = if(next !=null) {
+            listOf(next) + playlist
+        }
+        else {
+            playlist
+        }
+            val mediaSources = (playListNext).map {
 //            ProgressiveMediaSource.Factory(it.audioFile?.let { sermonAudioFile -> createDataSource(sermonAudioFile) })
-            ProgressiveMediaSource.Factory(FileDataSource.Factory())
-                    .setTag(it)
-                    .createMediaSource(Uri.fromFile(File(it.audioFile!!)))
+                ProgressiveMediaSource.Factory(FileDataSource.Factory())
+                        .setTag(it)
+                        .createMediaSource(Uri.fromFile(File(it.audioFile!!)))
 //                    .createMediaSource(Uri.parse(it.audioFile))
-        }.toTypedArray()
-        Timber.i("mediaSources size= ${mediaSources.size}")
-        Timber.i("_playlist size= ${_playlist.size}")
-        playbackPreparer.mediaSource = ConcatenatingMediaSource(*mediaSources)
-        Timber.i("before mediaSessionConnection.transportControls")
+            }.toTypedArray()
+            Timber.i("mediaSources size= ${mediaSources.size}")
+            Timber.i("_playlist size= ${_playlist.size}")
+            playbackPreparer.mediaSource = ConcatenatingMediaSource(*mediaSources)
+            Timber.i("before mediaSessionConnection.transportControls")
+
+
+
 
 
 
@@ -200,11 +213,15 @@ class PlayerViewModel(
 //        val extractorsFactory=ExtractorMediaSource(Uri.parse(next.audioFile), dataSourceFactory,
 //                DefaultExtractorsFactory(), null, null)
 //        mediaSessionConnection.transportControls.playFromUri(Uri.parse(next.audioFile), null)
-        mediaSessionConnection.transportControls.playFromMediaId((next.audioFile), null)
+
        // val uri=Uri.parse(next.audioFile)
        // mediaSessionConnection.transportControls.playFromMediaId(uri.path, null)
-        currentIndex=0
-        _currentlyPlaying.value = next
+
+        if(next !=null){
+            mediaSessionConnection.transportControls.playFromMediaId((next.audioFile), null)
+            currentIndex=0
+            _currentlyPlaying.value = next!!
+        }
         //getPreviousTrackIndex()
 
 

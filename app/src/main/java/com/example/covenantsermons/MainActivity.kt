@@ -114,8 +114,8 @@ class MainActivity : AppCompatActivity(){
         collapsingToolbar= activityMainBinding.collapsingToolbar
 
         collapsingToolbar.title = getString(R.string.app_name_with_space)
-        collapsingToolbar.setExpandedTitleTextAppearance(R.style.AppBarExpanded);
-        collapsingToolbar.setCollapsedTitleTextAppearance(R.style.AppBarCollapsed);
+        collapsingToolbar.setExpandedTitleTextAppearance(R.style.AppBarExpanded)
+        collapsingToolbar.setCollapsedTitleTextAppearance(R.style.AppBarCollapsed)
 
 
         //activityMainBinding.toolbar.setupWithNavController(navController, appBarConfiguration)

@@ -70,13 +70,15 @@ class PodcastAdapter(private var mContext: Context?, private var sermonList: Arr
     fun downloadingImageState(downloadingStateImages: String)= when (downloadingStateImages) {
 //        DownloadingStateImages.DOWNLOAD -> Resources.getDrawable(mContext?.getResources(),)
 //        DownloadingStateImages.DOWNLOAD -> Resources.getDrawable(mContext?,mContext?.getDrawable(R.drawable.download_down_arrow))
-            DOWNLOADING_STATE_IMAGES_DOWNLOAD -> mContext?.getResources()?.getDrawable(R.drawable.download_down_arrow)
-            DOWNLOADING_STATE_IMAGES_CANCEL -> mContext?.getResources()?.getDrawable(R.drawable.cancel_icon)
-            DOWNLOADING_STATE_IMAGES_PLAY -> mContext?.getResources()?.getDrawable(R.drawable.play_icon)
+        DOWNLOADING_STATE_IMAGES_DOWNLOAD -> mContext?.getResources()?.getDrawable(R.drawable.download_down_arrow)
+        DOWNLOADING_STATE_IMAGES_CANCEL -> mContext?.getResources()?.getDrawable(R.drawable.cancel_icon)
+        DOWNLOADING_STATE_IMAGES_PLAY -> mContext?.getResources()?.getDrawable(R.drawable.play_icon)
         else -> mContext?.getResources()?.getDrawable(R.drawable.download_down_arrow)
     }
 
-
+    fun getSermonAt(position: Int): Sermon? {
+        return sermonList[position]
+    }
 
     fun updateSermonList(newList: ArrayList<Sermon?>) {
         sermonList.clear()

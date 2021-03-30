@@ -1,5 +1,6 @@
 package com.example.covenantsermons.podcast
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covenantsermons.MainActivity
@@ -17,6 +19,7 @@ import com.example.covenantsermons.MasterFragmentViewModel
 import com.example.covenantsermons.R
 import com.example.covenantsermons.extensions.combineSermonLists
 import com.example.covenantsermons.extensions.sermonInDownloadedList
+import com.example.covenantsermons.extensions.sermonRemoveFromDownloadedList
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelClass.SermonEntity
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
@@ -151,17 +154,9 @@ class PodcastListFragment : Fragment() {
 //                if(podcastListViewModel.podcastsDownloaded.value?.sermonInDownloadedList(sermon)==true) {
                 Timber.i("podcastListViewModel.getDownloadedPodcasts()= ${podcastListViewModel.getDownloadedPodcasts()}")
                 if(podcastsDownloaded.sermonInDownloadedList(sermon)) {
-
-                    Timber.i("podcastListViewModel.podcastsDownloaded.value= ${podcastListViewModel.podcastsDownloaded.value}")
-
-                    podcastListViewModel.podcastsDownloaded.value?.let { sermonArrayList -> playerViewModel.play(sermon, sermonArrayList) }
-                    findNavController().navigate(
-                            R.id.action_mainFragment_to_podcastDetailsFragment,
-                            bundleOf(
-                                    PodcastDetailsFragment.podcastSermonArgument to sermon,
-                            ), null, null)
+                    showPodcastDetailFragment(sermon)
                 }else{
-                    Toast.makeText(activity, "Please download first.",Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "Please download first.", Toast.LENGTH_LONG).show()
                 }
 
             }
@@ -170,38 +165,53 @@ class PodcastListFragment : Fragment() {
                 Timber.i("onDownloadCancelPlayClick called ${sermon.title}")
                 Timber.i("onDownloadCancelPlayClick sermon= $sermon")
                 //val sermonArrayList = arrayListOf<Sermon>(sermon)
-               // downloadViewModel.setUpCurrentSermon(sermonArrayList)
+                // downloadViewModel.setUpCurrentSermon(sermonArrayList)
 
+                if (podcastsDownloaded.sermonInDownloadedList(sermon)) {
+                    showPodcastDetailFragment(sermon)
+                } else {
 
-                //TODO save sermon to downloadViewModel
-                sermon.date?.let { date ->
-                    if(sermonViewModel.count(date)==0) {
-                        downloadViewModel.let {
-                            //TODO check if already in database
-                            //sermonViewModel
-                            downloadViewModel.sermonArrayList.clear()
-                            downloadViewModel.sermonArrayList.add(sermon)
-                            it.startWork(sermon)
+                    //TODO save sermon to downloadViewModel
+                    sermon.date?.let { date ->
+                        if (sermonViewModel.count(date) == 0) {
+                            downloadViewModel.let {
+                                //TODO check if already in database
+                                //sermonViewModel
+                                downloadViewModel.sermonArrayList.clear()
+                                downloadViewModel.sermonArrayList.add(sermon)
+                                it.startWork(sermon)
+                            }
                         }
-                    }
-                    //TODO remove only for testing
-                    else{
-                        Timber.i("SermonEntity already exists")
-                    }
-                }
-                //downloadViewModel.startWork(sermon)
+                        //TODO remove only for testing
+                        else {
+                            Timber.i("SermonEntity already exists")
+                        }
+                    //}
+                    //downloadViewModel.startWork(sermon)
 //                //TODO pass to sermon or service so user can close app and still download
 //                //val httpsReference = storage.getReferenceFromUrl(sermon.audioFile)
-//            }
+                     }
 
 
 //                podcast_list_rv.adapter = it
+                }
+                //podcast_list_rv.adapter = it
             }
-            podcast_list_rv.adapter = it
-            //podcast_list_rv.adapter=it
+            podcast_list_rv.adapter=it
 
 //        podcast_list_rv.adapter = podcastAdapter
         }
+    }
+
+    private fun showPodcastDetailFragment(sermon: Sermon){
+        Timber.i("podcastListViewModel.podcastsDownloaded.value= ${podcastListViewModel.podcastsDownloaded.value}")
+
+        podcastListViewModel.podcastsDownloaded.value?.let { sermonArrayList -> playerViewModel.play(sermon, sermonArrayList) }
+        findNavController().navigate(
+                R.id.action_mainFragment_to_podcastDetailsFragment,
+                bundleOf(
+                        PodcastDetailsFragment.podcastSermonArgument to sermon,
+                ), null, null)
     }
 
     private fun setRVLayoutManager() {
@@ -214,6 +224,7 @@ class PodcastListFragment : Fragment() {
         podcast_list_rv.addItemDecoration(mDividerItemDecoration)
 
         podcast_list_rv.setHasFixedSize(true)
+        swipePodcastListener(podcast_list_rv)
         if (sermonArrayList.size > 0) {
             podcast_list_rv.visibility = View.VISIBLE
             progress_bar.visibility = View.INVISIBLE
@@ -226,22 +237,22 @@ class PodcastListFragment : Fragment() {
         podcastListViewModel.podcasts.observe(viewLifecycleOwner, Observer { list ->
             Timber.i("podcasts observer called")
             sermonArrayList = ArrayList(list)
-            if(sermonEntityArrayList.size>0){
+            if (sermonEntityArrayList.size > 0) {
                 createCombinedSermonArrayList()
-            }else{
-                combinedSermonArrayList= sermonArrayList
+            } else {
+                combinedSermonArrayList = sermonArrayList
             }
             sermonListUpdated()
         })
 
         podcastListViewModel.podcastsDownloaded.observe(viewLifecycleOwner, Observer { list ->
             Timber.i("podcastsDownloaded observer called")
-            podcastsDownloaded=ArrayList(list)
+            podcastsDownloaded = ArrayList(list)
             Timber.i("podcastsDownloaded= $podcastsDownloaded")
-            if(sermonEntityArrayList.size>0){
+            if (sermonEntityArrayList.size > 0) {
                 createCombinedSermonArrayList()
-            }else{
-                combinedSermonArrayList=sermonArrayList
+            } else {
+                combinedSermonArrayList = sermonArrayList
             }
             sermonListUpdated()
         })
@@ -255,10 +266,10 @@ class PodcastListFragment : Fragment() {
             sermonEntityArrayList = ArrayList(list)
             Timber.i("sermonEntityArrayList= $sermonEntityArrayList")
             Timber.i("sermonEntityArrayList size= ${sermonEntityArrayList.size}")
-            if(sermonEntityArrayList.size>0){
+            if (sermonEntityArrayList.size > 0) {
                 createCombinedSermonArrayList()
-            }else{
-                combinedSermonArrayList=sermonArrayList
+            } else {
+                combinedSermonArrayList = sermonArrayList
             }
 
         })
@@ -271,7 +282,9 @@ class PodcastListFragment : Fragment() {
 
     private fun sermonListUpdated() {
         Timber.i("sermonListUpdated called")
+        Timber.i("combinedSermonArrayList= $combinedSermonArrayList")
         podcastAdapter.updateSermonList(combinedSermonArrayList)
+        podcastAdapter.notifyDataSetChanged()
         podcast_list_rv.visibility = View.VISIBLE
         progress_bar.visibility = View.INVISIBLE
     }
@@ -292,6 +305,124 @@ class PodcastListFragment : Fragment() {
 //            }
 //        }
 //    }
+
+    private fun swipePodcastListener(podcastRecyclerView: RecyclerView) {
+        val podcastItemSwipeCallback = object : ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+
+
+//            override fun getSwipeDirs (recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+//                return 0
+//                return super.getSwipeDirs(recyclerView, viewHolder)
+//            }
+
+            //            val trashBinIcon = resources.getDrawable(
+//                    R.drawable.ic_trash_can,
+//                    null
+//            )
+
+            override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder,
+                                  direction: Int) {
+
+                val sermonViewHolder = viewHolder as PodcastAdapter.ItemViewHolder
+                val sermon = podcastAdapter.getSermonAt(sermonViewHolder.adapterPosition)
+
+
+                Toast.makeText(activity, "sermon swiped= $sermon", Toast.LENGTH_SHORT).show()
+                Timber.i("sermon swiped= $sermon")
+
+                if (sermon != null) {
+
+                    val sermonArrayList = sermonListFromSermonEntityList()
+                    val sermonInDownloadList = sermonArrayList.sermonInDownloadedList(sermon)
+                    Timber.i("sermonInDownloadList= $sermonInDownloadList")
+                    if (sermonInDownloadList) {
+                        Timber.i("sermonInDownloadedList if statement")
+                        val sermonEntity = SermonEntity.fromSermonToSermonEntity(sermon)
+                        Timber.i("onSwiped before delete sermonEntityList= $sermonEntityArrayList")
+                        val sermonEntityList = sermonEntityArrayList.toList<SermonEntity>()
+                        sermonViewModel.delete(sermonEntity)
+
+                        Timber.i("onSwiped after delete sermonEntityList= $sermonEntityList")
+                        val sermonList = SermonEntity.fromSermonEntityToSermon(sermonEntityList)
+                        val sermonDownloadedList=ArrayList(sermonList).sermonRemoveFromDownloadedList(sermon)
+                        Timber.i("sermonDownloadedList= $sermonDownloadedList")
+                        podcastListViewModel.setDownloadedPodcasts(sermonDownloadedList)
+                        //activity?.let { getPodcastsFromDatabase(podcastListViewModel, it) }
+                        if(sermonDownloadedList.size>0){
+                            Timber.i("if sermonDownloadedList.size= ${sermonDownloadedList.size}")
+                            playerViewModel.createPlaylist(null, sermonDownloadedList.toList())
+                        }
+                        else{
+                            Timber.i("else sermonDownloadedList.size= ${sermonDownloadedList.size}")
+                        }
+//
+
+                        setPodcastViewModel()
+                        setSermonViewModel()
+
+                        //sermonEntityArrayList.sermonRemoveFromDownloadedList(sermon)
+//                        val sermonEntityList = sermonEntityArrayList.toList<SermonEntity>()
+//                        Timber.i("onSwiped after delete sermonEntityList= $sermonEntityList")
+//                        val sermonList = SermonEntity.fromSermonEntityToSermon(sermonEntityList)
+//                        podcastListViewModel.setDownloadedPodcasts(ArrayList(sermonList))
+//                        playerViewModel.createPlaylist(null, sermonList)
+
+                        //TODO check if all need to be called to update recyclerview. Probably only need to update adapter
+//                        setAdapter()
+//                        setRVLayoutManager()
+//                        setPodcastViewModel()
+//                        setSermonViewModel()
+                    } else {
+                        Toast.makeText(activity, "Can't remove undownloaded sermon= $sermon", Toast.LENGTH_SHORT).show()
+                        Timber.i("Can't remove undownloaded sermon= $sermon")
+                        sermonListUpdated()
+                    }
+                }
+            }
+
+                override fun onChildDraw(
+                        c: Canvas,
+                        recyclerView: RecyclerView,
+                        viewHolder: RecyclerView.ViewHolder,
+                        dX: Float,
+                        dY: Float,
+                        actionState: Int,
+                        isCurrentlyActive: Boolean
+                ) {
+
+                    // val foregroundView: View = (viewHolder as PodcastAdapter.ItemViewHolder).itemView
+
+//                getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
+//                        actionState, isCurrentlyActive)
+
+                    c.clipRect(0f, viewHolder.itemView.top.toFloat(),
+                            dX, viewHolder.itemView.bottom.toFloat())
+
+
+
+                    super.onChildDraw(c, recyclerView, viewHolder,
+                            dX, dY, actionState, isCurrentlyActive)
+                }
+            }
+
+            val podcastItemTouchHelper = ItemTouchHelper(podcastItemSwipeCallback)
+            podcastItemTouchHelper.attachToRecyclerView(podcastRecyclerView)
+        }
+
+
+    fun sermonListFromSermonEntityList():ArrayList<Sermon?>{
+        val sermonEntityList=sermonEntityArrayList.toList<SermonEntity>()
+        Timber.i("onSwiped after delete sermonEntityList= $sermonEntityList")
+        val sermonList=SermonEntity.fromSermonEntityToSermon(sermonEntityList)
+        return ArrayList(sermonList)
+    }
 
     fun PodcastAdapter.ItemViewHolder.listen(event: (position: Int, type: Int) -> Unit): PodcastAdapter.ItemViewHolder {
         itemView.setOnClickListener {

@@ -34,20 +34,30 @@ data class SermonEntity(
 
         fun fromSermonEntityToSermon(sermonEntityList: List<SermonEntity>) = sermonEntityList.map { SermonEntity.fromSermonEntityToSermon(it) }
 
+        fun fromSermonToSermonEntity(sermon:Sermon) = SermonEntity(
+                date = sermon.date!!,
+                title = sermon.title,
+                pastorName = sermon.pastorName,
+                audioFile = sermon.audioFile,
+                duration = sermon.duration,
+                image = sermon.image,
+                downloadingButtonImage = sermon.downloadingButtonImage
+        )
+
         const val DOWNLOADING_STATE_IMAGES_DOWNLOAD: String="DOWNLOADING_STATE_IMAGES_DOWNLOAD"
         const val DOWNLOADING_STATE_IMAGES_CANCEL: String="DOWNLOADING_STATE_IMAGES_CANCEL"
         const val DOWNLOADING_STATE_IMAGES_PLAY: String="DOWNLOADING_STATE_IMAGES_PLAY"
     }
 
-    fun fromSermonToSermonEntity() = SermonEntity(
-            date = this.date,
-            title = this.title,
-            pastorName = this.pastorName,
-            audioFile = this.audioFile,
-            duration = this.duration,
-            image = this.image,
-            downloadingButtonImage = this.downloadingButtonImage
-    )
+//    fun fromSermonToSermonEntity(sermon:Sermon) = SermonEntity(
+//            date = this.date,
+//            title = this.title,
+//            pastorName = this.pastorName,
+//            audioFile = this.audioFile,
+//            duration = this.duration,
+//            image = this.image,
+//            downloadingButtonImage = this.downloadingButtonImage
+//    )
 }
 
 
@@ -70,6 +80,7 @@ data class Sermon(
         duration = duration ?: 0
         image = image ?: ""
     }
+
 }
 
 

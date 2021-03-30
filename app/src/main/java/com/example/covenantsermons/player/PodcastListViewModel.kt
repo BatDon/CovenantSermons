@@ -38,9 +38,9 @@ class PodcastListViewModel(
 //        _podcastsWithDownloaded .value=arrayListSermon
 //    }
 
-    fun setDownloadedPodcasts(arrayListSermon: ArrayList<Sermon>){
-        _podcastsDownloaded .value?.clear()
-        _podcastsDownloaded .value=arrayListSermon
+    fun setDownloadedPodcasts(arrayListSermon: ArrayList<Sermon>?){
+        _podcastsDownloaded.value?.clear()
+        _podcastsDownloaded.value=arrayListSermon
     }
 
     fun getDownloadedPodcasts()= podcastsDownloaded.value

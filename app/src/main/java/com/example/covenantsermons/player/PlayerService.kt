@@ -36,6 +36,7 @@ import org.koin.core.KoinComponent
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 
 
 class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
@@ -151,6 +152,7 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                             if(mPlayer.currentTag ==null){
                                 return controller.metadata?.description?.iconBitmap
                             }
+                            try{
 
                             val sermon = mPlayer.currentTag as? Sermon
                             Timber.i("getCurrentLargeIcon sermon= $sermon")
@@ -166,6 +168,8 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 //                            val sermon = mPlayer.currentTag as? Sermon
 //                            Timber.i("sermon= $sermon")
 
+
+
                             val sermonImage = sermon?.image!!
                             Timber.i("sermonImage= $sermonImage")
                             val file: File = File(sermonImage)
@@ -174,6 +178,11 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                             //  val bitmap= BitmapFactory.decodeFile(sermonImage)
                             //Timber.i("bitmap= $bitmap")
                             return b
+
+                        } catch (e: FileNotFoundException) {
+                            e.printStackTrace()
+                                return controller.metadata?.description?.iconBitmap
+                        }
 //
 //                            val icon = BitmapFactory.decodeResource(this@PlayerService.context.getResources(),
 //                                    R.drawable.icon_resource)

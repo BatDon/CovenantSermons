@@ -1,7 +1,5 @@
 package com.example.covenantsermons.di
 
-//import com.example.covenantsermons.modelDatabase.SermonDatabase
-//import com.example.covenantsermons.viewmodel.DownloadViewModelFactory
 import com.example.covenantsermons.ImageViewModel
 import com.example.covenantsermons.ImageViewModelFactory
 import com.example.covenantsermons.MasterFragmentViewModel

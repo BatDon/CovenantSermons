@@ -135,14 +135,27 @@ fun ArrayList<Sermon?>.sermonInDownloadedList(sermon: Sermon?):Boolean{
     return false
 }
 
+fun ArrayList<Sermon>.sermonRemoveFromDownloadedList(sermon: Sermon?):ArrayList<Sermon>{
+    Timber.i("ArrayList<Sermon>= $sermon")
+    var count:Int=0
+    this.forEach{
+        Timber.i("it.date= ${it?.date}   sermon.date= ${sermon?.date}")
+        if(it?.date !=null && sermon?.date !=null){
+            if(it.date?.compareTo(sermon.date!!, false)==0){
+                return ArrayList(this.drop(count+1))
+            }
+        }
+        count++
+    }
+    return this
+}
+
 fun Context.createRootStoragePath()=this.filesDir.toString()+"/"
 
 fun Context.createDir(filePath: String)= File(this.filesDir, filePath)
     //val inputStream= FileInputStream(dir)
 
 fun File.createDirFileName(file: File, fileName: String)=File(file, fileName)
-
-
 
 
 

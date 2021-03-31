@@ -184,92 +184,30 @@ class PlayerViewModel(
             Timber.i("_playlist size= ${_playlist.size}")
             playbackPreparer.mediaSource = ConcatenatingMediaSource(*mediaSources)
             Timber.i("before mediaSessionConnection.transportControls")
-
-
-
-
-
-
-
-//        mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)
-//        Timber.i("before creatingfile")
-//        val audioFile=File(next.audioFile)
-//        Timber.i("after creatingFile")
-//        val inputStream= FileInputStream(audioFile)
-//            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        //writer.append(bitmap)
-        //writer.flush()
-        //writer.close()
-//        inputStream.close()
-//        mediaSessionConnection.transportControls.playFromMediaId((inputStream.toString()), null)
         Timber.i("before mediaSessionConnection.transportControls.playFromMediaId((next.audioFile), null)")
-//        mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)
-//        val fileInputStream=FileInputStream(next.audioFile)
-//        val mp3File=fileInputStream.read()
-//        mediaSessionConnection.transportControls.playFromMediaId(mp3File.toString(), null)
-//        mediaSessionConnection.transportControls.playFromMediaId(mp3File.toString(), null)
         Timber.i("after mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)")
-//        val dataSourceFactory: DataSource.Factory = FileDataSourceFactory()
-//        val extractorsFactory=ExtractorMediaSource(Uri.parse(next.audioFile), dataSourceFactory,
-//                DefaultExtractorsFactory(), null, null)
-//        mediaSessionConnection.transportControls.playFromUri(Uri.parse(next.audioFile), null)
 
-       // val uri=Uri.parse(next.audioFile)
-       // mediaSessionConnection.transportControls.playFromMediaId(uri.path, null)
 
         if(next !=null){
             mediaSessionConnection.transportControls.playFromMediaId((next.audioFile), null)
             currentIndex=0
             _currentlyPlaying.value = next!!
         }
-        //getPreviousTrackIndex()
 
-
-
-
-
-//        mediaSessionConnection.mediaBrowser
-//        if(mediaSessionConnection.mediaBrowser.isConnected){
-//            Timber.i("mediaBrowser connected")
-//        }
-//        else{
-//            Timber.i("mediaBrowser not connected")
-////            mediaSessionConnection.mediaBrowser.connect()
-//        }
-//        mediaSessionConnection
-
-
-
-     //           mediaSessionConnection.transportControls.playFromMediaId(next.audioFile, null)
         Timber.i("after mediaSessionConnection.transportControls")
 //        currentIndex = 0
 //        _currentlyPlaying.value = next
     }
 
-//    fun setStorageRoot(internalStorageRoot:String){
-//        storageRoot=internalStorageRoot
-//    }
+    fun emptyPlayList(){
+        //mediaSessionConnection.transportControls.pause()
+        mediaSessionConnection.transportControls.stop()
+        _currentlyPlaying.value=Sermon()
+        _playlist.clear()
+
+    }
 
 
-
-    //private fun getPreviousTrackIndex(){
-//        previousIndex=if (exoPlayer.currentWindowIndex-1<0) 0 else exoPlayer.currentWindowIndex-1
-//        Timber.i("getPreviousTrackIndex called $previousIndex")
-//    }
-
-//    private fun createDataSource():DataSource{
-//        DataSource.Factory():DataSource {
-//            override fun createDataSource()=FileDataSource()
-//        }
-//    }
-//    private fun createDataSource():DataSource.Factory{
-//        return object:DataSource.Factory{
-//            override fun createDataSource(): DataSource {
-//    //            TODO("Not yet implemented")
-//                return FileDataSource()
-//            }
-//        }
-//    }
 
     private fun createDataSource(audioFile:String):DataSource.Factory{
         return DataSource.Factory {

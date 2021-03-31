@@ -48,8 +48,8 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
     //private val imageViewModel: ImageViewModel by inject()
     private val imageRepository: ImageRepository by inject()
  //   private val imageViewModel: ImageViewModel by viewModel<ImageViewModel>()
-    private val nowPlayingChannelId: String = "NOW_PLAYING"
-    private val nowPlayingNotificationId: Int = 1
+//    private val nowPlayingChannelId: String = "NOW_PLAYING"
+//    private val nowPlayingNotificationId: Int = 1
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
@@ -97,16 +97,7 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                 .apply {
                     setSessionActivity(sessionActivityPendingIntent)
                     isActive = true
-                    //added below 2/6/2021
-//                    setFlags(
-//                            MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
-//                                    MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-//                    )
-//                    mStateBuilder = PlaybackStateCompat.Builder()
-//                            .setActions(PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
-//                                    or PlaybackStateCompat.ACTION_PAUSE)
-//                    setPlaybackState(mStateBuilder.build())
-                    //added above 2/6/2021
+
                 }
 
         //used to get same player
@@ -120,8 +111,8 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 
         sessionToken?.let { mediaSessionToken ->
             Timber.i("playerNotification manager being created")
-            val playerNotificationManager = PlayerNotificationManager(this, nowPlayingChannelId,
-                    nowPlayingNotificationId,
+            val playerNotificationManager = PlayerNotificationManager(this, NOW_PLAYING_CHANNEL_ID,
+                    NOW_PLAYING_NOTIFICATAION_ID,
                     //interface instantiation
                     object : PlayerNotificationManager.MediaDescriptionAdapter {
                         //controller needs sessionToken
@@ -219,11 +210,24 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                                         applicationContext,
                                         Intent(applicationContext, this@PlayerService.javaClass)
                                 )
-                                startForeground(nowPlayingNotificationId, notification)
+                                startForeground(NOW_PLAYING_NOTIFICATAION_ID, notification)
                             } else {
                                 stopForeground(false)
                             }
                         }
+
+                        override fun onNotificationCancelled(
+                                notificationId: Int,
+                                dismissedByUser: Boolean
+                        ){
+                            Timber.i("onNotificationCancelled called")
+                            Timber.i("dismissedByUser= $dismissedByUser")
+                            stopForeground(true)
+//                            if(dismissedByUser){
+//                                stopForeground(true)
+//                            }
+                        }
+
                     })
 
             //playerNotificationManager needs access to exoPlayer single instance and sessionToken
@@ -249,12 +253,12 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun channelExists(notificationManager: NotificationManagerCompat) =
-            notificationManager.getNotificationChannel(nowPlayingChannelId) != null
+            notificationManager.getNotificationChannel(NOW_PLAYING_CHANNEL_ID) != null
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createPlayChannel(notificationManager: NotificationManagerCompat) {
         val notificationChannel = NotificationChannel(
-                nowPlayingChannelId,
+                NOW_PLAYING_CHANNEL_ID,
                 "Now playing channel",
                 NotificationManager.IMPORTANCE_LOW
         )
@@ -318,6 +322,8 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
         }
         return bigIconBitmap
     }
+
+    fun getPlayerServiceContext()=this
 
 
 //            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
@@ -409,6 +415,8 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
     companion object {
         const val SERMON_PODCAST_BUNDLE="com.example.covenantsermons.player.bundle"
         const val SERMON_PODCAST_PARCELABLE="com.example.covenantsermons.player.parcelable"
+        const val NOW_PLAYING_CHANNEL_ID="NOW_PLAYING"
+        const val NOW_PLAYING_NOTIFICATAION_ID: Int = 1
     }
 
 }

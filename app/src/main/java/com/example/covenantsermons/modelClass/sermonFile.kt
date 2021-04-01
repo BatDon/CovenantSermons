@@ -43,6 +43,7 @@ data class SermonEntity(
                 image = sermon.image,
                 downloadingButtonImage = sermon.downloadingButtonImage
         )
+        fun fromSermonToSermonEntity(sermonList: List<Sermon>) = sermonList.map { SermonEntity.fromSermonToSermonEntity(it) }
 
         const val DOWNLOADING_STATE_IMAGES_DOWNLOAD: String="DOWNLOADING_STATE_IMAGES_DOWNLOAD"
         const val DOWNLOADING_STATE_IMAGES_CANCEL: String="DOWNLOADING_STATE_IMAGES_CANCEL"

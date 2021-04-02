@@ -1,6 +1,9 @@
 package com.example.covenantsermons.podcast
 
+import android.content.Context
 import android.graphics.Canvas
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -151,42 +154,30 @@ class PodcastListFragment : Fragment() {
                 //Toast.makeText(activity, "title ${sermon.title} audio file${sermon.audioFile}", Toast.LENGTH_LONG).show()
                 Timber.i("on Click called title ${sermon.title}")
                 Timber.i("sermon= $sermon")
-                //podcast_list_rv.adapter=it
-//                Timber.i("podcastListViewModel.transformLiveData() ${podcastListViewModel.transformLiveData().size}")
-//                playerViewModel.play(sermon, podcastListViewModel.transformLiveData())
-//                downloadViewModel.startWork(sermon)
-
-                //TODO make sure sermon in room database before going to detail fragment
-                //      otherwise toast that it needs to be downloaded first
-
-                //TODO check podcastsDownloaded list for sermon
-//                Timber.i("podcastListViewModel.podcastsDownloaded.value= ${podcastListViewModel.podcastsDownloaded.value}")
-//                if(podcastListViewModel.podcastsDownloaded.value?.sermonInDownloadedList(sermon)==true) {
                 Timber.i("podcastListViewModel.getDownloadedPodcasts()= ${podcastListViewModel.getDownloadedPodcasts()}")
                 if (podcastsDownloaded.sermonInDownloadedList(sermon)) {
                     showPodcastDetailFragment(sermon)
                 } else {
                     Toast.makeText(activity, "Please download first.", Toast.LENGTH_LONG).show()
                 }
-
             }
 
             it.onDownloadCancelPlayClick = { sermon ->
                 Timber.i("onDownloadCancelPlayClick called ${sermon.title}")
                 Timber.i("onDownloadCancelPlayClick sermon= $sermon")
-                //val sermonArrayList = arrayListOf<Sermon>(sermon)
-                // downloadViewModel.setUpCurrentSermon(sermonArrayList)
+
 
                 if (podcastsDownloaded.sermonInDownloadedList(sermon)) {
                     showPodcastDetailFragment(sermon)
                 } else {
 
-                    //TODO save sermon to downloadViewModel
+                    if(!checkIfNetworkConnection()){
+                        Toast.makeText(activity, "Internet connection necessary for downloading", Toast.LENGTH_SHORT).show()
+                    }
+
                     sermon.date?.let { date ->
                         if (sermonViewModel.count(date) == 0) {
                             downloadViewModel.let {
-                                //TODO check if already in database
-                                //sermonViewModel
                                 downloadViewModel.sermonArrayList.clear()
                                 downloadViewModel.sermonArrayList.add(sermon)
                                 it.startWork(sermon)
@@ -211,6 +202,12 @@ class PodcastListFragment : Fragment() {
 
 //        podcast_list_rv.adapter = podcastAdapter
         }
+    }
+
+    private fun checkIfNetworkConnection():Boolean{
+        val cm = activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+        return activeNetwork?.isConnected == true
     }
 
     private fun showPodcastDetailFragment(sermon: Sermon) {
@@ -524,68 +521,4 @@ class PodcastListFragment : Fragment() {
     }
 }
 
-
-//   added 4/1/21
-
-//public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
-//    private RecyclerItemTouchHelperListener listener;
-//
-//    public RecyclerItemTouchHelper(int dragDirs, int swipeDirs, RecyclerItemTouchHelperListener listener) {
-//        super(dragDirs, swipeDirs);
-//        this.listener = listener;
-//    }
-//
-//    @Override
-//    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//        return true;
-//    }
-//
-//    @Override
-//    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-//        if (viewHolder != null) {
-//            final View foregroundView = ((CartListAdapter.MyViewHolder) viewHolder).viewForeground;
-//
-//            getDefaultUIUtil().onSelected(foregroundView);
-//        }
-//    }
-//
-//    @Override
-//    public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
-//                                RecyclerView.ViewHolder viewHolder, float dX, float dY,
-//                                int actionState, boolean isCurrentlyActive) {
-//        final View foregroundView = ((CartListAdapter.MyViewHolder) viewHolder).viewForeground;
-//        getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
-//                actionState, isCurrentlyActive);
-//    }
-//
-//    @Override
-//    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-//        final View foregroundView = ((CartListAdapter.MyViewHolder) viewHolder).viewForeground;
-//        getDefaultUIUtil().clearView(foregroundView);
-//    }
-//
-//    @Override
-//    public void onChildDraw(Canvas c, RecyclerView recyclerView,
-//                            RecyclerView.ViewHolder viewHolder, float dX, float dY,
-//                            int actionState, boolean isCurrentlyActive) {
-//        final View foregroundView = ((CartListAdapter.MyViewHolder) viewHolder).viewForeground;
-//
-//        getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
-//                actionState, isCurrentlyActive);
-//    }
-//
-//    @Override
-//    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//        listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
-//    }
-//
-//    @Override
-//    public int convertToAbsoluteDirection(int flags, int layoutDirection) {
-//        return super.convertToAbsoluteDirection(flags, layoutDirection);
-//    }
-//
-//    public interface RecyclerItemTouchHelperListener {
-//        void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position);
-//    }
-//}
 

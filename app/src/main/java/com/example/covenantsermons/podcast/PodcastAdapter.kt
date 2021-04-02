@@ -64,10 +64,9 @@ class PodcastAdapter(private var mContext: Context?, private var sermonList: Arr
         itemViewHolder.viewBinding.sermonItemDurationTV.text = formattedDuration
         val imageDrawable=sermonList[position]?.downloadingButtonImage?.let { downloadingImageState(it) }
         itemViewHolder.viewBinding.downloadCancelPlayIV.setImageDrawable(imageDrawable)
-        //itemViewHolder.viewBinding.downloadCancelPlayIV=sermonList[position]?.downloadingButtonImage
     }
 
-    fun downloadingImageState(downloadingStateImages: String)= when (downloadingStateImages) {
+    private fun downloadingImageState(downloadingStateImages: String)= when (downloadingStateImages) {
 //        DownloadingStateImages.DOWNLOAD -> Resources.getDrawable(mContext?.getResources(),)
 //        DownloadingStateImages.DOWNLOAD -> Resources.getDrawable(mContext?,mContext?.getDrawable(R.drawable.download_down_arrow))
         DOWNLOADING_STATE_IMAGES_DOWNLOAD -> mContext?.getResources()?.getDrawable(R.drawable.download_down_arrow)
@@ -85,6 +84,12 @@ class PodcastAdapter(private var mContext: Context?, private var sermonList: Arr
         sermonList.addAll(newList)
         notifyDataSetChanged()
     }
+
+    //TODO remove only for testing
+//    fun removeItem(position: Int) {
+//        sermonList.removeAt(position)
+//        notifyItemRemoved(position)
+//    }
 
 }
 

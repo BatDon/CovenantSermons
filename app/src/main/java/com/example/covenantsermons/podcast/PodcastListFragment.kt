@@ -32,6 +32,7 @@ import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.viewmodel.DownloadViewModel
 import com.example.covenantsermons.viewmodel.SermonViewModel
+import kotlinx.android.synthetic.main.podcast_item.view.*
 import kotlinx.android.synthetic.main.podcast_list_fragment.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -249,7 +250,7 @@ class PodcastListFragment : Fragment() {
             Timber.i("podcastListViewModel.podcasts sermonArrayList= $sermonArrayList")
             if (sermonEntityArrayList.size > 0) {
                 createCombinedSermonArrayList()
-                callSetPodcastViewModel=false
+                callSetPodcastViewModel = false
             } else {
                 combinedSermonArrayList = sermonArrayList
             }
@@ -282,7 +283,7 @@ class PodcastListFragment : Fragment() {
             sermonEntityArrayList = ArrayList(list)
             Timber.i("sermonEntityArrayList= $sermonEntityArrayList")
             Timber.i("sermonEntityArrayList size= ${sermonEntityArrayList.size}")
-            if(callSetPodcastViewModel){
+            if (callSetPodcastViewModel) {
                 Timber.i("setSermonViewModel callSetPodcastViewModel=true")
                 setPodcastViewModelForPodcasts()
             }
@@ -339,24 +340,25 @@ class PodcastListFragment : Fragment() {
                 ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
 
-//            override fun getSwipeDirs (recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-//                return 0
-//                return super.getSwipeDirs(recyclerView, viewHolder)
-//            }
-
-            //            val trashBinIcon = resources.getDrawable(
-//                    R.drawable.ic_trash_can,
-//                    null
-//            )
-
             override fun onMove(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
             ): Boolean = false
 
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                if (viewHolder != null) {
+                    val foregroundView: View = (viewHolder as PodcastAdapter.ItemViewHolder).viewBinding.root.view_foreground
+                    getDefaultUIUtil().onSelected(foregroundView)
+                }
+            }
+
+
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder,
                                   direction: Int) {
+
+//                val sermonRowIndex=viewHolder.adapterPosition
+//                podcastAdapter.removeItem(sermonRowIndex)
 
                 val sermonViewHolder = viewHolder as PodcastAdapter.ItemViewHolder
                 val sermon = podcastAdapter.getSermonAt(sermonViewHolder.adapterPosition)
@@ -376,7 +378,7 @@ class PodcastListFragment : Fragment() {
                         Timber.i("onSwiped before delete sermonEntityList= $sermonEntityArrayList")
                         val sermonEntityList = sermonEntityArrayList.toList<SermonEntity>()
                         sermonViewModel.delete(sermonEntity)
-                        callSetPodcastViewModel=true
+                        callSetPodcastViewModel = true
 
 
                         Timber.i("onSwiped after delete sermonEntityList= $sermonEntityList")
@@ -392,7 +394,7 @@ class PodcastListFragment : Fragment() {
                             Timber.i("currentPlaying= $currentPlaying")
                             if (currentPlaying.date?.compareTo(sermon.date!!, false) == 0) {
                                 playerViewModel.emptyPlayList()
-                                val notificationManager=activity?.applicationContext?.let { NotificationManagerCompat.from(it) }
+                                val notificationManager = activity?.applicationContext?.let { NotificationManagerCompat.from(it) }
                                 Timber.i("onSwiped notificationManager= $notificationManager")
                                 notificationManager?.cancel(NOW_PLAYING_CHANNEL_ID, NOW_PLAYING_NOTIFICATAION_ID)
 
@@ -415,34 +417,74 @@ class PodcastListFragment : Fragment() {
                 }
             }
 
-            override fun onChildDraw(
-                    c: Canvas,
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    dX: Float,
-                    dY: Float,
-                    actionState: Int,
-                    isCurrentlyActive: Boolean
-            ) {
+            override fun onChildDrawOver(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder?, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+//                super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
-                // val foregroundView: View = (viewHolder as PodcastAdapter.ItemViewHolder).itemView
+                val foregroundView: View = (viewHolder as PodcastAdapter.ItemViewHolder).viewBinding.root.view_foreground
+                getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
+                        actionState, isCurrentlyActive)
+            }
 
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                val foregroundView: View = (viewHolder as PodcastAdapter.ItemViewHolder).viewBinding.root.view_foreground
+                getDefaultUIUtil().clearView(foregroundView)
+            }
+
+            override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+                val foregroundView: View = (viewHolder as PodcastAdapter.ItemViewHolder).viewBinding.root.view_foreground
+                getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
+                        actionState, isCurrentlyActive)
+            }
+
+
+            //            override fun onChildDraw(c: Canvas?, recyclerView: RecyclerView?,
+//                            viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float,
+//                            actionState: Int, isCurrentlyActive: Boolean) {
+//                val foregroundView: View = (viewHolder as CartListAdapter.MyViewHolder).viewForeground
 //                getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
 //                        actionState, isCurrentlyActive)
-
-                c.clipRect(0f, viewHolder.itemView.top.toFloat(),
-                        dX, viewHolder.itemView.bottom.toFloat())
+//            }
 
 
 
-                super.onChildDraw(c, recyclerView, viewHolder,
-                        dX, dY, actionState, isCurrentlyActive)
-            }
+
+
+
         }
-
         val podcastItemTouchHelper = ItemTouchHelper(podcastItemSwipeCallback)
         podcastItemTouchHelper.attachToRecyclerView(podcastRecyclerView)
     }
+
+
+
+//            override fun onChildDraw(
+//                    c: Canvas,
+//                    recyclerView: RecyclerView,
+//                    viewHolder: RecyclerView.ViewHolder,
+//                    dX: Float,
+//                    dY: Float,
+//                    actionState: Int,
+//                    isCurrentlyActive: Boolean
+//            ) {
+//
+//                // val foregroundView: View = (viewHolder as PodcastAdapter.ItemViewHolder).itemView
+//
+////                getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
+////                        actionState, isCurrentlyActive)
+//
+//                c.clipRect(0f, viewHolder.itemView.top.toFloat(),
+//                        dX, viewHolder.itemView.bottom.toFloat())
+//
+//
+//
+//                super.onChildDraw(c, recyclerView, viewHolder,
+//                        dX, dY, actionState, isCurrentlyActive)
+//            }
+//        }
+//
+//        val podcastItemTouchHelper = ItemTouchHelper(podcastItemSwipeCallback)
+//        podcastItemTouchHelper.attachToRecyclerView(podcastRecyclerView)
+//    }
 
 
     fun sermonListFromSermonEntityList(): ArrayList<Sermon?> {
@@ -459,7 +501,7 @@ class PodcastListFragment : Fragment() {
         return this
     }
 
-    fun chooseList(sermonDownloadedArrayList:ArrayList<Sermon>){
+    fun chooseList(sermonDownloadedArrayList: ArrayList<Sermon>){
         Timber.i("chooseList called sermonDownloadedArrayList= $sermonDownloadedArrayList")
         combinedSermonArrayList = if (sermonDownloadedArrayList.size > 0) {
             Timber.i("chooseList if statement called")
@@ -477,30 +519,73 @@ class PodcastListFragment : Fragment() {
     fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
         itemView.setOnClickListener {
             event.invoke(getAdapterPosition(), getItemViewType())
-//            val sermon=sermonArrayList[adapterPosition]
-//            itemView.audioFile
-//            itemView.
-
-//            var audioFile: String? = "",
-//            var duration: Int? = 0,
-//            var image: String? = "",
-//            var pastorName: String? = "",
-//            var timeStamp: Date? = Date(),
-//            var title: String? = ""
-
-//                val navigationExtra = FragmentNavigatorExtras(
-//                        view.podcast_image to item.podcast.id
-//                )
-//                findNavController().navigate(
-//                        R.id.action_mainFragment_to_podcastDetailsFragment,
-//                        bundleOf(
-//                                PodcastDetailsFragment.podcastIdArgument to item.podcast.id,
-//                                PodcastDetailsFragment.podcastTitleArgument to item.podcast.name
-//                        ), null, navigationExtra
-//                )
         }
         return this
     }
 }
 
+
+//   added 4/1/21
+
+//public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
+//    private RecyclerItemTouchHelperListener listener;
+//
+//    public RecyclerItemTouchHelper(int dragDirs, int swipeDirs, RecyclerItemTouchHelperListener listener) {
+//        super(dragDirs, swipeDirs);
+//        this.listener = listener;
+//    }
+//
+//    @Override
+//    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//        return true;
+//    }
+//
+//    @Override
+//    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+//        if (viewHolder != null) {
+//            final View foregroundView = ((CartListAdapter.MyViewHolder) viewHolder).viewForeground;
+//
+//            getDefaultUIUtil().onSelected(foregroundView);
+//        }
+//    }
+//
+//    @Override
+//    public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
+//                                RecyclerView.ViewHolder viewHolder, float dX, float dY,
+//                                int actionState, boolean isCurrentlyActive) {
+//        final View foregroundView = ((CartListAdapter.MyViewHolder) viewHolder).viewForeground;
+//        getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
+//                actionState, isCurrentlyActive);
+//    }
+//
+//    @Override
+//    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+//        final View foregroundView = ((CartListAdapter.MyViewHolder) viewHolder).viewForeground;
+//        getDefaultUIUtil().clearView(foregroundView);
+//    }
+//
+//    @Override
+//    public void onChildDraw(Canvas c, RecyclerView recyclerView,
+//                            RecyclerView.ViewHolder viewHolder, float dX, float dY,
+//                            int actionState, boolean isCurrentlyActive) {
+//        final View foregroundView = ((CartListAdapter.MyViewHolder) viewHolder).viewForeground;
+//
+//        getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
+//                actionState, isCurrentlyActive);
+//    }
+//
+//    @Override
+//    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+//        listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
+//    }
+//
+//    @Override
+//    public int convertToAbsoluteDirection(int flags, int layoutDirection) {
+//        return super.convertToAbsoluteDirection(flags, layoutDirection);
+//    }
+//
+//    public interface RecyclerItemTouchHelperListener {
+//        void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position);
+//    }
 //}
+

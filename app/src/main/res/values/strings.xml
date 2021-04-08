@@ -16,4 +16,7 @@
     <string name="sermon_title">Sermon Title</string>
     <string name="app_name_with_space">Covenant Sermons</string>
     <string name="delete">DELETE</string>
+    <string name="church_website">Website</string>
+    <string name="church_facebook_page">Facebook</string>
+    <string name="church_donation">Donate</string>
 </resources>

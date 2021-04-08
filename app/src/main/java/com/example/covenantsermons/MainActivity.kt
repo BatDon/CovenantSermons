@@ -1,6 +1,8 @@
 package com.example.covenantsermons
 
 
+import android.app.ActivityManager
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -44,16 +46,6 @@ class MainActivity : AppCompatActivity(){
     private val playerViewModel: PlayerViewModel by viewModel()
     private val exoPlayer: ExoPlayer by inject()
     private val workManager: WorkManager by inject()
-//    private val downloadViewModelFactory: DownloadViewModelFactory by inject()
-//    private val downloadViewModel: DownloadViewModel by viewModel(){
-//        downloadViewModelFactory
-//    }
-//    private val downloadViewModel: DownloadViewModel by viewModel()
-
-//class MainActivity : AppCompatActivity(),ViewInterface, ViewInterface.NewDataInterface{
-//    private lateinit var mainViewModel: MainViewModel
-
-
     private val sermonViewModel: SermonViewModel by viewModel()
 //    private val podcastListViewModel: PodcastListViewModel by viewModel()
     private val podcastListViewModel: PodcastListViewModel by viewModel()
@@ -79,6 +71,8 @@ class MainActivity : AppCompatActivity(){
 
     private var currentSermonDownloading : Sermon?=null
 
+    var mIntent: Intent?=null
+
 //    override fun onSupportNavigateUp(): Boolean {
 //        return NavigationUI.navigateUp(navController, appBarConfiguration)
 //    }
@@ -86,17 +80,47 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         //val storageRoot=this.filesDir.toString() + "/"
         //playerViewModel.setStorageRoot(storageRoot)
-
+        Timber.plant(Timber.DebugTree())
         Timber.i("onCreate called")
+
+        Timber.i("onCreate savedInstanceState= $savedInstanceState")
+
+        intent.let {
+            if (intent == null) {
+                Timber.i("intent equals null")
+            } else {
+                mIntent = intent
+
+                if (intent.hasCategory("PlayerService")) {
+                    Timber.i("intent hasCategory PlayerService")
+                    intent = mIntent
+                    Timber.i("intent= $intent")
+
+//                    Timber.i("intent hasCategory PlayerService 2")
+//                    Timber.i("intent hasCategory PlayerService 3")
+//                    val tStart = System.currentTimeMillis()
+//                    val tEnd = System.currentTimeMillis()
+//                    val timeTaken=tEnd-tStart
+//                    if(timeTaken > )
+//                    return
+                }
+                Timber.i("intent= $intent")
+                Timber.i("intent flags= ${intent.flags}")
+            }
+        }
+
+//        val tStart = System.currentTimeMillis()
+//        val tEnd = System.currentTimeMillis()
 
 
 
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
 
-        Timber.plant(Timber.DebugTree())
+
         //SermonDatabase().getPodcastsFromDatabase()
         getPodcastsFromDatabase(podcastListViewModel, this)
 
@@ -122,29 +146,53 @@ class MainActivity : AppCompatActivity(){
         activityMainBinding.playerView.player = exoPlayer
         activityMainBinding.playerView.requestFocus()
 
-        intent.let {
-            val sermon = exoPlayer.currentTag as? Sermon
-            Timber.i("exoplayer.currentTag sermon $sermon")
+//        error here being called twice from service. PlayerService doesn't have the error'
 
-            Timber.i("currentWindowIndex sermon= $sermon")
-            if (sermon != null) {
-                setCurrentSermonTitle(sermon)
-            }
+                mIntent=null
+                val mngr = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+
+        val taskList = mngr.getRunningTasks(10)
+
+        if (taskList[0].numActivities == 1 && taskList[0].topActivity!!.className == this.javaClass.name) {
+            Timber.i("This is last activity in the stack")
+//            Timber.i("Destroy this activity")
+//            onDestroy()
+        }
+        Timber.i("taskList= $taskList")
+
+//        var i=0
+//        intent.let {
+//            if(intent==null){
+//                Timber.i("intent equals null")
+//            }
+//            else{
+//                mIntent=intent
+//                if(intent.hasCategory("PlayerService")){
+//                    Timber.i("intent hasCategory PlayerService")
+//                }
+//                Timber.i("intent= $intent")
+//                Timber.i("intent flags= ${intent.flags}")
+//            }
+//            if(i==0) {
+//                Timber.i("i= $i")
+//                i++
+//                Timber.i("i= $i")
+//                val sermon = exoPlayer.currentTag as? Sermon
+//                Timber.i("exoplayer.currentTag sermon $sermon")
+//
+//                Timber.i("currentWindowIndex sermon= $sermon")
+//                if (sermon != null) {
+//                    setCurrentSermonTitle(sermon)
+//                }
+//            }
+//            val aTestInt=1
+//        }
+
+        if (taskList[1].numActivities == 1 && taskList[1].topActivity!!.className == this.javaClass.name) {
+            Timber.i("Destroy this activity")
+            onDestroy()
         }
 
-
-
-//        activityMainBinding.main_activity_player_group.player_view.player = exoPlayer
-
-        //TODO remove only for testing
-//        Thread.sleep(2000)
-//        playerViewModel.play(podcastListViewModel.transformLiveData()[0],podcastListViewModel.transformLiveData())
-
-
-//        playerViewModel._currentlyPlaying.observe(this, Observer { sermon ->
-//            Timber.i("sermon playing= $sermon")
-//            Toast.makeText(applicationContext, "$sermon", Toast.LENGTH_SHORT).show()
-//        })
 
         setUpViewModels()
 
@@ -175,8 +223,27 @@ class MainActivity : AppCompatActivity(){
         downloadViewModel.outputAudioWorkInfos.observe(this, workInfosObserver(AUDIO_FILE))
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Timber.i("onNewIntent called intent= $intent")
+    }
+
+    //    override fun onResume() {
+//        super.onResume()
+//        intent.let {
+//            val sermon = exoPlayer.currentTag as? Sermon
+//            Timber.i("exoplayer.currentTag sermon $sermon")
+//
+//            Timber.i("currentWindowIndex sermon= $sermon")
+//            if (sermon != null) {
+//                setCurrentSermonTitle(sermon)
+//            }
+//        }
+//
+//    }
+
     private fun setUpViewModels(){
-        playerViewModel.currentlyPlaying.observe(this, Observer { sermon:Sermon ->
+        playerViewModel.currentlyPlaying.observe(this, Observer { sermon: Sermon ->
             setCurrentSermonTitle(sermon)
 
 //            activityMainBinding.currentSermonTitle.text = sermon.title
@@ -184,9 +251,9 @@ class MainActivity : AppCompatActivity(){
 //            Timber.i("sermon.title is ${sermon.title}")
         })
 
-        sermonViewModel.allSermons.observe(this, Observer { sermonEntityListLiveData:List<SermonEntity> ->
+        sermonViewModel.allSermons.observe(this, Observer { sermonEntityListLiveData: List<SermonEntity> ->
             Timber.i("list SermonEntity observer called $sermonEntityListLiveData")
-            this@MainActivity.sermonEntityList=ArrayList<SermonEntity>(sermonEntityListLiveData)
+            this@MainActivity.sermonEntityList = ArrayList<SermonEntity>(sermonEntityListLiveData)
             Timber.i("list SermonEntity observer called sermonEntityList $sermonEntityList")
 
             setDownloadedSermons()
@@ -237,7 +304,7 @@ class MainActivity : AppCompatActivity(){
                 Timber.i("workInfo.outputData ${workInfo.outputData}")
                 when (imageOrAudio) {
                     IMAGE_FILE -> {
-                        imagePath=true
+                        imagePath = true
                         downloadViewModel.imageFileLocation = workInfo.outputData.getString(ImageWorker.KEY_IMAGE_BITMAP_FILE_PATH)
 //                        if(imagePath && audioPath){
 //                            //val sermon=downloadViewModel.currentSermon
@@ -247,7 +314,7 @@ class MainActivity : AppCompatActivity(){
 //                        }
                     }
                     AUDIO_FILE -> {
-                        audioPath=true
+                        audioPath = true
                         downloadViewModel.audioFileLocation = workInfo.outputData.getString(AudioWorker.KEY_AUDIO_FILE_PATH)
                         //downloadViewModel.currentSermonDownloading = workInfo.outputData.
 //                        downloadViewModel.currentSermonDownloading = workInfo.outputData.getParcelable(AudioWorker.KEY_SERMON_DOWNLOADING)
@@ -412,7 +479,21 @@ class MainActivity : AppCompatActivity(){
                 this.navController.popBackStack()
                 return true
             }
-            R.id.menu_media -> {
+            R.id.action_church_facebook -> {
+//                https://www.facebook.com/covenantpresgj
+                return true
+            }
+            R.id.action_church_website -> {
+//                https://www.covpresgj.org/
+                return true
+            }
+            R.id.action_church_donation -> {
+//                https://www.facebook.com/covenantpresgj
+                //playPodcastData()
+                return true
+            }
+//            https://secure.squarespace.com/checkout/donate?donatePageId=5c8cff59eb39312e132d7d69&ss_cid=12903880-3688-44a9-af58-e3f2ddef7bf8&ss_cvisit=1617470392322&ss_cvr=463ce3c8-ff16-4daf-8d4b-3c70ec31c440%7C1617470392400%7C1617470392400%7C1617470392400%7C1
+            R.id.action_menu_media -> {
                 //playPodcastData()
                 return true
             }
@@ -470,6 +551,11 @@ class MainActivity : AppCompatActivity(){
     //TODO unbind from service
     override fun onStop() {
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.i("destroying MainActivity")
     }
 
     companion object{

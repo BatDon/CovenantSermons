@@ -5,7 +5,22 @@
     tools:context=
         ".MenuExampleActivity" >
     <item
-        android:id="@+id/menu_media"
+        android:id="@+id/action_church_facebook"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="@string/church_facebook_page"/>
+    <item
+        android:id="@+id/action_church_website"
+        android:orderInCategory="3"
+        app:showAsAction="never"
+        android:title="@string/church_website"/>
+    <item
+        android:id="@+id/action_church_donation"
+        android:orderInCategory="4"
+        app:showAsAction="never"
+        android:title="@string/church_donation"/>
+    <item
+        android:id="@+id/action_menu_media"
         android:orderInCategory="1"
         app:showAsAction="never"
         android:title="@string/media_tester"/>

@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
+import android.content.Intent.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
@@ -55,7 +56,9 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
 
     private var bigIconBitmap: Bitmap?=null
-
+    private var intentWithFlags:Intent?=null
+    private lateinit var pendingIntent: PendingIntent
+    private var createPendingIntent=true
 
 
 
@@ -84,6 +87,7 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
         // pendingIntent launches mainActivity from notification when clicked
         val sessionActivityPendingIntent =
                 packageManager?.getLaunchIntentForPackage(packageName)?.let { mediaSessionIntent ->
+                    Timber.i("mediaSessionIntent= $mediaSessionIntent")
 //                    val sermonBundle = Bundle()
 //                    val sermonParcelable=Sermon()
 //                    sermonBundle.putParcelable(SERMON_PODCAST_PARCELABLE,sermonParcelable)
@@ -97,8 +101,9 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                 .apply {
                     setSessionActivity(sessionActivityPendingIntent)
                     isActive = true
-
                 }
+
+        Timber.i("mediaSession= $mediaSession")
 
         //used to get same player
         sessionToken = mediaSession.sessionToken
@@ -106,13 +111,37 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
         notificationManager = NotificationManagerCompat.from(this)
 
         if (shouldCreateChannel(notificationManager)) {
+            Timber.i("shouldCreateChannel returns true will create channel")
             createPlayChannel(notificationManager)
         }
+
+//        val intentWithFlags = Intent(this@PlayerService, MainActivity::class.java).apply{
+//            this.addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
+//            this.addCategory("PlayerService")
+//        }
+//
+//        pendingIntent = PendingIntent.getActivity(
+//                this@PlayerService,
+//                0,
+//                intentWithFlags,
+//                PendingIntent.FLAG_UPDATE_CURRENT
+//
+//        )
+//
+//        val notification = NotificationCompat.Builder(this)
+//                .setContentIntent(pendingIntent).build()
+//
+//        notificationManager.notify(NOW_PLAYING_NOTIFICATION_ID, notification)
+//        create a pending intent pass the intent into it add pending int to notificationmanager
+//        val activity = PendingIntent.getActivity(this, 0, intent, 0)
+
+
+
 
         sessionToken?.let { mediaSessionToken ->
             Timber.i("playerNotification manager being created")
             val playerNotificationManager = PlayerNotificationManager(this, NOW_PLAYING_CHANNEL_ID,
-                    NOW_PLAYING_NOTIFICATAION_ID,
+                    NOW_PLAYING_NOTIFICATION_ID,
                     //interface instantiation
                     object : PlayerNotificationManager.MediaDescriptionAdapter {
                         //controller needs sessionToken
@@ -138,43 +167,35 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                                 callback: PlayerNotificationManager.BitmapCallback
                         ): Bitmap? {
 
+//                            return controller.metadata?.description?.iconBitmap
+
                             Timber.i("getCurrentLargeIcon mPlayer= $mPlayer")
                             Timber.i("getCurrentLargeIcon mPlayer.currentTag= ${mPlayer.currentTag}")
-                            if(mPlayer.currentTag ==null){
+                            if (mPlayer.currentTag == null) {
                                 return controller.metadata?.description?.iconBitmap
                             }
-                            try{
+                            try {
 
-                            val sermon = mPlayer.currentTag as? Sermon
-                            Timber.i("getCurrentLargeIcon sermon= $sermon")
-//                            val sermonImage=sermon!!.image!!
-//                                    Timber.i("sermonImage= $sermonImage")
-//                                    val bitmap= BitmapFactory.decodeFile(sermonImage)
-//                                    Timber.i("bitmap= $bitmap")
-//                                    return bitmap
-
-//                            return controller.metadata?.description?.iconBitmap
-//                            Timber.i("getCurrentLargeIcon called")
-//
-//                            val sermon = mPlayer.currentTag as? Sermon
-//                            Timber.i("sermon= $sermon")
+                                val sermon = mPlayer.currentTag as? Sermon
+                                Timber.i("getCurrentLargeIcon sermon= $sermon")
 
 
+                                val sermonImage = sermon?.image!!
+                                Timber.i("sermonImage= $sermonImage")
+                                val file: File = File(sermonImage)
+                                val b = BitmapFactory.decodeStream(FileInputStream(file))
+                                Timber.i("bitmap= $b")
+                                //  val bitmap= BitmapFactory.decodeFile(sermonImage)
+                                //Timber.i("bitmap= $bitmap")
+                                return b
 
-                            val sermonImage = sermon?.image!!
-                            Timber.i("sermonImage= $sermonImage")
-                            val file: File = File(sermonImage)
-                            val b = BitmapFactory.decodeStream(FileInputStream(file))
-                            Timber.i("bitmap= $b")
-                            //  val bitmap= BitmapFactory.decodeFile(sermonImage)
-                            //Timber.i("bitmap= $bitmap")
-                            return b
-
-                        } catch (e: FileNotFoundException) {
-                            e.printStackTrace()
+                            } catch (e: FileNotFoundException) {
+                                e.printStackTrace()
                                 return controller.metadata?.description?.iconBitmap
-                        }
+                            }
 //
+
+
 //                            val icon = BitmapFactory.decodeResource(this@PlayerService.context.getResources(),
 //                                    R.drawable.icon_resource)
 
@@ -186,16 +207,72 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 
                         }
 
+//                        override fun createCurrentContentIntent(player: Player): PendingIntent? {
+//                            return null
+//                        }
+
 
                         override fun createCurrentContentIntent(player: Player): PendingIntent? {
-                            return PendingIntent.getActivity(
-                                    this@PlayerService,
-                                    0,
-                                    //TODO make sure fragment is correct fragment when directed to MainActivity
-                                    Intent(this@PlayerService, MainActivity::class.java),
-                                    PendingIntent.FLAG_UPDATE_CURRENT
-                            )
+                            Timber.i("createCurrentContentIntent called")
+
+                            if(intentWithFlags==null){
+                                intentWithFlags=Intent(this@PlayerService, MainActivity::class.java).apply{
+                                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                }
+                            }
+                            if (createPendingIntent) {
+                                createPendingIntent = false
+                                Timber.i("createCurrentContentIntent boolean check called")
+//                            val intentWithFlags=Intent(this@PlayerService, MainActivity::class.java)
+                                val intentWithFlags = Intent(this@PlayerService, MainActivity::class.java)
+//                                        .setFlags(FLAG_ACTIVITY_CLEAR_TOP)
+//                                        .setFlags(FLAG_ACTIVITY_CLEAR_TASK)
+//                                        .setFlags(FLAG_RECEIVER_REPLACE_PENDING)
+//                                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        .addCategory("PlayerService")
+
+                                pendingIntent = PendingIntent.getActivity(
+                                        this@PlayerService,
+                                        0,
+                                        //TODO make sure fragment is correct fragment when directed to MainActivity
+
+//                                    Intent(this@PlayerService, MainActivity::class.java),
+//                                    PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_ONE_SHOT
+//                                    Intent(this@PlayerService, MainActivity::class.java).addCategory("PlayerService"),
+                                        intentWithFlags,
+                                        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_ONE_SHOT
+//                                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_CANCEL_CURRENT
+//                                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+//                                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_CANCEL_CURRENT
+//                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or
+//                                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_UPDATE_CURRENT
+                                )
+
+                                Timber.i("pendingIntent= $pendingIntent")
+
+                            }
+
+                            return pendingIntent
+
+//                            return null
                         }
+//                            return PendingIntent.getActivity(
+//                                    this@PlayerService,
+//                                    0,
+//                                    //TODO make sure fragment is correct fragment when directed to MainActivity
+//
+////                                    Intent(this@PlayerService, MainActivity::class.java),
+////                                    PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_ONE_SHOT
+////                                    Intent(this@PlayerService, MainActivity::class.java).addCategory("PlayerService"),
+//                                    intentWithFlags,
+//                                    PendingIntent.FLAG_UPDATE_CURRENT
+////                                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_CANCEL_CURRENT
+////                                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+////                                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_CANCEL_CURRENT
+////                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or
+////                                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_UPDATE_CURRENT
+//                            )
+//                        }
 
                     },
                     //interface instantiation
@@ -205,12 +282,13 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                                 notification: Notification,
                                 ongoingNotification: Boolean
                         ) {
+                            Timber.i("onNotificationPosted")
                             if (ongoingNotification) {
                                 ContextCompat.startForegroundService(
                                         applicationContext,
                                         Intent(applicationContext, this@PlayerService.javaClass)
                                 )
-                                startForeground(NOW_PLAYING_NOTIFICATAION_ID, notification)
+                                startForeground(NOW_PLAYING_NOTIFICATION_ID, notification)
                             } else {
                                 stopForeground(false)
                             }
@@ -219,7 +297,7 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                         override fun onNotificationCancelled(
                                 notificationId: Int,
                                 dismissedByUser: Boolean
-                        ){
+                        ) {
                             Timber.i("onNotificationCancelled called")
                             Timber.i("dismissedByUser= $dismissedByUser")
                             stopForeground(true)
@@ -230,10 +308,15 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 
                     })
 
+            Timber.i("playerNotificationManager created = $playerNotificationManager")
+
+
+
             //playerNotificationManager needs access to exoPlayer single instance and sessionToken
             //to keep it in sync
             playerNotificationManager.setPlayer(exoPlayer)
             playerNotificationManager.setMediaSessionToken(mediaSessionToken)
+
         }
 
 
@@ -242,6 +325,7 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
             //create single Instance of playbackPreparer in Inject
             it.setPlaybackPreparer(playbackPreparer)
         }
+        
     }
 
 
@@ -257,6 +341,7 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createPlayChannel(notificationManager: NotificationManagerCompat) {
+        Timber.i("createPlayChannel called")
         val notificationChannel = NotificationChannel(
                 NOW_PLAYING_CHANNEL_ID,
                 "Now playing channel",
@@ -269,31 +354,6 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
         notificationManager.createNotificationChannel(notificationChannel)
     }
 
-  //  suspend fun glideCreateBitmap(url: String): Bitmap? =withContext(Dispatchers.IO) {
-
-
-//    suspend fun glideCreateBitmap(url: String): Bitmap? =withContext(Dispatchers.IO) {
-//
-//            var bitmap: Bitmap? = null
-//
-//            var futureTargetBitmap: FutureTarget<Bitmap>
-//
-//            Glide.with(this@PlayerService).asBitmap().load(url).into(object : CustomTarget<Bitmap?>(){
-//
-//
-//                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
-//                    bitmap = resource
-//                    Timber.i("onResourceReady bitmap= $bitmap")
-//                }
-//
-//                override fun onLoadCleared(placeholder: Drawable?) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//            })
-//
-//            return@withContext bitmap
-//        }
 
 
 
@@ -326,40 +386,6 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
     fun getPlayerServiceContext()=this
 
 
-//            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
-//                    bigIconBitmap=resource
-////                bitmap = resource
-//                //callbackReturnBitmap(bitmap)
-//                //return bitmap
-//               // lmda={bitmap -> return bitmap}
-//                Timber.i("onResourceReady bitmap= $bitmap")
-//                return@withContext resource
-//            }
-//
-//            override fun onLoadCleared(placeholder: Drawable?) {
-//                TODO("Not yet implemented")
-//            }
-
-//            fun callbackReturnBitmap(bitmap:Bitmap?){
-//                return bitmap
-//            }
-
- //       })
-
-//        while(bigIconBitmap==null){
-//            continue
-//        }
-
-//        while(bitmap==null){
-//            continue
-//        }
-
-//        fun callbackReturnBitmap(bitmap:Bitmap){
-//
-//        }
-
-//        return@withContext bitmap
-//    }
 
     object CustomTargetObject: CustomTarget<Bitmap?>(){
         var bitmapCustom:Bitmap?=null
@@ -382,41 +408,11 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 
 
 
-
-
-
-
-
-
-
-//    suspend fun glideCreateBitmap(url: String): Bitmap? =withContext(Dispatchers.IO) {
-////        var bitmap: Bitmap?=null
-////        launch {
-//        var bitmap: Bitmap? = null
-//
-//        Glide.with(this@PlayerService).asBitmap().load(url).into(object : CustomTarget<Bitmap?>() {
-//
-//            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
-//                bitmap = resource
-//                Timber.i("onResourceReady bitmap= $bitmap")
-//            }
-//
-//            override fun onLoadCleared(placeholder: Drawable?) {
-//                TODO("Not yet implemented")
-//            }
-//
-//        })
-
-//        return@withContext bitmap
-//    }
-
-
-
     companion object {
         const val SERMON_PODCAST_BUNDLE="com.example.covenantsermons.player.bundle"
         const val SERMON_PODCAST_PARCELABLE="com.example.covenantsermons.player.parcelable"
         const val NOW_PLAYING_CHANNEL_ID="NOW_PLAYING"
-        const val NOW_PLAYING_NOTIFICATAION_ID: Int = 1
+        const val NOW_PLAYING_NOTIFICATION_ID: Int = 1
     }
 
 }

@@ -91,23 +91,7 @@ class ImageRepository(val mContext: Context): Repository, CoroutineScope, KoinCo
         }
     }
 
-//    suspend fun DatabaseReference.singleValueEvent(): EventResponse = suspendCoroutine { continuation ->
-//        val valueEventListener = object: ValueEventListener {
-//            override fun onCancelled(error: DatabaseError) {
-//                continuation.resume(EventResponse.Cancelled(error))
-//            }
-//
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                continuation.resume(EventResponse.Changed(snapshot))
-//            }
-//        }
-//        addListenerForSingleValueEvent(valueEventListener) // Subscribe to the event
-//    }
 
-//    suspend fun glideCreateBitmap(url: String): EventResponse {
-//
-//        Bitmap.getBitmapFromGlide():
-//    }
 
         suspend fun String.getBitmapFromGlide(): EventResponse = suspendCoroutine { continuation ->
             Timber.i("getBitmapFromGlide called")
@@ -137,86 +121,6 @@ class ImageRepository(val mContext: Context): Repository, CoroutineScope, KoinCo
         }
 
 
-
-
-
-
-
-
-    //    suspend fun glideCreateBitmap(url: String): Bitmap? =withContext(Dispatchers.IO) {
-//
-//            var bitmap: Bitmap? = null
-//
-//            var futureTargetBitmap: FutureTarget<Bitmap>
-//
-//            Glide.with(this@PlayerService).asBitmap().load(url).into(object : CustomTarget<Bitmap?>(){
-//
-//
-//                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
-//                    bitmap = resource
-//                    Timber.i("onResourceReady bitmap= $bitmap")
-//                }
-//
-//                override fun onLoadCleared(placeholder: Drawable?) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//            })
-//
-//            return@withContext bitmap
-//        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    private suspend fun getImage(url: String): Bitmap? {
-//
-//        var bitmap: Bitmap? = null
-//
-//        var futureTargetBitmap: FutureTarget<Bitmap>
-//
-//        var lmda = null
-//
-////        fun foo(lmbda: (bitmap:Bitmap) -> Bitmap){
-////            lmbda()
-////        }
-//
-//        //bigIconBitmap=withContext(Dispatchers.IO){ Glide.with(this@PlayerService).asBitmap().load(url).into(object : CustomTarget<Bitmap?>(){
-//        val bigIconBitmap = withContext(Dispatchers.IO) {
-//            val requestBuilderBitmap: RequestBuilder<Bitmap?> = Glide.with(this@ImageRepository).asBitmap().load(url)
-//            requestBuilderBitmap.into(PlayerService.CustomTargetObject)
-//            while (PlayerService.CustomTargetObject.bitmapCustom == null) {
-//                continue
-//            }
-//            return@withContext PlayerService.CustomTargetObject.bitmapCustom
-//        }
-//        if(bigIconBitmap!=null){
-//            currentSermonImage.value=bigIconBitmap
-//        }
-//        return bigIconBitmap
-//    }
-
-//    override fun getPhotos(): LiveData<Bitmap> {
-//        GlobalScope.launch(Dispatchers.Main) {
-////                                val bitmap:Bitmap? =  sermon?.image?.let { glideCreateBitmap(it) }
-//            val bitmapFromGlide: Bitmap? = sermon?.image?.let { glideCreateBitmap(it) }
-//            // setBitmapForIcon(bitmap)
-//
-//            // return@launch bitmap
-//
-//        }
-//    }
 
     fun cancelImageJob(){
         job.cancel()

@@ -30,7 +30,7 @@ import com.example.covenantsermons.modelClass.SermonEntity.Companion.fromSermonT
 import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
 import com.example.covenantsermons.player.PlayerService
 import com.example.covenantsermons.player.PlayerService.Companion.NOW_PLAYING_CHANNEL_ID
-import com.example.covenantsermons.player.PlayerService.Companion.NOW_PLAYING_NOTIFICATAION_ID
+import com.example.covenantsermons.player.PlayerService.Companion.NOW_PLAYING_NOTIFICATION_ID
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.viewmodel.DownloadViewModel
@@ -71,14 +71,15 @@ class PodcastListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // downloadViewModel=get<DownloadViewModel>()
     }
 
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
         Timber.i("onCreateView called in PodcastListFragment")
+        Timber.i("onCreateView callSetPodcastViewModel= $callSetPodcastViewModel")
         // podcastListViewModel=ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
         return inflater.inflate(R.layout.podcast_list_fragment, container, false)
     }
@@ -90,11 +91,7 @@ class PodcastListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        //    podcastListViewModel= ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
-//        setViewModel()
-//        setRVLayoutManager()
-////        val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
-//        podcastListViewModel.getPodcastsFromDatabase()
+
     }
 
     override fun onResume() {
@@ -103,18 +100,6 @@ class PodcastListFragment : Fragment() {
         mainActivity?.hideUpButton()
     }
 
-
-    //    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//    Bundle savedInstanceState)
-//    {
-//        final View view = inflater.inflate(R.layout..., container, false);
-//
-//        Button button = getActivity().findViewById(R.id...);
-//        button.setOnClickListener(...); - another problem: button is null
-//
-//        return view;
-//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -131,19 +116,6 @@ class PodcastListFragment : Fragment() {
         setPlayerViewModel()
         //adapterOnClickListener()
 
-//        val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
-        // podcastListViewModel.getPodcastsFromDatabase()
-
-
-//
-//        podcastListViewModel.podcasts.observe(viewLifecycleOwner, Observer { list ->
-//           //TODO create recyclerview here
-//        })
-//
-//        podcast_list_rv.layoutManager = LinearLayoutManager(context)
-//        podcast_list_rv.adapter = newAdapter
-//
-//        podcastListViewModel.getPodcasts()
     }
 
     private fun setAdapter() {
@@ -266,10 +238,6 @@ class PodcastListFragment : Fragment() {
                 combinedSermonArrayList = sermonArrayList
             }
             sermonListUpdated()
-//            if(callSetPodcastViewModel){
-//                callSetPodcastViewModel=false
-//                setPodcastViewModel()
-//            }
         })
 
         masterFragmentViewModel.toShowAppBar(true)
@@ -314,23 +282,6 @@ class PodcastListFragment : Fragment() {
         podcast_list_rv.visibility = View.VISIBLE
         progress_bar.visibility = View.INVISIBLE
     }
-
-//    private fun adapterOnClickListener(){
-//        podcastAdapter.setOnItemClickListener { item, view ->
-//            if (item is PodcastItem) {
-//                val navigationExtra = FragmentNavigatorExtras(
-//                        view.podcast_image to item.podcast.id
-//                )
-//                findNavController().navigate(
-//                        R.id.action_mainFragment_to_podcastDetailsFragment,
-//                        bundleOf(
-//                                PodcastDetailsFragment.podcastIdArgument to item.podcast.id,
-//                                PodcastDetailsFragment.podcastTitleArgument to item.podcast.name
-//                        ), null, navigationExtra
-//                )
-//            }
-//        }
-//    }
 
     private fun swipePodcastListener(podcastRecyclerView: RecyclerView) {
         val podcastItemSwipeCallback = object : ItemTouchHelper.SimpleCallback(0,
@@ -393,7 +344,7 @@ class PodcastListFragment : Fragment() {
                                 playerViewModel.emptyPlayList()
                                 val notificationManager = activity?.applicationContext?.let { NotificationManagerCompat.from(it) }
                                 Timber.i("onSwiped notificationManager= $notificationManager")
-                                notificationManager?.cancel(NOW_PLAYING_CHANNEL_ID, NOW_PLAYING_NOTIFICATAION_ID)
+                                notificationManager?.cancel(NOW_PLAYING_CHANNEL_ID, NOW_PLAYING_NOTIFICATION_ID)
 
                             }
                         }
@@ -434,54 +385,10 @@ class PodcastListFragment : Fragment() {
             }
 
 
-            //            override fun onChildDraw(c: Canvas?, recyclerView: RecyclerView?,
-//                            viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float,
-//                            actionState: Int, isCurrentlyActive: Boolean) {
-//                val foregroundView: View = (viewHolder as CartListAdapter.MyViewHolder).viewForeground
-//                getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
-//                        actionState, isCurrentlyActive)
-//            }
-
-
-
-
-
-
         }
         val podcastItemTouchHelper = ItemTouchHelper(podcastItemSwipeCallback)
         podcastItemTouchHelper.attachToRecyclerView(podcastRecyclerView)
     }
-
-
-
-//            override fun onChildDraw(
-//                    c: Canvas,
-//                    recyclerView: RecyclerView,
-//                    viewHolder: RecyclerView.ViewHolder,
-//                    dX: Float,
-//                    dY: Float,
-//                    actionState: Int,
-//                    isCurrentlyActive: Boolean
-//            ) {
-//
-//                // val foregroundView: View = (viewHolder as PodcastAdapter.ItemViewHolder).itemView
-//
-////                getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
-////                        actionState, isCurrentlyActive)
-//
-//                c.clipRect(0f, viewHolder.itemView.top.toFloat(),
-//                        dX, viewHolder.itemView.bottom.toFloat())
-//
-//
-//
-//                super.onChildDraw(c, recyclerView, viewHolder,
-//                        dX, dY, actionState, isCurrentlyActive)
-//            }
-//        }
-//
-//        val podcastItemTouchHelper = ItemTouchHelper(podcastItemSwipeCallback)
-//        podcastItemTouchHelper.attachToRecyclerView(podcastRecyclerView)
-//    }
 
 
     fun sermonListFromSermonEntityList(): ArrayList<Sermon?> {

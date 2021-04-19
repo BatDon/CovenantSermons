@@ -2,6 +2,7 @@ package com.example.covenantsermons
 
 
 import android.app.ActivityManager
+import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -480,29 +481,33 @@ class MainActivity : AppCompatActivity(){
                 return true
             }
             R.id.action_church_facebook -> {
+                searchWeb(getString(R.string.facebook_url))
 //                https://www.facebook.com/covenantpresgj
                 return true
             }
             R.id.action_church_website -> {
+                searchWeb(getString(R.string.website_url))
 //                https://www.covpresgj.org/
                 return true
             }
             R.id.action_church_donation -> {
+                searchWeb(getString(R.string.donation_url))
 //                https://www.facebook.com/covenantpresgj
                 //playPodcastData()
-                return true
-            }
-//            https://secure.squarespace.com/checkout/donate?donatePageId=5c8cff59eb39312e132d7d69&ss_cid=12903880-3688-44a9-af58-e3f2ddef7bf8&ss_cvisit=1617470392322&ss_cvr=463ce3c8-ff16-4daf-8d4b-3c70ec31c440%7C1617470392400%7C1617470392400%7C1617470392400%7C1
-            R.id.action_menu_media -> {
-                //playPodcastData()
-                return true
-            }
-            R.id.menu_donations -> {
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
 
+    }
+
+    private fun searchWeb(query: String) {
+        val intent = Intent(Intent.ACTION_WEB_SEARCH).apply {
+            putExtra(SearchManager.QUERY, query)
+        }
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        }
     }
 
     fun showUpButton() {

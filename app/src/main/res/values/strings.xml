@@ -19,4 +19,7 @@
     <string name="church_website">Website</string>
     <string name="church_facebook_page">Facebook</string>
     <string name="church_donation">Donate</string>
+    <string name="facebook_url">https://www.facebook.com/covenantpresgj</string>
+    <string name="website_url">https://www.covpresgj.org/</string>
+    <string name="donation_url"><![CDATA[https://secure.squarespace.com/checkout/donate?donatePageId=5c8cff59eb39312e132d7d69&ss_cid=12903880-3688-44a9-af58-e3f2ddef7bf8&ss_cvisit=1617470392322&ss_cvr=463ce3c8-ff16-4daf-8d4b-3c70ec31c440%7C1617470392400%7C1617470392400%7C1617470392400%7C1]]></string>
 </resources>

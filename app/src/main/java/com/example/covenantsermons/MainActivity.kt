@@ -62,8 +62,8 @@ class MainActivity : AppCompatActivity(){
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    private lateinit var toolbar: Toolbar
-    private lateinit var collapsingToolbar: CollapsingToolbarLayout
+    private var toolbar: Toolbar? =null
+    private var collapsingToolbar: CollapsingToolbarLayout? =null
 
     private lateinit var sermonEntityList: ArrayList<SermonEntity>
 
@@ -133,14 +133,18 @@ class MainActivity : AppCompatActivity(){
 //        toolbar = activityMainBinding.appBarCollapsingToolbar.toolbar
 //        setSupportActionBar(toolbar)
 //        toolbar = activityMainBinding.appBarCollapsingToolbar.toolbar
+        //TODO make sure appBarToolbar exists. It doesn't in landscape mode
         toolbar = activityMainBinding.appBarToolbar
-        setSupportActionBar(toolbar)
+        if(toolbar!=null){
+            setSupportActionBar(toolbar)
+        }
+
 
         collapsingToolbar= activityMainBinding.collapsingToolbar
 
-        collapsingToolbar.title = getString(R.string.app_name_with_space)
-        collapsingToolbar.setExpandedTitleTextAppearance(R.style.AppBarExpanded)
-        collapsingToolbar.setCollapsedTitleTextAppearance(R.style.AppBarCollapsed)
+        collapsingToolbar?.title = getString(R.string.app_name_with_space)
+        collapsingToolbar?.setExpandedTitleTextAppearance(R.style.AppBarExpanded)
+        collapsingToolbar?.setCollapsedTitleTextAppearance(R.style.AppBarCollapsed)
 
 
         //activityMainBinding.toolbar.setupWithNavController(navController, appBarConfiguration)
@@ -203,11 +207,11 @@ class MainActivity : AppCompatActivity(){
 
         masterFragmentViewModel.showAppBar.observe(this, Observer { showAppBar ->
 
-            activityMainBinding.appBar.setExpanded(showAppBar, showAppBar)
+            activityMainBinding.appBar?.setExpanded(showAppBar, showAppBar)
 
             ViewCompat.setNestedScrollingEnabled(activityMainBinding.nestedScrollView, showAppBar)
 
-            val appBarParams = activityMainBinding.appBar.layoutParams as CoordinatorLayout.LayoutParams
+            val appBarParams = activityMainBinding.appBar?.layoutParams as CoordinatorLayout.LayoutParams
             if (appBarParams.behavior == null)
                 appBarParams.behavior = AppBarLayout.Behavior()
             val behaviour = appBarParams.behavior as AppBarLayout.Behavior

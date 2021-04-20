@@ -8,4 +8,8 @@
   <dimen name="trash_icon_width">30dp</dimen>
   <dimen name="trash_icon_height">30dp</dimen>
   <dimen name="trash_icon_margin">10dp</dimen>
+
+<!--  landscape-->
+  <dimen name="exoplayer_icons_width_land">0dp</dimen>
+  <dimen name="exoplayer_icons_height_land">16dp</dimen>
 </resources>

@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.example.covenantsermons.MainActivity">
+
+
+<!--    <include-->
+<!--        android:id="@+id/app_bar_collapsing_toolbar"-->
+<!--        layout="@layout/app_bar_collapsing_toolbar"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        android:visibility="visible"/>-->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/appBarHeight"
+        android:fitsSystemWindows="true"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimaryDark"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+<!--            <ImageView-->
+<!--                android:id="@+id/expandedImage"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"-->
+<!--                android:src="@drawable/pres_cross_cropped"-->
+<!--                app:layout_collapseMode="parallax"-->
+<!--                app:layout_collapseParallaxMultiplier="0.7" />-->
+<!--            <ImageView-->
+<!--                android:id="@+id/expandedImage"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"-->
+<!--                android:src="@drawable/covenant_logo"-->
+<!--                app:layout_collapseMode="parallax"-->
+<!--                app:layout_collapseParallaxMultiplier="0.7" />-->
+            <ImageView
+                android:id="@+id/expandedImage"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cross_sky_faded"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.7" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/appBarToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.NoActionBar"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?attr/actionBarSize"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        android:background="#241c5c"-->
+<!--        android:visibility="gone"/>-->
+
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:id="@+id/appBar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@dimen/appBarHeight"-->
+<!--        android:fitsSystemWindows="true"-->
+<!--        android:background="@color/white">-->
+
+<!--        <com.google.android.material.appbar.CollapsingToolbarLayout-->
+<!--            android:id="@+id/collapsingToolbar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:fitsSystemWindows="true"-->
+<!--            app:contentScrim="?attr/colorPrimaryDark"-->
+<!--            app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/expandedImage"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"-->
+<!--                android:src="@drawable/pres_cross_cropped"-->
+<!--                app:layout_collapseMode="parallax"-->
+<!--                app:layout_collapseParallaxMultiplier="0.7" />-->
+
+<!--            <androidx.appcompat.widget.Toolbar-->
+<!--                android:id="@+id/toolbar"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="?attr/actionBarSize"-->
+<!--                app:layout_collapseMode="pin"-->
+<!--                app:popupTheme="@style/AppTheme.NoActionBar"/>-->
+
+<!--        </com.google.android.material.appbar.CollapsingToolbarLayout>-->
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
+
+    <!--<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent" app:layout_behavior="@string/appbar_scrolling_view_behavior" tools:context="com.journaldev.collapsingtoolbarlayout.ScrollingActivity" tools:showIn="@layout/activity_scrolling">
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="@dimen/text_margin" android:text="@string/large_text"/>
+    </android.support.v4.widget.NestedScrollView>-->
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+<!--        android:layout_margin="@dimen/button_padding">-->
+
+        <fragment
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:navGraph="@navigation/navigation_graph" />
+    </androidx.core.widget.NestedScrollView>
+
+
+        <!--    activity below here-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_activity_player_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/church_blue">
+            <!--                app:behavior_peekHeight="50dp"
+                    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"-->
+
+            <!--        <View-->
+            <!--            android:id="@+id/mini_player_background"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="50dp"-->
+            <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+            <TextView
+                android:id="@+id/current_sermon_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/player_view_margins"
+                android:layout_marginStart="@dimen/player_view_margins"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/player_view"
+                app:layout_constraintLeft_toLeftOf="@id/main_activity_player_group"
+                app:layout_constraintRight_toRightOf="@id/main_activity_player_group"
+                app:layout_constraintTop_toTopOf="@id/main_activity_player_group"
+                tools:text="@string/sermon_title" />
+
+            <com.google.android.exoplayer2.ui.PlayerControlView
+                android:id="@+id/player_view"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                app:controller_layout_id="@layout/exo_playback_control_view"
+                app:layout_constraintBottom_toBottomOf="@id/main_activity_player_group"
+                app:layout_constraintRight_toRightOf="@id/main_activity_player_group"
+                app:layout_constraintLeft_toLeftOf="@id/main_activity_player_group"
+                app:layout_constraintTop_toBottomOf="@id/current_sermon_title"
+                app:show_timeout="0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:id="@+id/main_constraint_layout"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:animateLayoutChanges="true"-->
+<!--    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--    app:layout_constraintRight_toRightOf="parent"-->
+<!--    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--    app:layout_constraintTop_toTopOf="parent">-->
+
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:id="@+id/app_bar_layout"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@color/white">-->
+
+<!--&lt;!&ndash;        <androidx.appcompat.widget.Toolbar&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/toolbar"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content" />&ndash;&gt;-->
+
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
+<!--&lt;!&ndash;<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"&ndash;&gt;-->
+<!--&lt;!&ndash;    xmlns:app="http://schemas.android.com/apk/res-auto"&ndash;&gt;-->
+<!--&lt;!&ndash;    xmlns:tools="http://schemas.android.com/tools"&ndash;&gt;-->
+<!--&lt;!&ndash;    android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;    android:layout_height="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;    android:animateLayoutChanges="true"&ndash;&gt;-->
+<!--&lt;!&ndash;    app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;    app:layout_constraintTop_toTopOf="parent">&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <com.google.android.material.appbar.AppBarLayout&ndash;&gt;-->
+<!--&lt;!&ndash;        android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:background="@color/white">&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <androidx.appcompat.widget.Toolbar&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/toolbar"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;    </com.google.android.material.appbar.AppBarLayout>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    fragment contains collapsible image and recyclerview&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <androidx.constraintlayout.widget.ConstraintLayout&ndash;&gt;-->
+<!--&lt;!&ndash;        android:id="@+id/fragment_player_constraint"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:layout_height="match_parent">&ndash;&gt;-->
+<!--    <fragment-->
+<!--        android:id="@+id/nav_host_fragment"-->
+<!--        android:name="androidx.navigation.fragment.NavHostFragment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:defaultNavHost="true"-->
+<!--        app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/player_guideline"-->
+<!--        app:navGraph="@navigation/navigation_graph" />-->
+
+
+<!--    <androidx.constraintlayout.widget.Guideline-->
+<!--        android:id="@+id/player_guideline"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintGuide_percent="0.8" />-->
+
+<!--    &lt;!&ndash;    activity below here&ndash;&gt;-->
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/main_activity_player_group"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@color/white"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/player_guideline"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/main_constraint_layout">-->
+<!--&lt;!&ndash;                app:behavior_peekHeight="50dp"-->
+<!--        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <View&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/mini_player_background"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="50dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/current_sermon_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="@dimen/player_view_margins"-->
+<!--            android:layout_marginLeft="@dimen/player_view_margins"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/player_view"-->
+<!--            app:layout_constraintLeft_toLeftOf="@id/main_activity_player_group"-->
+<!--            app:layout_constraintRight_toRightOf="@id/main_activity_player_group"-->
+<!--            app:layout_constraintTop_toTopOf="@id/main_activity_player_group"-->
+<!--            tools:text="@string/sermon_title" />-->
+
+<!--        <com.google.android.exoplayer2.ui.PlayerControlView-->
+<!--            android:id="@+id/player_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            app:controller_layout_id="@layout/exo_playback_control_view"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/main_activity_player_group"-->
+<!--            app:layout_constraintRight_toRightOf="@id/main_activity_player_group"-->
+<!--            app:layout_constraintLeft_toLeftOf="@id/main_activity_player_group"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/current_sermon_title"-->
+<!--            app:show_timeout="0" />-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--&lt;!&ndash;    </androidx.constraintlayout.widget.ConstraintLayout>&ndash;&gt;-->
+
+
+
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginTop="8dp"-->
+<!--    app:layout_constraintTop_toTopOf="parent"-->
+<!--    tools:context=".MainActivity">-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/imageView2"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/recyclerViewGuideline"-->
+<!--        app:srcCompat="@drawable/pres_cross_cropped" />-->
+
+
+
+<!--    <androidx.constraintlayout.widget.Guideline-->
+<!--        android:id="@+id/recyclerViewGuideline"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintGuide_percent="0.60"/>-->
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/recyclerViewGuideline" />-->
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

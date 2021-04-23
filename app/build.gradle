@@ -113,6 +113,10 @@ dependencies {
 
     //firebase storage
     implementation 'com.google.firebase:firebase-storage:19.2.1'
+    //firebase authentication
+    implementation platform('com.google.firebase:firebase-bom:27.1.0')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+
 
     //ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycleExtensionVersion"

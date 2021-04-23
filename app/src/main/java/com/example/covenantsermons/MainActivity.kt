@@ -25,7 +25,7 @@ import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelClass.SermonEntity
 import com.example.covenantsermons.modelClass.SermonEntity.Companion.DOWNLOADING_STATE_IMAGES_PLAY
 import com.example.covenantsermons.modelClass.SermonEntity.Companion.fromSermonEntityToSermon
-import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
+import com.example.covenantsermons.modelDatabase.authenticateAnonymousUser
 import com.example.covenantsermons.player.PlayerViewModel
 import com.example.covenantsermons.player.PodcastListViewModel
 import com.example.covenantsermons.podcast.PodcastAdapter
@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity(){
 
 
         //SermonDatabase().getPodcastsFromDatabase()
-        getPodcastsFromDatabase(podcastListViewModel, this)
+        authenticateAnonymousUser(podcastListViewModel, this)
 
 
         navController = findNavController(R.id.nav_host_fragment)

@@ -27,7 +27,7 @@ import com.example.covenantsermons.extensions.sermonRemoveFromDownloadedList
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.modelClass.SermonEntity
 import com.example.covenantsermons.modelClass.SermonEntity.Companion.fromSermonToSermonEntity
-import com.example.covenantsermons.modelDatabase.getPodcastsFromDatabase
+import com.example.covenantsermons.modelDatabase.authenticateAnonymousUser
 import com.example.covenantsermons.player.PlayerService
 import com.example.covenantsermons.player.PlayerService.Companion.NOW_PLAYING_CHANNEL_ID
 import com.example.covenantsermons.player.PlayerService.Companion.NOW_PLAYING_NOTIFICATION_ID
@@ -212,7 +212,7 @@ class PodcastListFragment : Fragment() {
 
     private fun setPodcastViewModelForPodcasts() {
         Timber.i("setPodcastViewModel called")
-        activity?.let { getPodcastsFromDatabase(podcastListViewModel, it) }
+        activity?.let { authenticateAnonymousUser(podcastListViewModel, it) }
         podcastListViewModel.podcasts.observe(viewLifecycleOwner, Observer { list ->
             Timber.i("podcasts observer called")
             sermonArrayList = ArrayList(list)

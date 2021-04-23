@@ -1,14 +1,17 @@
 package com.example.covenantsermons.modelDatabase
 
+import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import com.example.covenantsermons.*
 import com.example.covenantsermons.extensions.timeStampToDate
 import com.example.covenantsermons.modelClass.Sermon
 import com.example.covenantsermons.player.PodcastListViewModel
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.ktx.Firebase
 import timber.log.Timber
 import java.util.*
 
@@ -17,68 +20,6 @@ data class SermonList(
         val sermonList: ArrayList<Sermon> = arrayListOf()
 )
 
-
-//data class Sermon(
-//    val audioFile: String = "",
-//    val duration: Int = 0,
-//    val image: String = "",
-//    val timeStamp: Date = Date(),
-//    val title: String = "",
-//    val pastorName: String=""
-//)
-//
-//@Parcelize
-//data class Sermon(
-//    val audioFile: String = "",
-//    val duration: Int = 0,
-//    val image: String = "",
-//    val timeStamp: Date = Date(),
-//    val title: String = "",
-//    val pastorName: String=""
-//): Parcelable
-
-//@Parcelize
-//data class Sermon(
-//        var audioFile: String? = "",
-//        var duration: Int? = 0,
-//        var image: String? = "",
-//        var pastorName: String? = "",
-//        var date: String? = "",
-//        var title: String? = ""
-//
-//): Parcelable{
-//    init {
-//        audioFile = audioFile ?: ""
-//        duration = duration?:0
-//        image = image ?: ""
-//        pastorName = pastorName ?: ""
-//        date = date ?: ""
-//        title = title ?: ""
-//
-//    }
-//}
-
-//@Parcelize
-//data class Sermon(
-//    var date: String? = "",
-//    var title: String? = "",
-//    var pastorName: String? = "",
-//    var audioFile: String? = "",
-//    var duration: Int? = 0,
-//    var image: String? = ""
-//
-//
-//
-//): Parcelable{
-//    init {
-//        date = date ?: ""
-//        title = title ?: ""
-//        pastorName = pastorName ?: ""
-//        audioFile = audioFile ?: ""
-//        duration = duration?:0
-//        image = image ?: ""
-//    }
-//}
 
 
 //enum class DocumentFields{
@@ -95,54 +36,25 @@ object documentFields{
 }
 
 var unSubscribe: ListenerRegistration?=null
-//constant val
-
-//class SermonDatabase: AppCompatActivity(){
-//class SermonDatabase{
-    //lateinit var podcastListViewModel: PodcastListViewModel
-   // var podcastListViewModel: PodcastListViewModel?=null
-//    val podcastListViewModel: PodcastListViewModel by viewModel()
 
 
-    // init{
-//        var podcastListViewModel: PodcastListViewModel?=null
-    //    podcastListViewModel= ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
-//    }
-    //val podcastListViewModel: PodcastListViewModel by viewModel()
-//    val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
-  //  var podcastListViewModel: PodcastListViewModel?=null
+    fun authenticateAnonymousUser(podcastListViewModel: PodcastListViewModel, mContext: Context){
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        Timber.i("onCreate called")
-//        //podcastListViewModel: PodcastListViewModel by viewModel()
-//        podcastListViewModel= ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
-//
-//        Timber.i("onCreate called podcastListViewModel initialized to $podcastListViewModel")
-//        //val podcastListViewModel=PodcastListViewModel by viewModel()
-////        val podcastListViewModel: PodcastListViewModel by viewModel()
-//    }
+        val auth=Firebase.auth
+        auth.signInAnonymously()
+                .addOnCompleteListener(mContext as Activity) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+//                        val user = auth.currentUser
+                        getPodcastsFromDatabase(podcastListViewModel, mContext)
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Timber.i("unable to sign in anonymously")
+                    }
+                }
+    }
 
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        Timber.i("onCreate called")
-//        //podcastListViewModel: PodcastListViewModel by viewModel()
-//        podcastListViewModel= ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
-//
-//        Timber.i("onCreate called podcastListViewModel initialized to $podcastListViewModel")
-//        //val podcastListViewModel=PodcastListViewModel by viewModel()
-////        val podcastListViewModel: PodcastListViewModel by viewModel()
-//    }
-
-
-
-//fun getPodcastsFromDatabase(mContext: Context): ArrayList<Sermon> {
-    fun getPodcastsFromDatabase(podcastListViewModel: PodcastListViewModel, mContext: Context) {
-
-//    if (checkNetworkConnection(mContext)) {
-    if (true) {
-
+    private fun getPodcastsFromDatabase(podcastListViewModel: PodcastListViewModel, mContext: Context) {
 
         //    val mainContext=mainContext
 
@@ -244,9 +156,6 @@ var unSubscribe: ListenerRegistration?=null
                     //                MainActivityAccesser(null).getViewReference()
 
                 }
-    } else {
-        Timber.i("never happens")
-    }
 }
 
  //   return sermonList
@@ -294,17 +203,6 @@ var unSubscribe: ListenerRegistration?=null
 
 
 //}
-//
-//class DatabaseSermonAccess(val sermonList: ArrayList<Sermon>):NewDataInterface{
-//    init {
-//        MainActivityAccesser(this)
-//        InterfaceClass()
-//        playPodcastActivitywithNewData(sermonList)
-//    }
-////    override fun playPodcastActivitywithNewData(sermonArrayList: ArrayList<Sermon>) {
-////        TODO("Not yet implemented")
-////    }
-//
-//}
+
 
 

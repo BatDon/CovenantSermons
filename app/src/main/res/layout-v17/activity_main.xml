@@ -10,8 +10,8 @@
         android:id="@+id/coordinatorLayout"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/main_activity_player_group"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fitsSystemWindows="true"
@@ -78,8 +78,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_gravity="bottom"
         android:background="@color/church_blue">
 
@@ -87,16 +87,15 @@
             android:id="@+id/current_sermon_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/player_view_margins"
+            android:layout_marginStart="@dimen/player_view_margins"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/player_view"
-            app:layout_constraintLeft_toLeftOf="@id/main_activity_player_group"
-            app:layout_constraintRight_toRightOf="@id/main_activity_player_group"
+            app:layout_constraintStart_toStartOf="@id/main_activity_player_group"
+            app:layout_constraintEnd_toEndOf="@id/main_activity_player_group"
             app:layout_constraintTop_toTopOf="@id/main_activity_player_group"
-            tools:text="@string/sermon_title"
-            android:layout_marginStart="@dimen/player_view_margins" />
+            tools:text="@string/sermon_title" />
 
         <com.google.android.exoplayer2.ui.PlayerControlView
             android:id="@+id/player_view"
@@ -104,8 +103,8 @@
             android:layout_height="match_parent"
             app:controller_layout_id="@layout/exo_playback_control_view"
             app:layout_constraintBottom_toBottomOf="@id/main_activity_player_group"
-            app:layout_constraintRight_toRightOf="@id/main_activity_player_group"
-            app:layout_constraintLeft_toLeftOf="@id/main_activity_player_group"
+            app:layout_constraintEnd_toEndOf="@id/main_activity_player_group"
+            app:layout_constraintStart_toStartOf="@id/main_activity_player_group"
             app:layout_constraintTop_toBottomOf="@id/current_sermon_title"
             app:show_timeout="0" />
 

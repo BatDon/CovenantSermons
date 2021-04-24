@@ -11,6 +11,7 @@ import com.example.covenantsermons.modelClass.SermonEntity.Companion.DOWNLOADING
 import com.example.covenantsermons.modelClass.SermonEntity.Companion.DOWNLOADING_STATE_IMAGES_DOWNLOAD
 import com.example.covenantsermons.modelClass.SermonEntity.Companion.DOWNLOADING_STATE_IMAGES_PLAY
 import kotlinx.android.synthetic.main.podcast_item.view.*
+import timber.log.Timber
 
 
 class PodcastAdapter(private var mContext: Context?, private var sermonList: ArrayList<Sermon?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -27,6 +28,7 @@ class PodcastAdapter(private var mContext: Context?, private var sermonList: Arr
     inner class ItemViewHolder(var viewBinding: PodcastItemBinding) : RecyclerView.ViewHolder(viewBinding.root) {
         init {
             viewBinding.root.setOnClickListener {
+                Timber.i("sermonList[adapterPosition]= ${sermonList[adapterPosition]}")
                 sermonList[adapterPosition]?.let { sermon -> onItemClick?.invoke(sermon) }
             }
             viewBinding.root.downloadCancelPlayIV.setOnClickListener {
@@ -76,6 +78,7 @@ class PodcastAdapter(private var mContext: Context?, private var sermonList: Arr
     }
 
     fun getSermonAt(position: Int): Sermon? {
+        Timber.i("sermonList= ${sermonList[position]}")
         return sermonList[position]
     }
 

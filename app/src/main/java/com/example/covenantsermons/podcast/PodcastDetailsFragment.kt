@@ -35,9 +35,12 @@ class PodcastDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sermon = (arguments?.getParcelable<Sermon>(podcastSermonArgument) ?: Sermon())
+        Timber.i("sermon from arguments= $sermon")
 
         playerViewModel.currentlyPlaying.observe(this, Observer { sermon ->
-            this.sermon = sermon
+//            this.sermon = sermon
+            this@PodcastDetailsFragment.sermon = sermon
+            Timber.i("this@PodcastDetailsFragment.sermon= $sermon")
             setUpFragmentViews()
 
 //            activityMainBinding.currentSermonTitle.text = sermon.title

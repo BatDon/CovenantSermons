@@ -312,7 +312,7 @@ class PodcastListFragment : Fragment() {
                 val sermon = podcastAdapter.getSermonAt(sermonViewHolder.adapterPosition)
 
 
-                Toast.makeText(activity, "sermon swiped= $sermon", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(activity, "sermon swiped= $sermon", Toast.LENGTH_SHORT).show()
                 Timber.i("sermon swiped= $sermon")
 
                 if (sermon != null) {
@@ -327,6 +327,7 @@ class PodcastListFragment : Fragment() {
                         val sermonEntityList = sermonEntityArrayList.toList<SermonEntity>()
                         sermonViewModel.delete(sermonEntity)
                         callSetPodcastViewModel = true
+                        Toast.makeText(activity, "${sermon.title} removed", Toast.LENGTH_SHORT).show()
 
 
                         Timber.i("onSwiped after delete sermonEntityList= $sermonEntityList")
@@ -345,7 +346,6 @@ class PodcastListFragment : Fragment() {
                                 val notificationManager = activity?.applicationContext?.let { NotificationManagerCompat.from(it) }
                                 Timber.i("onSwiped notificationManager= $notificationManager")
                                 notificationManager?.cancel(NOW_PLAYING_CHANNEL_ID, NOW_PLAYING_NOTIFICATION_ID)
-
                             }
                         }
 
@@ -358,8 +358,7 @@ class PodcastListFragment : Fragment() {
 //                        setPodcastViewModel()
 //                        setSermonViewModel()
                     } else {
-                        Toast.makeText(activity, "Can't remove undownloaded sermon= $sermon", Toast.LENGTH_SHORT).show()
-                        Timber.i("Can't remove undownloaded sermon= $sermon")
+                        Toast.makeText(activity, "Can't remove undownloaded sermon ${sermon.title}", Toast.LENGTH_SHORT).show()
                         sermonListUpdated()
                     }
                 }

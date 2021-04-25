@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(){
 
         //val storageRoot=this.filesDir.toString() + "/"
         //playerViewModel.setStorageRoot(storageRoot)
-        Timber.plant(Timber.DebugTree())
+       // Timber.plant(Timber.DebugTree())
         Timber.i("onCreate called")
 
         Timber.i("onCreate savedInstanceState= $savedInstanceState")

@@ -7,6 +7,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:336747401294:android:07d1d1ea03ea511974731f",
+        "android_client_info": {
+          "package_name": "com.batdon.covenantsermons"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336747401294-bfesmul5re19vh3eulfc7g5c557vh4ir.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDBsHuHEebWd4BKaSAii_KwFplDfnnQBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336747401294-bfesmul5re19vh3eulfc7g5c557vh4ir.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:336747401294:android:c8f15fbf6c994df974731f",
         "android_client_info": {
           "package_name": "com.example.covenantsermons"

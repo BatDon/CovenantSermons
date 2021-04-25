@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.covenantsermons.podcast.PodcastListFragment"
+        android:name="com.batdon.covenantsermons.podcast.PodcastListFragment"
         android:label="Top podcasts"
         tools:layout="@layout/podcast_list_fragment">
         <action
@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/podcastDetailsFragment"
         android:label="{podcast_title}"
-        android:name="com.example.covenantsermons.podcast.PodcastDetailsFragment"
+        android:name="com.batdon.covenantsermons.podcast.PodcastDetailsFragment"
         tools:layout="@layout/podcast_detail_fragment">
         <argument
             android:name="podcast_title"

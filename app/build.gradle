@@ -155,4 +155,7 @@ dependencies {
 
     //workManager
     implementation "androidx.work:work-runtime-ktx:$rootProject.workManagerVersion"
+
+    //canary for debugging
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

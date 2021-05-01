@@ -19,18 +19,17 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.batdon.covenantsermons.MainActivity
+import com.batdon.covenantsermons.modelClass.Sermon
+import com.batdon.covenantsermons.repository.ImageRepository
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.batdon.covenantsermons.MainActivity
-import com.batdon.covenantsermons.modelClass.Sermon
-import com.batdon.covenantsermons.repository.ImageRepository
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
-import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.core.KoinComponent
@@ -140,10 +139,10 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 
         sessionToken?.let { mediaSessionToken ->
             Timber.i("playerNotification manager being created")
-            val playerNotificationManager = PlayerNotificationManager(this, NOW_PLAYING_CHANNEL_ID,
+            val playerNotificationManager = ModifiedPlayerNotificationManager(this, NOW_PLAYING_CHANNEL_ID,
                     NOW_PLAYING_NOTIFICATION_ID,
                     //interface instantiation
-                    object : PlayerNotificationManager.MediaDescriptionAdapter {
+                    object : ModifiedPlayerNotificationManager.MediaDescriptionAdapter {
                         //controller needs sessionToken
                         val controller = MediaControllerCompat(this@PlayerService, mediaSessionToken)
 
@@ -164,7 +163,7 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
                         //TODO no bitmap is shown
                         override fun getCurrentLargeIcon(
                                 mPlayer: Player,
-                                callback: PlayerNotificationManager.BitmapCallback
+                                callback: ModifiedPlayerNotificationManager.BitmapCallback
                         ): Bitmap? {
 
 //                            return controller.metadata?.description?.iconBitmap
@@ -252,9 +251,9 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 
                             }
 
-//                            return pendingIntent
+                            return pendingIntent
 
-                            return null
+//                            return null
                         }
 //                            return PendingIntent.getActivity(
 //                                    this@PlayerService,
@@ -276,7 +275,7 @@ class PlayerService : MediaBrowserServiceCompat(),KoinComponent{
 
                     },
                     //interface instantiation
-                    object : PlayerNotificationManager.NotificationListener {
+                    object : ModifiedPlayerNotificationManager.NotificationListener {
                         override fun onNotificationPosted(
                                 notificationId: Int,
                                 notification: Notification,

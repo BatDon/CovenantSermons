@@ -3,6 +3,7 @@ package com.batdon.covenantsermons
 
 import android.app.ActivityManager
 import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -81,11 +82,20 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Timber.plant(Timber.DebugTree())
+        Timber.i("onCreate called")
+
+        Timber.i("getIntentMainActivity called= ${intent}")
+
+        amIAppMetricaProcess(this)
+
+
+
 
         //val storageRoot=this.filesDir.toString() + "/"
         //playerViewModel.setStorageRoot(storageRoot)
-       // Timber.plant(Timber.DebugTree())
-        Timber.i("onCreate called")
+//        Timber.plant(Timber.DebugTree())
+//        Timber.i("onCreate called")
 
         Timber.i("onCreate savedInstanceState= $savedInstanceState")
 
@@ -630,6 +640,36 @@ class MainActivity : AppCompatActivity(){
 //        this.sermonArrayList=sermonArrayList
 //
 //    }
+
+    //Debugging below here
+    private var appMetricaProcessPID = -1
+    fun amIAppMetricaProcess(context: Context){
+//        return Process.myPid() == getAppMetricaProcessPID(context)
+        Timber.i("processId= ${getAppMetricaProcessPID(context)}")
+    }
+
+    fun getAppMetricaProcessPID(context: Context): Int {
+        if (appMetricaProcessPID == -1) {
+            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+            Timber.i("appMetrica manager= $manager")
+            if (manager != null) {
+                val pids = manager.runningAppProcesses
+                Timber.i("pids= $pids")
+                val needle = context.packageName + ":Metrica"
+                Timber.i("needle= $needle")
+                for (i in pids.indices) {
+                    val info = pids[i]
+                    Timber.i("info= $info")
+                    if (info.processName.equals(needle, ignoreCase = true)) {
+                        appMetricaProcessPID = info.pid
+                        Timber.i("appMetricaProcessPID= $appMetricaProcessPID")
+                        break
+                    }
+                }
+            }
+        }
+        return appMetricaProcessPID
+    }
 }
 
 

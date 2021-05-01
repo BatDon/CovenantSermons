@@ -10,6 +10,7 @@ import org.koin.core.context.startKoin
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+//        if(amIAppMetricaProcess()) return
         AndroidThreeTen.init(this)
         startKoin {
             androidContext(this@App)

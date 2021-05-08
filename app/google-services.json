@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "336747401294-e4hr8o5dp0hhrongt8m8c7qnjjdv9van.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.batdon.covenantsermons",
+            "certificate_hash": "568f9e3bb0188f0107a8d3c1d0d0d6f52fa6c1e3"
+          }
+        },
+        {
           "client_id": "336747401294-bfesmul5re19vh3eulfc7g5c557vh4ir.apps.googleusercontent.com",
           "client_type": 3
         }

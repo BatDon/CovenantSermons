@@ -29,4 +29,6 @@ This is a podcast app that allows you to play podcasts. To listen to a podcast j
 - AndroidX AppCompat
 - RecyclerView
 
+## Bugs
 
+When app is closed and notification is clicked on. The app launches twice. It seems that the problem comes from the PlayerNotificationManager's onPlayerStateChanged being called twice. Please explore the testing_memory_leaks branch for help debugging. 

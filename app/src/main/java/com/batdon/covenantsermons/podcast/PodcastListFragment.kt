@@ -42,37 +42,27 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-
-//class PodcastListFragment : Fragment(R.layout.podcast_list_fragment) {
 class PodcastListFragment : Fragment() {
 
-    //val podcastListViewModel: PodcastListViewModel by viewModel()
-//    R.layout.podcast_list_fragment
-
     private val podcastListViewModel: PodcastListViewModel by viewModel()
+    //PlayerViewModel Exoplayer connection
     private val playerViewModel: PlayerViewModel by sharedViewModel()
     private val masterFragmentViewModel: MasterFragmentViewModel by sharedViewModel()
+    //downloadViewModel downloads sermons from Firebase
     private val downloadViewModel: DownloadViewModel by viewModel()
+    //sermonViewModel saves and retrieves sermons to and from Room Database
     private val sermonViewModel: SermonViewModel by viewModel()
     private val playerService: PlayerService by inject()
-//    private var downloadViewModel: DownloadViewModel? =null
 
-
-    //    private val podcastListViewModel = ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
-//    private lateinit var podcastListViewModel: PodcastListViewModel
     private var sermonPlayArrayList: ArrayList<Sermon?> = ArrayList<Sermon?>()
     private var sermonArrayList: ArrayList<Sermon?> = ArrayList<Sermon?>()
     private var sermonEntityArrayList: ArrayList<SermonEntity> = ArrayList<SermonEntity>()
     private var combinedSermonArrayList: ArrayList<Sermon?> = ArrayList<Sermon?>()
+    //podcasts downloaded from Firebase stored in DownloadViewModel
     private var podcastsDownloaded: ArrayList<Sermon?> = ArrayList<Sermon?>()
     private lateinit var podcastAdapter: PodcastAdapter
     private var currentPlaying = Sermon()
     private var callSetPodcastViewModel:Boolean=false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -80,18 +70,7 @@ class PodcastListFragment : Fragment() {
 
         Timber.i("onCreateView called in PodcastListFragment")
         Timber.i("onCreateView callSetPodcastViewModel= $callSetPodcastViewModel")
-        // podcastListViewModel=ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
         return inflater.inflate(R.layout.podcast_list_fragment, container, false)
-    }
-
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//        val playerView=requireActivity().findViewById<View>(R.id.player_view)
-//    }
-
-    override fun onStart() {
-        super.onStart()
-
     }
 
     override fun onResume() {
@@ -104,18 +83,12 @@ class PodcastListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        // podcastListViewModel.getPodcastsFromDatabase()
-
-
         setAdapter()
         setRVLayoutManager()
         setPodcastViewModelForPodcasts()
         setPodcastViewModelForPodcastsDownloaded()
         setSermonViewModel()
         setPlayerViewModel()
-        //adapterOnClickListener()
-
     }
 
     private fun setAdapter() {
@@ -123,7 +96,6 @@ class PodcastListFragment : Fragment() {
 
         podcastAdapter = PodcastAdapter(activity, sermonArrayList).also { it ->
             it.onItemClick = { sermon ->
-                //Toast.makeText(activity, "title ${sermon.title} audio file${sermon.audioFile}", Toast.LENGTH_LONG).show()
                 Timber.i("on Click called title ${sermon.title}")
                 Timber.i("sermon= $sermon")
                 Timber.i("podcastListViewModel.getDownloadedPodcasts()= ${podcastListViewModel.getDownloadedPodcasts()}")
@@ -212,6 +184,7 @@ class PodcastListFragment : Fragment() {
 
     private fun setPodcastViewModelForPodcasts() {
         Timber.i("setPodcastViewModel called")
+        //observes sermons from Firebase
         activity?.let { authenticateAnonymousUser(podcastListViewModel, it) }
         podcastListViewModel.podcasts.observe(viewLifecycleOwner, Observer { list ->
             Timber.i("podcasts observer called")
@@ -244,6 +217,7 @@ class PodcastListFragment : Fragment() {
     }
 
     private fun setSermonViewModel() {
+        //observes room database sermons
         sermonViewModel.allSermons.observe(viewLifecycleOwner, Observer { list ->
             sermonEntityArrayList = ArrayList(list)
             Timber.i("sermonEntityArrayList= $sermonEntityArrayList")

@@ -2,7 +2,6 @@ package com.batdon.covenantsermons.modelDatabase
 
 import android.app.Activity
 import android.content.Context
-import android.net.ConnectivityManager
 import com.batdon.covenantsermons.*
 import com.batdon.covenantsermons.extensions.timeStampToDate
 import com.batdon.covenantsermons.modelClass.Sermon
@@ -16,15 +15,6 @@ import timber.log.Timber
 import java.util.*
 
 
-data class SermonList(
-        val sermonList: ArrayList<Sermon> = arrayListOf()
-)
-
-
-
-//enum class DocumentFields{
-//    audioFile, duration, image, timeStamp, title
-//}
 
 object documentFields{
     const val audioFile="audioFile"
@@ -56,153 +46,42 @@ var unSubscribe: ListenerRegistration?=null
 
     private fun getPodcastsFromDatabase(podcastListViewModel: PodcastListViewModel, mContext: Context) {
 
-        //    val mainContext=mainContext
+        val rootRef: FirebaseFirestore = FirebaseFirestore.getInstance()
+        val sermonList = ArrayList<Sermon>()
 
-        var rootRef: FirebaseFirestore? = FirebaseFirestore.getInstance()
-
-
-
-        //    var unSubscribe: ListenerRegistration?=null
-
-        var sermonList = ArrayList<Sermon>()
-
-        unSubscribe = rootRef?.collection("Podcasts")
-                ?.addSnapshotListener { snapshots, exception ->
+        unSubscribe = rootRef.collection("Podcasts")
+                .addSnapshotListener { snapshots, exception ->
                     if (exception != null) {
                         Timber.e("listen:error $exception")
                         return@addSnapshotListener
                     }
 
-                    //                new arraylist created everytime document changes
-                    //                if(snapshots!!.documentChanges.size>0){
-                    //                    sermonList=ArrayList<Sermon>()
-                    //                }
-
-
-                    //TODO create arrayList and update RecyclerView
                     for (sermondChanges in snapshots!!.documentChanges) {
                         when (sermondChanges.type) {
                             DocumentChange.Type.ADDED -> Timber.i("New sermon: ${sermondChanges.document.data}")
                             DocumentChange.Type.MODIFIED -> Timber.i("Modified sermon: ${sermondChanges.document.data}")
                             DocumentChange.Type.REMOVED -> Timber.i("Removed sermon ${sermondChanges.document.data}")
-                            //sermondChanges.document.data.get("audioFile")
 
                         }
                         Timber.i("sermon Media= ${sermondChanges.document.data["audioFile"]}")
-                        val timeStampString: String = sermondChanges.document.data["timeStamp"].toString()
-                        val date = timeStampString.timeStampToDate()
-                        val title: String? = sermondChanges.document.data["title"] as String?
-                        val pastorName: String? = sermondChanges.document.data["pastorName"] as String?
-                        //val audioFileCompletePath: String? = sermondChanges.document.data["audioFile"] as String?
-//                        val audioFile= audioFileCompletePath?.httpsRefToStorageRef()
-                        val audioFile=sermondChanges.document.data["audioFile"] as String?
-                        val durationLong: Long? = sermondChanges.document.data["duration"] as Long?
-                        val duration: Int? = durationLong?.toInt()
-                        //                    val duration: Int? =sermondChanges.document.data["duration"].toInt()
-                        val image: String? = sermondChanges.document.data["image"] as String?
+                        val docData=sermondChanges.document.data
 
-
-
-                        //                    val timeStamp: Timestamp=sermondChanges.document.data["timeStamp"] as Timestamp
-                        //                    val longTimeStamp: Long=timeStamp.seconds.toLong()
-                        Timber.i("timeStampString = $timeStampString")
-                        //                        val firstTimeStampSubstring = timeStampString.substringAfter("=", timeStampString)
-                        //                        val lastTimeStampSubstring = firstTimeStampSubstring.substringBefore(",", firstTimeStampSubstring)
-                        //                        Timber.i("substring= $lastTimeStampSubstring")
-                        //val date = Date(lastTimeStampSubstring.toLong() * 1000)
-                        //                    val date=Date()
-                        //                    val timeStamp: Date?= timeStampString?.toLongOrNull()?.let { Date(it) }
-                        //                    Timber.i("date= ${longTimeStamp}")
-                        //                    Timber.i("timeStamp=$timeStamp")
-
+                        val date = docData[documentFields.timeStamp].toString().timeStampToDate()
+                        val title: String? = docData[documentFields.title] as String?
+                        val pastorName: String? = docData[documentFields.pastorName] as String?
+                        val audioFile=docData[documentFields.audioFile] as String?
+                        val duration: Int? = (docData[documentFields.duration] as Long?)?.toInt()
+                        val image: String? = docData[documentFields.image] as String?
 
                         sermonList.add(Sermon(date, title, pastorName, audioFile, duration, image))
                         Timber.i("sermonList= ${sermonList[0]}")
-
-                        //                        if(podcastListViewModel==null){
-                        //                            podcastListViewModel= ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
-                        //                        }
                     }
-                    //DatabaseListenerClass().playPodcastActivitywithNewData(sermonList)
 
-                    //val mainActivityContext = mContext as MainActivity
-                    //  mainActivityContext.playPodcastActivitywithNewData(sermonList)
-                    //TODO saving as ArrayList to mutableList
-
-                    //                    val podcastListViewModel: PodcastListViewModel by viewModel()
-
-                    //Timber.i("podcastListViewModel $podcastListViewModel")
-
-                    //                    if(podcastListViewModel==null){
-                    //                        podcastListViewModel= ViewModelProviders.of(this).get(PodcastListViewModel::class.java)
-                    //                    }
-
-                    //Timber.i("podcastListViewModel after second initialization $podcastListViewModel")
                     Timber.i("sermonList size= ${sermonList.size}")
                     for (sermon in sermonList) {
                         Timber.i("sermonDatabase sermon= $sermon")
                     }
 
-                    //TODO save sermonList to SharedPreferences
                     podcastListViewModel.setPodcasts(sermonList)
-
-                    //                    if(sermonList.size>1) {
-                    //                        playerViewModel.playlist.clear()
-                    //                        playerViewModel.playlist.addAll(sermonList)
-                    //                    }
-
-
-                    //                AccessViewInterface.playPodcastActivityNewData(sermonList)
-                    //                MainActivityAccesser(null).getViewReference()
-
                 }
 }
-
- //   return sermonList
- //   }
-
-
-    fun checkNetworkConnection(mContext: Context ): Boolean {
-        val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return connectivityManager!!.activeNetworkInfo != null && connectivityManager!!.activeNetworkInfo!!.isConnected
-    }
-
-
-//    rootRef?.let {
-//        it.collection("Podcasts").get()
-//                .addOnSuccessListener { documents ->
-//                    for (document in documents) {
-//                        Timber.i("document id= ${document.id} => ${document.data}")
-//                        val audioFile=document.getString(documentFields.audioFile)
-//                        val duration=document.getLong(documentFields.duration)
-//                        val image=document.getString(documentFields.image)
-//                        val timeStamp=document.getDate(documentFields.timeStamp)
-//                        val title=document.getString(documentFields.title)
-//                        val pastorName=document.getString(documentFields.pastorName)
-//
-//                        //testing all field values
-//                        Timber.i("""audioFile $audioFile
-//                                             duration $duration
-//                                             image    $image
-//                                             timeStamp $timeStamp
-//                                             title    $title
-//                                             pastorName $pastorName""")
-//                    }
-//                }
-//                .addOnFailureListener { exception ->
-//                    Timber.i("Error getting documents: $exception")
-//                }
-//    }
-
-
-
-//    override fun onDestroy(){
-//        unSubscribe?.remove()
-//    }
-
-
-
-//}
-
-
-

@@ -199,6 +199,10 @@ class PlayerViewModel(
 //        _currentlyPlaying.value = next
     }
 
+    fun createPlaylist(next: Sermon?, newPlaylist: ArrayList<Sermon>){
+        createPlaylist(next, newPlaylist.toList())
+    }
+
     fun emptyPlayList(){
         //mediaSessionConnection.transportControls.pause()
         mediaSessionConnection.transportControls.stop()

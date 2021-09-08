@@ -34,6 +34,8 @@ data class SermonEntity(
 
         fun fromSermonEntityToSermon(sermonEntityList: List<SermonEntity>) = sermonEntityList.map { SermonEntity.fromSermonEntityToSermon(it) }
 
+        fun fromSermonEntityToSermon(sermonEntityArrayList: ArrayList<SermonEntity>) = fromSermonEntityToSermon(sermonEntityArrayList.toList())
+
         fun fromSermonToSermonEntity(sermon:Sermon) = SermonEntity(
                 date = sermon.date!!,
                 title = sermon.title,
@@ -44,6 +46,9 @@ data class SermonEntity(
                 downloadingButtonImage = sermon.downloadingButtonImage
         )
         fun fromSermonToSermonEntity(sermonList: List<Sermon>) = sermonList.map { SermonEntity.fromSermonToSermonEntity(it) }
+
+        fun fromSermonToSermonEntity(sermonList: ArrayList<Sermon>): List<SermonEntity> {
+            return fromSermonToSermonEntity(sermonList.toList())}
 
         const val DOWNLOADING_STATE_IMAGES_DOWNLOAD: String="DOWNLOADING_STATE_IMAGES_DOWNLOAD"
         const val DOWNLOADING_STATE_IMAGES_CANCEL: String="DOWNLOADING_STATE_IMAGES_CANCEL"

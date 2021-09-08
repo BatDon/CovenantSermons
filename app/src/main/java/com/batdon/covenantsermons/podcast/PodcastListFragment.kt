@@ -291,22 +291,26 @@ class PodcastListFragment : Fragment() {
 
                 if (sermon != null) {
 
-                    val sermonArrayList = sermonListFromSermonEntityList()
-                    val sermonInDownloadList = sermonArrayList.sermonInDownloadedList(sermon)
+                   // val sermonArrayList = sermonListFromSermonEntityList()
+                    val sermonInDownloadList=SermonEntity.fromSermonEntityToSermon(sermonEntityArrayList).sermonInDownloadedList(sermon)
+                    //val sermonInDownloadList = sermonArrayList.sermonInDownloadedList(sermon)
                     Timber.i("sermonInDownloadList= $sermonInDownloadList")
                     if (sermonInDownloadList) {
                         Timber.i("sermonInDownloadedList if statement")
                         val sermonEntity = SermonEntity.fromSermonToSermonEntity(sermon)
                         Timber.i("onSwiped before delete sermonEntityList= $sermonEntityArrayList")
-                        val sermonEntityList = sermonEntityArrayList.toList<SermonEntity>()
+                        //val sermonEntityList = sermonEntityArrayList.toList<SermonEntity>()
                         sermonViewModel.delete(sermonEntity)
                         callSetPodcastViewModel = true
                         Toast.makeText(activity, "${sermon.title} removed", Toast.LENGTH_SHORT).show()
 
 
-                        Timber.i("onSwiped after delete sermonEntityList= $sermonEntityList")
-                        val sermonList = SermonEntity.fromSermonEntityToSermon(sermonEntityList)
-                        val sermonDownloadedList = ArrayList(sermonList).sermonRemoveFromDownloadedList(sermon)
+                        //Timber.i("onSwiped after delete sermonEntityList= $sermonEntityList")
+                        //val sermonList = SermonEntity.fromSermonEntityToSermon(sermonEntityList)
+
+                        val sermonList = SermonEntity.fromSermonEntityToSermon(sermonEntityArrayList)
+
+                        val sermonDownloadedList = sermonList.sermonRemoveFromDownloadedList(sermon)
                         chooseList(sermonDownloadedList)
                         Timber.i("sermonDownloadedList= $sermonDownloadedList")
                         podcastListViewModel.setDownloadedPodcasts(sermonDownloadedList)
@@ -325,7 +329,7 @@ class PodcastListFragment : Fragment() {
 
                         if (sermonDownloadedList.size > 0) {
                             Timber.i("if sermonDownloadedList.size= ${sermonDownloadedList.size}")
-                            playerViewModel.createPlaylist(null, sermonDownloadedList.toList())
+                            playerViewModel.createPlaylist(null, sermonDownloadedList)
                         } else {
                             Timber.i("else sermonDownloadedList.size= ${sermonDownloadedList.size}")
                         }
@@ -364,16 +368,16 @@ class PodcastListFragment : Fragment() {
     }
 
 
-    fun sermonListFromSermonEntityList(): ArrayList<Sermon?> {
-        val sermonEntityList = sermonEntityArrayList.toList<SermonEntity>()
-        Timber.i("onSwiped after delete sermonEntityList= $sermonEntityList")
-        val sermonList = SermonEntity.fromSermonEntityToSermon(sermonEntityList)
-        return ArrayList(sermonList)
-    }
+//    fun sermonListFromSermonEntityList(): ArrayList<Sermon?> {
+//        val sermonEntityList = sermonEntityArrayList.toList<SermonEntity>()
+//        Timber.i("onSwiped after delete sermonEntityList= $sermonEntityList")
+//        val sermonList = SermonEntity.fromSermonEntityToSermon(sermonEntityList)
+//        return ArrayList(sermonList)
+//    }
 
     fun PodcastAdapter.ItemViewHolder.listen(event: (position: Int, type: Int) -> Unit): PodcastAdapter.ItemViewHolder {
         itemView.setOnClickListener {
-            event.invoke(getAdapterPosition(), getItemViewType())
+            event.invoke(adapterPosition, itemViewType)
         }
         return this
     }
@@ -383,8 +387,8 @@ class PodcastListFragment : Fragment() {
         combinedSermonArrayList = if (sermonDownloadedArrayList.size > 0) {
             Timber.i("chooseList if statement called")
             //combinedSermonArrayList = combinedSermonArrayList = sermonEntityArrayList.combineSermonLists(sermonArrayList)
-            val sermonDownloadedEntityList=fromSermonToSermonEntity(sermonDownloadedArrayList.toList())
-            ArrayList(sermonDownloadedEntityList).combineSermonLists(sermonArrayList)
+            val sermonDownloadedEntityList=fromSermonToSermonEntity(sermonDownloadedArrayList)
+            sermonDownloadedEntityList.combineSermonLists(sermonArrayList)
             //sermonListUpdated()
         } else {
             sermonArrayList
@@ -395,7 +399,7 @@ class PodcastListFragment : Fragment() {
 
     fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
         itemView.setOnClickListener {
-            event.invoke(getAdapterPosition(), getItemViewType())
+            event.invoke(adapterPosition, itemViewType)
         }
         return this
     }

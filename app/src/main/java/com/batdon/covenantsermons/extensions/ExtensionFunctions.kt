@@ -122,6 +122,10 @@ fun ArrayList<SermonEntity>.combineSermonLists(sermonArrayList: ArrayList<Sermon
     return sermonArrayListModified
 }
 
+fun List<SermonEntity>.combineSermonLists(sermonArrayList: ArrayList<Sermon?>):ArrayList<Sermon?> {
+    return ArrayList(this).combineSermonLists(sermonArrayList)
+}
+
 fun ArrayList<Sermon?>.sermonInDownloadedList(sermon: Sermon?):Boolean{
     Timber.i("ArrayList<Sermon>= $sermon")
     this.forEach{
@@ -134,6 +138,9 @@ fun ArrayList<Sermon?>.sermonInDownloadedList(sermon: Sermon?):Boolean{
     }
     return false
 }
+
+fun List<Sermon?>.sermonInDownloadedList(sermon: Sermon?):Boolean{
+    return ArrayList(this).sermonInDownloadedList(sermon)}
 
 fun ArrayList<Sermon>.sermonRemoveFromDownloadedList(sermon: Sermon?):ArrayList<Sermon>{
     Timber.i("ArrayList<Sermon>= $sermon")
@@ -148,6 +155,10 @@ fun ArrayList<Sermon>.sermonRemoveFromDownloadedList(sermon: Sermon?):ArrayList<
         count++
     }
     return this
+}
+
+fun List<Sermon>.sermonRemoveFromDownloadedList(sermon: Sermon?):ArrayList<Sermon>{
+    return ArrayList(this).sermonRemoveFromDownloadedList(sermon)
 }
 
 fun Context.createRootStoragePath()=this.filesDir.toString()+"/"
